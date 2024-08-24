@@ -1,0 +1,61 @@
+A database
+	inventory of medicines
+	bed allotted(with fixed size)
+	doctors-speciality
+	patient admitted
+	history of patients
+		doctor assigned
+1.{
+
+An emergency system
+	a person will open the app the selects emergency-booking 
+		states problem 
+		filter nearest hospitals with the given issue,emergency service, availability of beds, doctors
+		selects desired hospital
+		Boolean ambulance
+			ambulance type(normal:display(avail),life saverdisplay(avail))
+		CONFIRM BOOKING
+		ambulance on the way
+		-->Hospital Management()
+		
+
+		
+Hospital Management
+	given data:-
+		emergency problem
+		estimated arrival time of ambulance
+		
+	what to do:-
+		which doctor
+		which room-->bed
+		
+
+Hospital Server Manager
+	patient details
+		name
+		id
+		disease
+	stores the patient details
+}
+
+2.{
+Bed Allotement System
+
+	
+}	
+
+3.{
+Queuing System
+	Data required to analyse
+		
+
+}
+
+4.{
+Patient categorizing
+}
+
+will 
+
+
+
