@@ -1,0 +1,4 @@
+﻿1.What information does a hospital require before arrival of a patient in an emergency situation
+2.Patient admission and allotment process
+3.Who assigns the patient with doctor and bed
+4.What is the role of receptionist
