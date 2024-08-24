@@ -2,3 +2,4 @@
 2.Patient admission and allotment process
 3.Who assigns the patient with doctor and bed
 4.What is the role of receptionist
+5.What kind of technical help would you expect from our software in case of an emergency situation. Would you like AI or manual control or is there existing solution?
