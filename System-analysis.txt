@@ -1,3 +1,57 @@
+Emergency:
+	person comes in:
+	 Patient Details input:-Details
+		Triage
+		 Person who needs immediate care:
+			Triage Registration
+		 	General Doctor for emergency:
+				if(hospitalization)
+					Admission(Ward ward,BedNo,PDetails);
+					Operation? Consent Form:!Consent Form;
+					Bed allot=true;(queue of patients)
+					Main Doctor Allotment
+				else:
+					skip;
+		Normal
+		 Person can wait:
+			General Doctor of Emergency:
+				Admission(Ward ward,BedNo,PDetails);
+				if(hospitalization)
+					Operation? Consent Form:!Consent Form
+					Bed allot=true;
+					Main Doctor Allotment
+				else:
+					skip;
+"OPD
+Availability of bed
+Admission of patients"
+
+
+Normal Checkup:
+Person comes in
+-Registration Desk
+	-Person details
+		--gets token(id)
+		--if(Specific Doctor)
+			---OPD Queuing-->"Estimated Wait Time",dekhia dilo
+			---(Normal check || Operation case)?
+			---if Operation case{
+						----Admission
+						----Bed-Allotment
+						//if required reallot main doc
+					}
+		--else{
+			---OPD Queuing-->"Estimated Wait Time",dekhia dilo
+			---(Normal check || Operation case)?
+			---if Operation case{
+						----Admission
+						----Bed-Allotment
+						//if required reallot main do
+			}
+
+
+
+
 A database
 	inventory of medicines
 	bed allotted(with fixed size)
@@ -5,7 +59,7 @@ A database
 	patient admitted
 	history of patients
 		doctor assigned
-1.{
+{
 
 An emergency system
 	a person will open the app the selects emergency-booking 
@@ -54,8 +108,4 @@ Queuing System
 4.{
 Patient categorizing
 }
-
-will 
-
-
 
