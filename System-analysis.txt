@@ -22,9 +22,22 @@ Emergency:
 					Main Doctor Allotment
 				else:
 					skip;
-"OPD
-Availability of bed
-Admission of patients"
+Queuing Models for:
+	Departments={Availability of Beds
+		     Admission of patients
+		     OPD}
+	Person Books Appointment:
+		---createNewToken(Arrived :FLASE)
+	When person arrives at the hospital
+		--goes to registration desk
+		--getsToken(TimeOfArrival,createNewToken(Arrived:TRUE))
+			'''Server Side(
+					Keeps track of each and every patient in and out time for 
+					calculation of new average time of current queue
+				)
+			---Queuing on token Number(Current tokens.time:)
+				----For:Departments
+					----AppDisplay(out:queueTime)
 
 
 Normal Checkup:
@@ -52,14 +65,27 @@ Person comes in
 
 
 
-A database
-	inventory of medicines
-	bed allotted(with fixed size)
-	doctors-speciality
-	patient admitted
-	history of patients
-		doctor assigned
-{
+
+User Interaction:
+	-Each user will have their account
+		--if(newUser)
+			---Take details
+		--else
+			---open interface
+	-States Issue:-
+		--Normal || Emergency
+		--Use ai system to create a suggestion based on user situation
+			--Problem solve Hospital compatibility filter
+			--Nearest hospital
+				--Google Map navigation
+					--Pop up on click(hospital)
+					--{New Page}Hospital details
+						---waiting time
+						---if(normal)
+							----Normal Checkup
+						---else(emergency)
+							----Emergency Checkup
+
 
 An emergency system
 	a person will open the app the selects emergency-booking 
