@@ -118,20 +118,28 @@ Hospital Server Manager
 	stores the patient details
 }
 
-2.{
-Bed Allotement System
 
+Patient appointment details
+	patient_id(FK)
+	appointment count INT,
+	appointment details STRING,
+	appointment Doc STRING,
+
+
+Boolean Emergency = true
+	id(PK)
+	user_id(FK)
+	arrivalTime:TIME
+	Bed BOOLEAN:FALSE
+
+
+Department:
+	department_name TEXT,
+	floor_no INT
+	doctors_count INT
+	emptybed_count INT
+	fill_bed_count INT
 	
-}	
-
-3.{
-Queuing System
-	Data required to analyse
-		
-
-}
-
-4.{
-Patient categorizing
-}
-
+	
+	
+	
