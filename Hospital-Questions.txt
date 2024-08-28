@@ -8,3 +8,5 @@
 8.Would the doctors be interested in a software that will help them type the prescription for the patient
 	by opening the patient's details
 9.Will the nurses be able to control full bed and empty bed criteria(explain)
+10.Is there any tracking system for consumables(masks,cotton,ppe kit,Scrubs),medicine,doctor,oxygen 
+	cylinder.
