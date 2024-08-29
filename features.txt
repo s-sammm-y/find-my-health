@@ -1,7 +1,8 @@
 USER
     OPD Booking
     Patient Status
-        Doctor Visits(notification)
+        Appointment Details
+            Doctor Visits(notification)
         Medicine given
         Tests Conducted
         Food
