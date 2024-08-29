@@ -3,6 +3,7 @@ USER
     Patient Status
         Appointment Details
             Doctor Visits(notification)
+            Auto Suggestion of Next Appointment
         Medicine given
         Tests Conducted
         Food
