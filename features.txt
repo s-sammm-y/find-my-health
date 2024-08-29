@@ -6,9 +6,11 @@ USER
             Auto Suggestion of Next Appointment
         Medicine given
         Tests Conducted
+        Prescriptions 
         Food
         Operation Status
     Test Report Access
+        divisions
 HOSPITAL
     Doctors Database
     Inventory Database
@@ -17,5 +19,9 @@ HOSPITAL
             Usage Analytics
         Partnership with suppliers
     Patient Database
+    Nurse Database
+    Bed Management System
+        Add beds to GUI
+        Update bed details
     OPD Queue Manager  
     Automatic Patient document Verfification(What kind of documents are needed?)  
