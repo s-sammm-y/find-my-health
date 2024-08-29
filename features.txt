@@ -1,0 +1,19 @@
+USER
+    OPD Booking
+    Patient Status
+        Doctor Visits(notification)
+        Medicine given
+        Tests Conducted
+        Food
+        Operation Status
+    Test Report Access
+HOSPITAL
+    Doctors Database
+    Inventory Database
+        Predictive Analysis
+            Low stock prediction
+            Usage Analytics
+        Partnership with suppliers
+    Patient Database
+    OPD Queue Manager  
+    Automatic Patient document Verfification(What kind of documents are needed?)  
