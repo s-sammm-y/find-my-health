@@ -174,5 +174,26 @@ MEDICINE TYPES
 		Tablets dont swallow
 			Nitroglycerin Sublingual Tablets
 			Miconazole Buccal Tablets
+Inventory:-
+
+SQL FORMAT
+    CREATE TABLE HospitalInventory (
+    ItemID INT PRIMARY KEY AUTO_INCREMENT,
+    ItemName VARCHAR(100) NOT NULL,
+    Category VARCHAR(50) NOT NULL,
+    Quantity INT NOT NULL,
+    UnitPrice DECIMAL(10, 2),
+    SupplierName VARCHAR(100),
+    ReorderLevel INT,
+    ExpirationDate DATE,
+    StorageLocation VARCHAR(100),
+    LastUpdated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+}
 	
-	
+Diognostic Report(OPD)
+	Doctors will have a format for prescriptions 
+		They will be able to select medicine and that medicine will be displayed on there prescription
+			just like a form fillup
+		Doctors will also be able to set the time span of medicines like a from fill up
+		We need an ADD medicine field
