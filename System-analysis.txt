@@ -140,6 +140,39 @@ Department:
 	emptybed_count INT
 	fill_bed_count INT
 	
-	
+
+MEDICINE TYPES
+	Prep:-
+		Liquids
+			Paracetamol Syrup
+			Amoxicillin Suspension 
+		tablets
+			Aspirin	
+			Metformin	
+		capsules
+			Omeprazole
+			Doxycycline
+	Other types
+		Topical Medicines
+			Hydrocortisone Cream
+			Neosporin Ointment
+		Suppositories
+			Glycerin Suppositories
+			Paracetamol Suppositories
+		Drops
+			Latanoprost Eye Drops
+			Olopatadine Nasal Drops
+		Inhalers
+			Albuterol Inhaler
+			Fluticasone Inhaler
+		Injections
+			Insulin Injection 
+			Adrenaline (Epinephrine) Injection
+		Implants or Patches
+			Nexplanon Implant
+			Nicotine Patch
+		Tablets dont swallow
+			Nitroglycerin Sublingual Tablets
+			Miconazole Buccal Tablets
 	
 	
