@@ -25,3 +25,18 @@ HOSPITAL
         Update bed details
     OPD Queue Manager  
     Automatic Patient document Verfification(What kind of documents are needed?)  
+
+
+DATABASE:-
+
+Patient Appointment(System for OPD)
+	when making a particular patient makes an appointment
+		his info goes to two dbs
+			one is user appointments
+			another is datewise appointments
+	 registration desk will be able to see the datewise appointments
+			datewise appointments will have all the bookings(today)
+				AND a arrived:true,false button for each patient
+			whenever registration desk clicks arrived==true for a particular patient
+				patient datewise queue will be updated with that patient included in the queue 						db
+			
