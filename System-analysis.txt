@@ -197,3 +197,16 @@ Diognostic Report(OPD)
 			just like a form fillup
 		Doctors will also be able to set the time span of medicines like a from fill up
 		We need an ADD medicine field
+
+Bed calssification:
+	Deparment
+	Gender
+	bed no
+ MMW1 format:-{Medicine Male Ward Bedno(1)}
+
+
+Emergency data flow:
+	Using phone number to identify user and craete a booking
+	In emergency persons location gets automatically selected and filters nearest hospitals based on 
+		(location,availablity of emergency)
+	Person has to select the hospital before sending details

@@ -1,6 +1,8 @@
 Problems we are solving:
-    OPD:
-        Reducing and predicting patient waiting time
+   GENERAL:
+   	Storing patient info in a user account both for normal and emergency situation
+   OPD:
+        Rdeducing and predicting patient waiting time
         Reducing patient registration time
         Reducing paperwork and digitising the entire process
         Keeping track of patient checkup history

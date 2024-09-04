@@ -1,3 +1,5 @@
+Regualar Interval refresh of appointments
+
 USER
     OPD Booking
     Patient Status
