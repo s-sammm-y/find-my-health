@@ -1,0 +1,12 @@
+Problems we are solving:
+    OPD:
+        Reducing and predicting patient waiting time
+        Reducing patient registration time
+        Reducing paperwork and digitising the entire process
+        Keeping track of patient checkup history
+    OPD Doctor:
+        Reducing writing time of prescription
+        Easy prescription generation
+
+
+       
