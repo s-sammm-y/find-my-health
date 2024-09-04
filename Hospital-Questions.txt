@@ -10,6 +10,9 @@
 9.Will the nurses be able to control full bed and empty bed criteria(explain)
 10.Is there any tracking system for consumables(masks,cotton,ppe kit,Scrubs),medicine,doctor,oxygen 
 	cylinder.Electronic Health Records (EHR)
+
+EHR
+
 EHRs are digital records of a patient’s medical history. Using an EHR system has many benefits, including providing a bigger picture of the patient’s overall health, rather than just a snapshot of clinical data. EHRs typically include medical history, diagnoses, treatment plans, lab results, and more. This information contains personally identifiable information (PII) and protected health information (PHI). 
 
 You can convert physical patient charts to EHRs with medical records scanning. Scanning creates a digital file of your patient’s record that you can edit, share, and store digitally. Records are indexed for quick organization and retrieval. You can scan most medical file formats including x-ray images, EKGs, patient forms, and lab results.
