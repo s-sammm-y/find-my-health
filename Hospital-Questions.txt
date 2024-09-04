@@ -9,4 +9,13 @@
 	by opening the patient's details
 9.Will the nurses be able to control full bed and empty bed criteria(explain)
 10.Is there any tracking system for consumables(masks,cotton,ppe kit,Scrubs),medicine,doctor,oxygen 
-	cylinder.
+	cylinder.Electronic Health Records (EHR)
+EHRs are digital records of a patient’s medical history. Using an EHR system has many benefits, including providing a bigger picture of the patient’s overall health, rather than just a snapshot of clinical data. EHRs typically include medical history, diagnoses, treatment plans, lab results, and more. This information contains personally identifiable information (PII) and protected health information (PHI). 
+
+You can convert physical patient charts to EHRs with medical records scanning. Scanning creates a digital file of your patient’s record that you can edit, share, and store digitally. Records are indexed for quick organization and retrieval. You can scan most medical file formats including x-ray images, EKGs, patient forms, and lab results.
+
+After scanning, you can integrate patient charts with an EHR system. An EHR system helps healthcare providers manage their records, track retention periods, and protect privacy while in storage. Selecting the right EHR system is critical, as you will want a system that provides efficiency, usability, and high security.
+
+Physical Document Storage
+
+You can access files as needed, including emergency retrieval services, without the headache of managing the files yourself. Physical records provide a reliable way to back up digital information as long as they are protected. Secure storage facilities offer fire, flood, and theft protection.
