@@ -12,5 +12,10 @@ Problems we are solving:
     EHR
     	Electronic health record inbuilt system
 	Benifits over manul and online website service
-
+    Speaking Points:
+        Disparity in organization between government and private hospitals(unorganised health sector) - India cannot progress if its health sector is not organised.
+        Over reliance on pen-paper based file systems (Data loss and inaccuracy)
+        Lack of transparency from the hospital to the patient's family, where they are not fully informed about everything happening to the patient. 
+        Digital Revolution in healthcare (HealthSync)
+        
        
