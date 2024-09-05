@@ -30,3 +30,17 @@ Emergency Response: In critical situations, every second counts. Health Sync’s
 In conclusion, Health Sync is not just a tool; it is a transformative solution that modernizes the way healthcare is delivered. By moving away from the inefficiencies of manual systems and embracing the speed, accuracy, and convenience of digital technology, we are paving the way for a future where patient care is not only more effective but also more humane.
 
 Thank you for your time, and I look forward to discussing how Health Sync can be integrated into your healthcare facilities to enhance patient care and operational efficiency.
+
+Detailed explanation of proposed soluition
+	Manual Data flow of patients
+	No track of queing of patients
+	Infomration regaring availablilities of beds
+	Improper storage of patient details and avalibility of patient data on user app
+How it addresses the problem
+	
+Innovation and uniqueness of the solution
+	Proper arrangement and execution of Medicine inventory
+	Inbuilt Electronic health records
+	Auto generation of prescription
+	Efficient Queuing Arrangement
+	Filter of neaset hopsitals based on distance,emegency availability,problem(future plan)
