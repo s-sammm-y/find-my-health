@@ -1,0 +1,12 @@
+.lcontainer{
+    width:50vw;
+    padding:40px
+}
+.rcontainer{
+    width:50vw;
+    padding:40px
+}
+.background{
+    background-color: aliceblue;
+    display: flex;
+}
