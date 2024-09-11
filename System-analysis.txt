@@ -62,7 +62,13 @@ Person comes in
 						//if required reallot main do
 			}
 
-
+General Page
+select cities
+	nearby and other citites
+	then displays hospitals neabry or state based
+		selects a hospital and then slects which opd department(user)
+		selecting opd filters out the doctors
+		selects a doctor and the doctor details along with available dates will appear on calender
 
 
 

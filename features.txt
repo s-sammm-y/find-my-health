@@ -29,7 +29,6 @@ HOSPITAL
     Automatic Patient document Verfification(What kind of documents are needed?)  
 
 
-DATABASE:-
 
 Patient Appointment(System for OPD)
 	when making a particular patient makes an appointment
@@ -41,4 +40,21 @@ Patient Appointment(System for OPD)
 				AND a arrived:true,false button for each patient
 			whenever registration desk clicks arrived==true for a particular patient
 				patient datewise queue will be updated with that patient included in the queue 						db
-			
+DATABASE:-			
+
+Docotor DB
+hospital_id(fk)
+name
+state
+descirption
+opd department
+avail_days
+avail_time
+mobile no
+password
+
+
+Token Color:-
+booked-yellow
+arrives-green
+done-red
