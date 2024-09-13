@@ -9,6 +9,7 @@ function App() {
   const [showPopup, setShowPopup] = useState(false);
   const [newItemName, setNewItemName] = useState('');
   const [newItemQuantity, setNewItemQuantity] = useState('');
+  const [newQuantity, setNewQuantity] = useState({}); // to handle item quantity updates
 
   useEffect(() => {
     const fetchInventory = async () => {
@@ -41,14 +42,41 @@ function App() {
         item_name: newItemName,
         quantity: newItemQuantity
       });
-      console.log(newItemName)
-      console.log(newItemQuantity)
       // Refresh the inventory list
       const response = await axios.get('http://localhost:3000/api/inventory');
       setInventory(response.data);
       handleClosePopup();
     } catch (err) {
       setError('Error adding item');
+      console.error(err);
+    }
+  };
+
+  const handleQuantityChange = (e, itemName) => {
+    setNewQuantity({
+      ...newQuantity,
+      [itemName]: e.target.value,
+    });
+  };
+
+  const handleUpdateSubmit = async (e, itemName) => {
+    e.preventDefault();
+    try {
+      await axios.put(`http://localhost:3000/api/inventory/${itemName}`, {
+        quantity: newQuantity[itemName],
+      });
+
+      // Fetch the updated inventory
+      const response = await axios.get('http://localhost:3000/api/inventory');
+      setInventory(prevInventory => {
+        const updatedInventory = response.data;
+        return prevInventory.map(item => {
+          const updatedItem = updatedInventory.find(i => i.item_name === item.item_name);
+          return updatedItem ? { ...item, quantity: updatedItem.quantity } : item;
+        });
+      });
+    } catch (err) {
+      setError('Error updating quantity');
       console.error(err);
     }
   };
@@ -67,7 +95,16 @@ function App() {
               <p>{item.quantity}</p>
             </div>
             <div className="item-update">
-              <button>Add</button>
+              <form onSubmit={(e) => handleUpdateSubmit(e, item.item_name)}>
+                <input
+                  type="number"
+                  value={newQuantity[item.item_name] || ''}
+                  onChange={(e) => handleQuantityChange(e, item.item_name)}
+                  placeholder="Add quantity"
+                  required
+                />
+                <button type="submit">Add</button>
+              </form>
               <button>Remove</button>
             </div>
           </div>

@@ -21,7 +21,7 @@ app.get('/api/inventory', async (req, res) => {
     try {
       const { data, error } = await supabase
         .from('inventory')
-        .select('item_name, quantity');
+        .select('*');
   
       if (error) {
         throw error;
@@ -55,6 +55,46 @@ app.post('/api/inventory', async (req, res) => {
     }
   });  
   
+  //Update item quantity
+app.put('/api/inventory/:item_name', async (req, res) => {
+  const { item_name } = req.params;
+  const { quantity } = req.body;
+  let update_timestamp = new Date();
+
+  try {
+    // First, get the current quantity
+    const { data: currentData, error: fetchError } = await supabase
+      .from('inventory')
+      .select('quantity')
+      .eq('item_name', item_name)
+      .single();
+
+    if (fetchError) {
+      throw fetchError;
+    }
+
+    const currentQuantity = currentData.quantity;
+
+    // Calculate the new quantity
+    const newQuantity = currentQuantity + parseInt(quantity);
+
+    // Update the quantity in the database
+    const { data, error } = await supabase
+      .from('inventory')
+      .update({ quantity: newQuantity, update_timestamp })
+      .eq('item_name', item_name);
+
+    if (error) {
+      throw error;
+    }
+
+    res.status(200).send('Quantity updated');
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
   });  
