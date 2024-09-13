@@ -1,0 +1,44 @@
+/* App.css */
+
+.app-container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  h1 {
+    text-align: center;
+    color: #333;
+  }
+  
+  .error-message {
+    color: red;
+    text-align: center;
+  }
+  
+  .inventory-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .item {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 5px 0;
+    width: 80%;
+    text-align: center;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    display:flex;
+    justify-content: space-between; /* Space out items evenly */
+  align-items: center;
+  }
+  
+  .item strong {
+    display: inline;
+    font-size: 1.2em;
+  }
+  .addItem{
+    margin: auto;
+  }
