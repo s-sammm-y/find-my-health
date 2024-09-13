@@ -3,6 +3,7 @@
     Token GUI
     Dashboard Display
     Patient panel for doctor
+    Patient appointment history(Prescription pdf, meds) in app
 2.Live Bed Status
     Display in App
     Bed manipulation through Dashboard
@@ -11,5 +12,6 @@
     Ambulance Booking
     Dashboard Display
     Preliminary checkup details 
+    Patient medication details
 4.Inventory Management
     Medicine and other consumable segment
