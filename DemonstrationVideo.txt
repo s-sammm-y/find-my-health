@@ -1,0 +1,15 @@
+1.OPD Queuing model
+    App Booking
+    Token GUI
+    Dashboard Display
+    Patient panel for doctor
+2.Live Bed Status
+    Display in App
+    Bed manipulation through Dashboard
+3.Patient Admission
+    App Booking
+    Ambulance Booking
+    Dashboard Display
+    Preliminary checkup details 
+4.Inventory Management
+    Medicine and other consumable segment
