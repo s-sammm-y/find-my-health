@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:health_sync/first_screen_widgets/city_hospital_list.dart';
+ // Import the CityHospitalList page
 
 class FirstScreen extends StatefulWidget {
   const FirstScreen({super.key});
@@ -8,33 +10,31 @@ class FirstScreen extends StatefulWidget {
 }
 
 class _FirstScreenState extends State<FirstScreen> {
-  int? selectedButtonIndex; // To track the selected button index (only one can be selected)
+  int? selectedButtonIndex;
 
-  // Method to handle button selection
   void _onButtonTap(int index) {
     setState(() {
-      selectedButtonIndex = index; // Update the selected button index
+      selectedButtonIndex = index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white, // Set background color to white
+      color: Colors.white,
       child: SingleChildScrollView(
         child: Column(
           children: [
-            // Circle Avatars Row with scrollable functionality
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 20.0),
               child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal, // Enable horizontal scrolling
+                scrollDirection: Axis.horizontal,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start, // Align items to the start
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    SizedBox(width: 20), // Add padding at the start
+                    SizedBox(width: 20),
                     CityOption(iconLabel: 'Nearby'),
-                    SizedBox(width: 10), // Add space between items
+                    SizedBox(width: 10),
                     CityOption(iconLabel: 'Delhi'),
                     SizedBox(width: 10),
                     CityOption(iconLabel: 'Kolkata'),
@@ -48,14 +48,12 @@ class _FirstScreenState extends State<FirstScreen> {
                     CityOption(iconLabel: 'Hyderabad'),
                     SizedBox(width: 10),
                     CityOption(iconLabel: 'Ahmedabad'),
-                    SizedBox(width: 20), // Add padding at the end
+                    SizedBox(width: 20),
                   ],
                 ),
               ),
             ),
-            const SizedBox(height: 5), // Add space between the two sections
-
-            // Title for the Hospital Options
+            const SizedBox(height: 5),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.0),
               child: Align(
@@ -70,17 +68,15 @@ class _FirstScreenState extends State<FirstScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 20), // Space below the title
-
-            // Hospital Options Buttons
+            const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: GridView.count(
-                shrinkWrap: true, // Needed to avoid unbounded height errors
-                crossAxisCount: 2, // 2 buttons per row
+                shrinkWrap: true,
+                crossAxisCount: 2,
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
-                physics: const NeverScrollableScrollPhysics(), // Disable grid scrolling
+                physics: const NeverScrollableScrollPhysics(),
                 children: [
                   _buildSelectableButton('Govt Hospital', 0),
                   _buildSelectableButton('Pvt Hospital', 1),
@@ -95,11 +91,10 @@ class _FirstScreenState extends State<FirstScreen> {
     );
   }
 
-  // Widget for building a selectable button
   Widget _buildSelectableButton(String label, int index) {
-    bool isSelected = selectedButtonIndex == index; // Check if this button is selected
+    bool isSelected = selectedButtonIndex == index;
     return GestureDetector(
-      onTap: () => _onButtonTap(index), // Handle button tap
+      onTap: () => _onButtonTap(index),
       child: Container(
         decoration: BoxDecoration(
           color: isSelected ? Colors.lightBlue : Colors.white,
@@ -125,22 +120,34 @@ class _FirstScreenState extends State<FirstScreen> {
 // Custom widget to represent each city option
 class CityOption extends StatelessWidget {
   final String iconLabel;
+
   const CityOption({required this.iconLabel, super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const CircleAvatar(
-          radius: 32, // Size of the circular avatar
-          backgroundColor: Colors.grey, // Placeholder color
-        ),
-        const SizedBox(height: 8), // Space between the circle and the text
-        Text(
-          iconLabel,
-          style: const TextStyle(fontSize: 12, color: Colors.lightBlue),
-        ),
-      ],
+    return GestureDetector(
+      onTap: () {
+        // Navigate to the CityHospitalList page for any selected city
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CityHospitalList(cityName: iconLabel),
+          ),
+        );
+      },
+      child: Column(
+        children: [
+          const CircleAvatar(
+            radius: 30,
+            backgroundColor: Colors.grey,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            iconLabel,
+            style: const TextStyle(fontSize: 12, color: Colors.lightBlue),
+          ),
+        ],
+      ),
     );
   }
 }

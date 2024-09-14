@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:health_sync/Profile/drawer_slider.dart';
+import 'package:health_sync/first_screen_widgets/city_hospital_list.dart';
 import 'package:health_sync/screens/first_screen.dart';
 import 'package:health_sync/screens/second_screen.dart';
+ // Import the CityHospitalList page
 
 class GeneralScreen extends StatefulWidget {
   const GeneralScreen({super.key});
@@ -32,7 +34,6 @@ class _GeneralScreenState extends State<GeneralScreen> {
       body: _buildBody(),
 
       // Bottom Bar Navigation Implementation
-
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
         items: const <BottomNavigationBarItem>[
@@ -53,9 +54,9 @@ class _GeneralScreenState extends State<GeneralScreen> {
         selectedItemColor: Colors.lightBlue,
         onTap: _onItemTapped,
       ),
-      
     );
   }
+
   Widget _buildBody() {
     switch (_selectedIndex) {
       case 0:
@@ -71,8 +72,15 @@ class _GeneralScreenState extends State<GeneralScreen> {
 }
 
 // Top bar implementation
-class TopBar extends StatelessWidget {
+class TopBar extends StatefulWidget {
   const TopBar({super.key});
+
+  @override
+  State<TopBar> createState() => _TopBarState();
+}
+
+class _TopBarState extends State<TopBar> {
+  final TextEditingController _searchController = TextEditingController(); // To control the input text
 
   @override
   Widget build(BuildContext context) {
@@ -135,12 +143,24 @@ class TopBar extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
                 child: TextField(
+                  controller: _searchController, // Attach the controller to capture user input
                   decoration: InputDecoration(
-                    hintText: 'Search...',
+                    hintText: 'Search city...',
                     hintStyle: TextStyle(color: Colors.lightBlue.withOpacity(0.5)),
                     border: InputBorder.none,
-                    icon:const Icon(Icons.search, color: Colors.lightBlue),
+                    icon: const Icon(Icons.search, color: Colors.lightBlue),
                   ),
+                  onSubmitted: (String cityName) {
+                    if (cityName.isNotEmpty) {
+                      // Navigate to CityHospitalList with the entered city name
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CityHospitalList(cityName: cityName),
+                        ),
+                      );
+                    }
+                  },
                 ),
               ),
             ),
@@ -150,5 +170,3 @@ class TopBar extends StatelessWidget {
     );
   }
 }
-
-
