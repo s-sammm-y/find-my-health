@@ -24,17 +24,33 @@ class _FirstScreenState extends State<FirstScreen> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            // Circle Avatars Row
+            // Circle Avatars Row with scrollable functionality
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 20.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Spacing between the items
-                children: [
-                  CityOption(iconLabel: 'Nearby'),
-                  CityOption(iconLabel: 'Delhi'),
-                  CityOption(iconLabel: 'Kolkata'),
-                  CityOption(iconLabel: 'Bangalore'),
-                ],
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal, // Enable horizontal scrolling
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start, // Align items to the start
+                  children: [
+                    SizedBox(width: 20), // Add padding at the start
+                    CityOption(iconLabel: 'Nearby'),
+                    SizedBox(width: 10), // Add space between items
+                    CityOption(iconLabel: 'Delhi'),
+                    SizedBox(width: 10),
+                    CityOption(iconLabel: 'Kolkata'),
+                    SizedBox(width: 10),
+                    CityOption(iconLabel: 'Bangalore'),
+                    SizedBox(width: 10),
+                    CityOption(iconLabel: 'Mumbai'),
+                    SizedBox(width: 10),
+                    CityOption(iconLabel: 'Chennai'),
+                    SizedBox(width: 10),
+                    CityOption(iconLabel: 'Hyderabad'),
+                    SizedBox(width: 10),
+                    CityOption(iconLabel: 'Ahmedabad'),
+                    SizedBox(width: 20), // Add padding at the end
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 5), // Add space between the two sections
@@ -86,7 +102,6 @@ class _FirstScreenState extends State<FirstScreen> {
       onTap: () => _onButtonTap(index), // Handle button tap
       child: Container(
         decoration: BoxDecoration(
-          
           color: isSelected ? Colors.lightBlue : Colors.white,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: Colors.lightBlue),
@@ -117,7 +132,7 @@ class CityOption extends StatelessWidget {
     return Column(
       children: [
         const CircleAvatar(
-          radius: 30, // Size of the circular avatar
+          radius: 32, // Size of the circular avatar
           backgroundColor: Colors.grey, // Placeholder color
         ),
         const SizedBox(height: 8), // Space between the circle and the text
