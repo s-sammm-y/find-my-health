@@ -9,6 +9,7 @@ const app = express();
 const port = 3000
 app.use(cors())
 app.use(bodParser.urlencoded({extended:true}))
+app.use(express.json())
 
 
 const URL = process.env.SUPABASE_URL
@@ -33,4 +34,15 @@ app.get('/data',async(req,res)=>{
     }
 })
 
-
+app.get('/bed-details',async(req,res)=>{
+    const {bedId}=req.query
+    try{
+        const {data,error}=await supabase.from('bed').select('dept_id,ward_id,room,patient_id').eq('bed_id',bedId)
+        if(error){
+            console.log('error fetching data')
+        }
+        res.json(data)
+    }catch(err){
+        console.log('Unknonwn error')
+    }
+})
