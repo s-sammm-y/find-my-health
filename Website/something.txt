@@ -1,0 +1,4 @@
+api feting of data from url used in express
+	in express we use json response
+then we get that data from the url rout of express and use them in our html
+cors is used when our react and localhost are running on different ports
