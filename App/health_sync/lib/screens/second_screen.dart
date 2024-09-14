@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:health_sync/second%20screen%20widget/gov_aided_cards.dart';
 import 'package:health_sync/second%20screen%20widget/goverment_cards.dart';
+import 'package:health_sync/second%20screen%20widget/pvt_hospitalcard.dart';
 import 'package:health_sync/widgets/book_ambulance.dart';
- // Import the card widget
+ // Import the cards
 
 class SecondScreen extends StatefulWidget {
   const SecondScreen({super.key});
@@ -68,7 +70,7 @@ class _SecondScreenState extends State<SecondScreen> {
               ),
               const SizedBox(height: 10,),
 
-              // Add the radio buttons
+              // Radio buttons for hospital type selection
               Column(
                 children: <Widget>[
                   ListTile(
@@ -95,7 +97,7 @@ class _SecondScreenState extends State<SecondScreen> {
                         });
                       },
                     ),
-                    title: const Text('Govt. Requisitioned Pvt. Hospital'),
+                    title: const Text('Govt. Requisitioned Pvt. Hospitals'),
                   ),
                   ListTile(
                     leading: Radio<int>(
@@ -108,16 +110,17 @@ class _SecondScreenState extends State<SecondScreen> {
                         });
                       },
                     ),
-                    title: const Text('Private Hospital'),
+                    title: const Text('Private Hospitals'),
                   ),
                 ],
               ),
 
-              // Conditionally display the card based on the selected hospital type
-              if (_selectedHospitalType == 1) ...[
-                const SizedBox(height: 20),
-                const GovernmentHospitalCard(),  // Display the card if Government Hospital is selected
-              ],
+              const SizedBox(height: 10,),
+
+              // Display corresponding card based on selected radio button
+              if (_selectedHospitalType == 1) const GovernmentHospitalCard(),
+              if (_selectedHospitalType == 2) const GovtRequisitionedHospitalCard(),
+              if (_selectedHospitalType == 3) const PrivateHospitalCard(),
             ],
           ),
         ),
