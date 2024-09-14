@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:health_sync/hospital_list/time_select.dart';
 
 class RegistrationForm extends StatefulWidget {
   final String doctorName;
 
-  const RegistrationForm({Key? key, required this.doctorName}) : super(key: key);
+  const RegistrationForm({Key? key, required this.doctorName})
+      : super(key: key);
 
   @override
   _RegistrationFormState createState() => _RegistrationFormState();
@@ -16,10 +18,14 @@ class _RegistrationFormState extends State<RegistrationForm> {
   String? _selectedState; // To store the selected state
   String? _selectedDistrict; // To store the selected district
 
-  final TextEditingController _nameController = TextEditingController(); // To control the name input
-  final TextEditingController _phoneController = TextEditingController(); // To control the phone number input
-  final TextEditingController _aadharController = TextEditingController(); // To control the Aadhar number input
-  final TextEditingController _dobController = TextEditingController(); // To display the selected date of birth
+  final TextEditingController _nameController =
+      TextEditingController(); // To control the name input
+  final TextEditingController _phoneController =
+      TextEditingController(); // To control the phone number input
+  final TextEditingController _aadharController =
+      TextEditingController(); // To control the Aadhar number input
+  final TextEditingController _dobController =
+      TextEditingController(); // To display the selected date of birth
 
   // Lists of dummy data for the dropdowns (you can replace these with real data)
   final List<String> countries = ['India', 'USA', 'Canada'];
@@ -43,24 +49,32 @@ class _RegistrationFormState extends State<RegistrationForm> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 10), // Adds space between the title and the text field
+            const SizedBox(
+                height: 10), // Adds space between the title and the text field
             TextField(
-              controller: _nameController, // Connect the controller to capture user input
+              controller:
+                  _nameController, // Connect the controller to capture user input
               decoration: InputDecoration(
                 filled: true,
-                fillColor: Colors.lightBlue[100], // Light blue background for the text field
+                fillColor: Colors
+                    .lightBlue[100], // Light blue background for the text field
                 hintText: 'Name',
                 hintStyle: const TextStyle(
-                  color: Colors.grey, // Light grey text color for the placeholder
+                  color:
+                      Colors.grey, // Light grey text color for the placeholder
                 ),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0), // Rounded corners for the text field
+                  borderRadius: BorderRadius.circular(
+                      10.0), // Rounded corners for the text field
                   borderSide: BorderSide.none, // No border
                 ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16.0, vertical: 16.0),
               ),
             ),
-            const SizedBox(height: 20), // Adds space between the text field and gender section
+            const SizedBox(
+                height:
+                    20), // Adds space between the text field and gender section
             const Text(
               'Gender',
               style: TextStyle(
@@ -70,7 +84,8 @@ class _RegistrationFormState extends State<RegistrationForm> {
             ),
             const SizedBox(height: 10), // Space between label and radio buttons
             SingleChildScrollView(
-              scrollDirection: Axis.horizontal, // Horizontal scrolling for radio buttons
+              scrollDirection:
+                  Axis.horizontal, // Horizontal scrolling for radio buttons
               child: Row(
                 children: [
                   _buildGenderRadioButton('Male', 'Male'),
@@ -86,35 +101,46 @@ class _RegistrationFormState extends State<RegistrationForm> {
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 filled: true,
-                fillColor: Colors.lightBlue[100], // Light blue background for the text field
+                fillColor: Colors
+                    .lightBlue[100], // Light blue background for the text field
                 hintText: 'Mobile No',
                 hintStyle: const TextStyle(
-                  color: Colors.grey, // Light grey text color for the placeholder
+                  color:
+                      Colors.grey, // Light grey text color for the placeholder
                 ),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0), // Rounded corners for the text field
+                  borderRadius: BorderRadius.circular(
+                      10.0), // Rounded corners for the text field
                   borderSide: BorderSide.none, // No border
                 ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16.0, vertical: 16.0),
               ),
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly], // Accept only digits
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly
+              ], // Accept only digits
             ),
-            const SizedBox(height: 20), // Space before the Date of Birth section
+            const SizedBox(
+                height: 20), // Space before the Date of Birth section
             TextField(
               controller: _dobController,
               readOnly: true, // Makes the field read-only
               decoration: InputDecoration(
                 filled: true,
-                fillColor: Colors.lightBlue[100], // Light blue background for the text field
+                fillColor: Colors
+                    .lightBlue[100], // Light blue background for the text field
                 hintText: 'Year of Birth',
                 hintStyle: const TextStyle(
-                  color: Colors.grey, // Light grey text color for the placeholder
+                  color:
+                      Colors.grey, // Light grey text color for the placeholder
                 ),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0), // Rounded corners for the text field
+                  borderRadius: BorderRadius.circular(
+                      10.0), // Rounded corners for the text field
                   borderSide: BorderSide.none, // No border
                 ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16.0, vertical: 16.0),
               ),
               onTap: () async {
                 DateTime? pickedDate = await showDatePicker(
@@ -125,34 +151,42 @@ class _RegistrationFormState extends State<RegistrationForm> {
                 );
 
                 if (pickedDate != null) {
-                  String formattedDate = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
+                  String formattedDate =
+                      "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
                   setState(() {
-                    _dobController.text = formattedDate; // Display the selected date
+                    _dobController.text =
+                        formattedDate; // Display the selected date
                   });
                 }
               },
             ),
-            const SizedBox(height: 20), // Space before the Aadhar number section
+            const SizedBox(
+                height: 20), // Space before the Aadhar number section
             TextField(
               controller: _aadharController,
               keyboardType: TextInputType.number,
               maxLength: 12, // Limiting to 12 digits
               decoration: InputDecoration(
                 filled: true,
-                fillColor: Colors.lightBlue[100], // Light blue background for the text field
+                fillColor: Colors
+                    .lightBlue[100], // Light blue background for the text field
                 hintText: 'Aadhaar No',
                 hintStyle: const TextStyle(
-                  color: Colors.grey, // Light grey text color for the placeholder
+                  color:
+                      Colors.grey, // Light grey text color for the placeholder
                 ),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0), // Rounded corners for the text field
+                  borderRadius: BorderRadius.circular(
+                      10.0), // Rounded corners for the text field
                   borderSide: BorderSide.none, // No border
                 ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16.0, vertical: 16.0),
               ),
               inputFormatters: [
                 FilteringTextInputFormatter.digitsOnly, // Accept only digits
-                LengthLimitingTextInputFormatter(12), // Limit input to 12 characters
+                LengthLimitingTextInputFormatter(
+                    12), // Limit input to 12 characters
               ],
             ),
             const SizedBox(height: 20), // Space before the dropdown menus
@@ -238,15 +272,18 @@ class _RegistrationFormState extends State<RegistrationForm> {
             // Select Time Button
             ElevatedButton(
               onPressed: () {
+               Navigator.push(context, MaterialPageRoute(builder: (context) => TimeSelect()));
                 // Add your button action here
               },
               child: const Text('Select Time'),
-              
               style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white, backgroundColor: Colors.lightBlue, // Button text color
-                padding: const EdgeInsets.symmetric(vertical: 16.0), // Padding inside the button
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.lightBlue, // Button text color
+                padding: const EdgeInsets.symmetric(
+                    vertical: 16.0), // Padding inside the button
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0), // Rounded corners for the button
+                  borderRadius: BorderRadius.circular(
+                      10.0), // Rounded corners for the button
                 ),
               ),
             ),
