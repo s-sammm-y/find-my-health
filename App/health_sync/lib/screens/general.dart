@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:health_sync/Profile/drawer_slider.dart';
+import 'package:health_sync/first_screen_widgets/city_hospital_list.dart';
 import 'package:health_sync/screens/first_screen.dart';
 import 'package:health_sync/screens/second_screen.dart';
+import 'package:supabase_flutter/supabase_flutter.dart'; // Import Supabase package
 
 class GeneralScreen extends StatefulWidget {
   const GeneralScreen({super.key});
@@ -25,14 +27,14 @@ class _GeneralScreenState extends State<GeneralScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: const PreferredSize(
-        preferredSize: Size.fromHeight(130.0), // Adjusting height to fit the search bar
+        preferredSize:
+            Size.fromHeight(130.0), // Adjusting height to fit the search bar
         child: TopBar(), // Adding the custom top bar
       ),
       drawer: const CustomDrawer(),
       body: _buildBody(),
 
       // Bottom Bar Navigation Implementation
-
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
         items: const <BottomNavigationBarItem>[
@@ -53,9 +55,9 @@ class _GeneralScreenState extends State<GeneralScreen> {
         selectedItemColor: Colors.lightBlue,
         onTap: _onItemTapped,
       ),
-      
     );
   }
+
   Widget _buildBody() {
     switch (_selectedIndex) {
       case 0:
@@ -71,8 +73,45 @@ class _GeneralScreenState extends State<GeneralScreen> {
 }
 
 // Top bar implementation
-class TopBar extends StatelessWidget {
+class TopBar extends StatefulWidget {
   const TopBar({super.key});
+
+  @override
+  State<TopBar> createState() => _TopBarState();
+}
+
+class _TopBarState extends State<TopBar> {
+  final TextEditingController _searchController =
+      TextEditingController(); // To control the input text
+  final SupabaseClient _supabase =
+      Supabase.instance.client; // Initialize Supabase client
+
+  // Function to check if the city is available in Supabase
+  Future<bool> _isCityAvailable(String cityName) async {
+  try {
+    final response = await _supabase
+        .from('cities')
+        .select('*') // Selecting all columns to see what's returned
+        .eq('city', cityName)
+        .single(); // Fetch a single result if available, or return null
+
+    // Print the response for debugging
+    print('Response: $response');
+
+    // ignore: unnecessary_null_comparison
+    if (response == null) {
+      print('City not found');
+      return false;
+    }
+
+    print('City found: ${response['name']}');
+    return true;
+  } catch (error) {
+    print('Error fetching city: $error');
+    return false;
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +137,8 @@ class TopBar extends StatelessWidget {
             children: [
               // Left icon (Profile Icon)
               IconButton(
-                icon: const Icon(Icons.person, color: Colors.lightBlue, size: 28),
+                icon:
+                    const Icon(Icons.person, color: Colors.lightBlue, size: 28),
                 onPressed: () {
                   Scaffold.of(context).openDrawer();
                 },
@@ -114,7 +154,8 @@ class TopBar extends StatelessWidget {
               ),
               // Right icon (Notification Icon)
               IconButton(
-                icon: const Icon(Icons.notifications, color: Colors.lightBlue, size: 28),
+                icon: const Icon(Icons.notifications,
+                    color: Colors.lightBlue, size: 28),
                 onPressed: () {
                   // Add your functionality here
                 },
@@ -130,17 +171,63 @@ class TopBar extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(30.0),
-                border: Border.all(color: Colors.grey.withOpacity(0.5), width: 1.0),
+                border:
+                    Border.all(color: Colors.grey.withOpacity(0.5), width: 1.0),
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
                 child: TextField(
+                  controller:
+                      _searchController, // Attach the controller to capture user input
                   decoration: InputDecoration(
-                    hintText: 'Search...',
-                    hintStyle: TextStyle(color: Colors.lightBlue.withOpacity(0.5)),
+                    hintText: 'Search city...',
+                    hintStyle:
+                        TextStyle(color: Colors.lightBlue.withOpacity(0.5)),
                     border: InputBorder.none,
-                    icon:const Icon(Icons.search, color: Colors.lightBlue),
+                    icon: const Icon(Icons.search, color: Colors.lightBlue),
                   ),
+                  onSubmitted: (String cityName) async {
+                    if (cityName.isNotEmpty) {
+                      // Show a loading indicator while searching
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (BuildContext context) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        },
+                      );
+
+                      // Check if the city is available in Supabase
+                      bool isAvailable = await _isCityAvailable(cityName);
+
+                      // Hide the loading indicator after the check
+                      Navigator.pop(context);
+
+                      // If available, navigate to CityHospitalList page
+                      if (isAvailable) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                CityHospitalList(cityName: cityName),
+                          ),
+                        );
+                      } else {
+                        // If not available, navigate to CityHospitalList and show "No Hospitals Available"
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CityHospitalList(
+                              cityName: cityName,
+                              noHospitalsAvailable:
+                                  true, // Pass flag to show no hospitals available message
+                            ),
+                          ),
+                        );
+                      }
+                    }
+                  },
                 ),
               ),
             ),
@@ -150,5 +237,3 @@ class TopBar extends StatelessWidget {
     );
   }
 }
-
-
