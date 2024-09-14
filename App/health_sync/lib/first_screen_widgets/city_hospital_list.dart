@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart'; // Import Supabase package
+import 'package:health_sync/hospital_list/doctors.list.dart';
+import 'package:supabase_flutter/supabase_flutter.dart'; 
+ // Import DoctorsList page
 
 class CityHospitalList extends StatefulWidget {
   final String cityName;
-  final bool noHospitalsAvailable; // New parameter to handle when no hospitals are available
+  final bool noHospitalsAvailable;
 
   const CityHospitalList({
     Key? key,
@@ -16,43 +18,40 @@ class CityHospitalList extends StatefulWidget {
 }
 
 class _CityHospitalListState extends State<CityHospitalList> {
-  final SupabaseClient _supabase = Supabase.instance.client; // Initialize Supabase client
-  List<dynamic> _hospitals = []; // To store hospitals fetched from the database
-  bool _isLoading = true; // For showing a loading spinner
-  bool _hasError = false; // For error handling
+  final SupabaseClient _supabase = Supabase.instance.client;
+  List<dynamic> _hospitals = [];
+  bool _isLoading = true;
+  bool _hasError = false;
 
   @override
   void initState() {
     super.initState();
-    _fetchHospitals(); // Fetch hospitals when the screen is initialized
+    _fetchHospitals();
   }
 
-  // Function to fetch hospitals from the Supabase database based on the selected city
   Future<void> _fetchHospitals() async {
     try {
       final response = await _supabase
-          .from('hospitals') // Assuming your table is named 'hospitals'
+          .from('hospitals')
           .select()
-          .eq('city', widget.cityName); // Match city with the cityName
+          .eq('city', widget.cityName);
 
-      // Check if data is available
       if (response.isNotEmpty) {
         setState(() {
-          _hospitals = response; // Store the hospital data
-          _isLoading = false; // Stop showing loading spinner
+          _hospitals = response;
+          _isLoading = false;
         });
       } else {
-        // If no hospitals available, handle it
         setState(() {
           _hospitals = [];
-          _isLoading = false; // Stop loading
+          _isLoading = false;
         });
       }
     } catch (error) {
       print('Error fetching hospitals: $error');
       setState(() {
         _isLoading = false;
-        _hasError = true; // Set error flag
+        _hasError = true;
       });
     }
   }
@@ -65,7 +64,7 @@ class _CityHospitalListState extends State<CityHospitalList> {
       ),
       body: _isLoading
           ? const Center(
-              child: CircularProgressIndicator(), // Show loading spinner while fetching data
+              child: CircularProgressIndicator(),
             )
           : _hasError
               ? const Center(
@@ -83,8 +82,19 @@ class _CityHospitalListState extends State<CityHospitalList> {
                       itemBuilder: (context, index) {
                         final hospital = _hospitals[index];
                         return ListTile(
-                          title: Text(hospital['name']), // Assuming 'name' is a column in your hospitals table
-                          subtitle: Text(hospital['address'] ?? 'Adress not available'), // Assuming 'address' is a column
+                          title: Text(hospital['name']),
+                          subtitle: Text(hospital['address'] ?? 'Address not available'),
+                          onTap: () {
+                            // Navigate to DoctorsList page and pass the selected hospital
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DoctorsList(
+                                  hospitalName: hospital['name'],
+                                ),
+                              ),
+                            );
+                          },
                         );
                       },
                     ),
