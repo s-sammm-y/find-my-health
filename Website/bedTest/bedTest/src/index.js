@@ -20,7 +20,7 @@ app.listen(port,()=>{
     console.log("app listening")
 })
 
-//fetching bed detals from database
+//fetching bed details for display from database
 app.get('/data',async(req,res)=>{
     try{
         const {data,error}=await supabase.from('bed').select('bed_id')
@@ -34,6 +34,7 @@ app.get('/data',async(req,res)=>{
     }
 })
 
+//fetching bed details for particular bed
 app.get('/bed-details',async(req,res)=>{
     const {bedId}=req.query
     try{
@@ -44,5 +45,44 @@ app.get('/bed-details',async(req,res)=>{
         res.json(data)
     }catch(err){
         console.log('Unknonwn error')
+    }
+})
+
+//adding bed 
+app.post('/add-bed', async (req, res) => {
+    const bedDetails = {
+        bed_id: req.body.bed_id,
+        dept_id: req.body.dept_id,
+        ward_id: req.body.ward_id, 
+        patient_id: req.body.patient_id,
+        room: req.body.room
+    };
+
+    try {
+        const { data, error } = await supabase.from('bed').insert(bedDetails);
+
+        if (error) {
+            return res.status(400).json({ message: 'Failed to add bed details', error });
+        }
+        //using status 200 because it is for delete resource and not creating resource
+        return res.status(200).json({ message: 'Bed details added successfully', data });
+    } catch (err) {
+        console.error('Unknown error:', err);
+        return res.status(500).json({ message: 'Server error', error: err.message });
+    }
+});
+
+//deleteing bed on delete button
+app.delete('/data',async(req,res)=>{
+    const {bedId} = req.body
+    //console.log(bedId)
+    try{
+        const {data,error}=await supabase.from('bed').delete('bed_id','fff').eq('bed_id',bedId).select()
+        if(error){
+            return res.status(400).json({message:'Failed to delete data',error})
+        }
+        return res.status(201).json({message:'bed deleted succesfully',data})
+    }catch(err){
+        return res.status(500).json({message:'server error in backend',error:err.message})
     }
 })
