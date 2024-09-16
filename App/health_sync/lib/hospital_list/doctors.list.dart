@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:health_sync/hospital_list/registration_form.dart';
- // Import the registration form
+import 'package:health_sync/hospital_list/registration_form.dart'; // Import the registration form
 
 class DoctorsList extends StatelessWidget {
   final String hospitalName;
+  final String cityName; // Add cityName as a parameter
 
-  const DoctorsList({Key? key, required this.hospitalName}) : super(key: key);
+  const DoctorsList({
+    Key? key,
+    required this.hospitalName,
+    required this.cityName, // Receive cityName in the constructor
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +36,11 @@ class DoctorsList extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => RegistrationForm(doctorName: doctorName),
+            builder: (context) => RegistrationForm(
+              doctorName: doctorName,
+              hospitalName: hospitalName, // Pass hospitalName
+              cityName: cityName, // Pass cityName
+            ),
           ),
         );
       },

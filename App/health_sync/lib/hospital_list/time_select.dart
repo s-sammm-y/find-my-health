@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class TimeSelect extends StatefulWidget {
-  const TimeSelect({Key? key}) : super(key: key);
+  final Map<String, dynamic> registrationData;
+  final void Function(String, int) onAppointmentSelected;
+
+  const TimeSelect({
+    Key? key,
+    required this.registrationData,
+    required this.onAppointmentSelected,
+  }) : super(key: key);
 
   @override
   _TimeSelectState createState() => _TimeSelectState();
@@ -12,22 +20,24 @@ class _TimeSelectState extends State<TimeSelect> {
   DateTime selectedDate = DateTime.now();
   final TextEditingController dateController = TextEditingController();
 
-  // State for selecting morning or afternoon
+  // List to keep track of booked tokens
+  List<int> bookedTokens = [];
+
   bool isMorningSelected = true;
-  int selectedToken = -1; // To track which token is selected
+  int selectedToken = -1; 
 
   @override
   void initState() {
     super.initState();
-    // Initialize the date in the TextField with the current date
     dateController.text = DateFormat('dd/MM/yyyy').format(selectedDate);
+    // You may want to fetch already booked tokens from Supabase here if necessary
   }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: selectedDate,
-      firstDate: DateTime(selectedDate.year, selectedDate.month, 1),
+      firstDate: DateTime.now(),
       lastDate: DateTime(selectedDate.year, selectedDate.month + 1, 0),
     );
 
@@ -35,7 +45,34 @@ class _TimeSelectState extends State<TimeSelect> {
       setState(() {
         selectedDate = pickedDate;
         dateController.text = DateFormat('dd/MM/yyyy').format(selectedDate);
+        bookedTokens.clear(); // Clear booked tokens for a new date
       });
+    }
+  }
+
+  Future<void> _saveAppointment(String date, int token) async {
+    final response = await Supabase.instance.client
+        .from('appointments')
+        .insert({
+          'date': date,
+          'token': token,
+          'time_slot': isMorningSelected ? 'morning' : 'afternoon',
+          'user_data': widget.registrationData,
+        });
+
+    if (response.error == null) {
+      // Appointment saved successfully
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Appointment saved successfully!')),
+      );
+      setState(() {
+        bookedTokens.add(token);
+      });
+    } else {
+      // Handle error
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to save appointment: ${response.error!.message}')),
+      );
     }
   }
 
@@ -45,7 +82,7 @@ class _TimeSelectState extends State<TimeSelect> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Confirm Booking'),
-          content: const Text('Do you want to confirm booking for this token?'),
+          content: Text('Do you want to confirm booking for token $token?'),
           actions: [
             TextButton(
               child: const Text('Cancel'),
@@ -56,11 +93,12 @@ class _TimeSelectState extends State<TimeSelect> {
             TextButton(
               child: const Text('Confirm'),
               onPressed: () {
-                // Handle booking confirmation here
                 Navigator.of(context).pop();
                 setState(() {
-                  selectedToken = token; // Mark the token as selected
+                  selectedToken = token;
                 });
+                widget.onAppointmentSelected(dateController.text, selectedToken);
+                _saveAppointment(dateController.text, selectedToken); // Save to Supabase
               },
             ),
           ],
@@ -78,13 +116,12 @@ class _TimeSelectState extends State<TimeSelect> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Date picker field
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: TextField(
               controller: dateController,
               readOnly: true,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: "Select Date",
                 border: OutlineInputBorder(),
               ),
@@ -93,14 +130,13 @@ class _TimeSelectState extends State<TimeSelect> {
               },
             ),
           ),
-          
-          // Morning and Afternoon buttons directly under the date picker
+          // ... (rest of the code)
+
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                // Morning button
                 GestureDetector(
                   onTap: () {
                     setState(() {
@@ -128,8 +164,6 @@ class _TimeSelectState extends State<TimeSelect> {
                     ),
                   ),
                 ),
-                
-                // Afternoon button
                 GestureDetector(
                   onTap: () {
                     setState(() {
@@ -160,8 +194,6 @@ class _TimeSelectState extends State<TimeSelect> {
               ],
             ),
           ),
-          
-          // Token grid (Morning = 50 tokens, Afternoon = 30 tokens)
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -175,15 +207,17 @@ class _TimeSelectState extends State<TimeSelect> {
                 itemCount: isMorningSelected ? 50 : 30,
                 itemBuilder: (context, index) {
                   int tokenNumber = index + 1;
+                  bool isBooked = bookedTokens.contains(tokenNumber);
+
                   return GestureDetector(
-                    onTap: () {
+                    onTap: !isBooked ? () {
                       _showBookingDialog(tokenNumber);
-                    },
+                    } : null,
                     child: Container(
                       decoration: BoxDecoration(
-                        color: selectedToken == tokenNumber
-                            ? Colors.green // Highlight selected token
-                            : Colors.blue,
+                        color: isBooked
+                            ? Colors.red
+                            : (selectedToken == tokenNumber ? Colors.green : Colors.blue),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Center(
