@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:health_sync/Profile/drawer_slider.dart';
 import 'package:health_sync/first_screen_widgets/city_hospital_list.dart';
+import 'package:health_sync/first_screen_widgets/notification.dart';
 import 'package:health_sync/screens/first_screen.dart';
 import 'package:health_sync/screens/second_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart'; // Import Supabase package
@@ -157,6 +158,12 @@ class _TopBarState extends State<TopBar> {
                 icon: const Icon(Icons.notifications,
                     color: Colors.lightBlue, size: 28),
                 onPressed: () {
+                  Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => NotificationScreen(),
+          ),
+        );
                   // Add your functionality here
                 },
               ),

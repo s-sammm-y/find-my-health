@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:health_sync/first_screen_widgets/notification.dart';
+import 'package:health_sync/screens/general.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -19,10 +21,7 @@ class TimeSelect extends StatefulWidget {
 class _TimeSelectState extends State<TimeSelect> {
   DateTime selectedDate = DateTime.now();
   final TextEditingController dateController = TextEditingController();
-
-  // List to keep track of booked tokens
   List<int> bookedTokens = [];
-
   bool isMorningSelected = true;
   int selectedToken = -1; 
 
@@ -30,7 +29,6 @@ class _TimeSelectState extends State<TimeSelect> {
   void initState() {
     super.initState();
     dateController.text = DateFormat('dd/MM/yyyy').format(selectedDate);
-    // You may want to fetch already booked tokens from Supabase here if necessary
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -61,15 +59,18 @@ class _TimeSelectState extends State<TimeSelect> {
         });
 
     if (response.error == null) {
-      // Appointment saved successfully
+      
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Appointment saved successfully!')),
       );
+      Navigator.of(context).pushReplacement(
+  MaterialPageRoute(builder: (context) => const GeneralScreen()),
+);
       setState(() {
         bookedTokens.add(token);
       });
+      // Navigate back to the previous screen
     } else {
-      // Handle error
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to save appointment: ${response.error!.message}')),
       );
@@ -93,7 +94,7 @@ class _TimeSelectState extends State<TimeSelect> {
             TextButton(
               child: const Text('Confirm'),
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(); // Close the dialog
                 setState(() {
                   selectedToken = token;
                 });
@@ -130,8 +131,6 @@ class _TimeSelectState extends State<TimeSelect> {
               },
             ),
           ),
-          // ... (rest of the code)
-
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Row(
@@ -220,7 +219,7 @@ class _TimeSelectState extends State<TimeSelect> {
                             : (selectedToken == tokenNumber ? Colors.green : Colors.blue),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: Center(
+                                           child: Center(
                         child: Text(
                           tokenNumber.toString(),
                           style: const TextStyle(color: Colors.white, fontSize: 16),
@@ -237,3 +236,4 @@ class _TimeSelectState extends State<TimeSelect> {
     );
   }
 }
+

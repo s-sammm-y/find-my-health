@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:health_sync/hospital_list/time_select.dart';
-import 'package:supabase_flutter/supabase_flutter.dart'; // Import Supabase
+ // Import Supabase
 
 class RegistrationForm extends StatefulWidget {
   final String doctorName;
