@@ -64,7 +64,6 @@ app.post('/add-bed', async (req, res) => {
         if (error) {
             return res.status(400).json({ message: 'Failed to add bed details', error });
         }
-        //using status 200 because it is for delete resource and not creating resource
         return res.status(200).json({ message: 'Bed details added successfully', data });
     } catch (err) {
         console.error('Unknown error:', err);
@@ -81,6 +80,7 @@ app.delete('/data',async(req,res)=>{
         if(error){
             return res.status(400).json({message:'Failed to delete data',error})
         }
+        //using status 201 because it is for delete resource and not creating resource
         return res.status(201).json({message:'bed deleted succesfully',data})
     }catch(err){
         return res.status(500).json({message:'server error in backend',error:err.message})
