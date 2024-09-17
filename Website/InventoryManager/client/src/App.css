@@ -1,14 +1,14 @@
 /* App.css */
-
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 .app-container {
-    padding: 20px;
     font-family: Arial, sans-serif;
+    background-color: rgb(223, 223, 244);
   }
-  
-  h1 {
-    text-align: center;
-    color: #333;
-  }
+
   
   .error-message {
     color: red;
@@ -18,7 +18,7 @@
   .inventory-list {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    gap: 10px;
   }
   
   .item {
@@ -27,18 +27,71 @@
     border-radius: 5px;
     padding: 10px;
     margin: 5px 0;
-    width: 80%;
+    width: 100%;
     text-align: center;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
     display:flex;
     justify-content: space-between; /* Space out items evenly */
-  align-items: center;
+    align-items: center;
+    height: 150px;
   }
   
   .item strong {
     display: inline;
     font-size: 1.2em;
   }
-  .addItem{
-    margin: auto;
+  .main-content{
+    display: flex;
   }
+  .main{
+    padding: 60px 20px 0 20px;
+    flex: 1;
+  }
+  .addItem{
+    display: flex;
+    justify-content: space-between;
+  }
+  .addItem button{
+    padding: 15px 20px;
+    background-color: #00c2ff;
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    border: none;
+    border-radius: 4px;
+  }
+.item-quantity {
+  display: flex;
+  align-items: center;
+}
+
+.item-quantity p {
+  margin-left: 10px;
+  font-size: 1.75em;
+  font-weight: 600;
+}
+input{
+  padding: 10px;
+  margin-right: 10px;
+  width: 50px;
+  border: none;
+  box-shadow: 0 0 5px grey ;
+  border-radius: 4px;
+}
+.submitBtn{
+  padding: 10px 20px;
+  background-color: rgb(0, 255, 0);
+  font-weight: 600;
+  border: none;
+  border-radius: 2px;
+}
+.removeBtn{
+  padding: 10px 8px;
+  background-color: red;
+  color: black;
+  font-weight: 600;
+  border: none;
+  border-radius: 2px;
+  margin-top: 5px;
+  margin-left: 60px;
+}

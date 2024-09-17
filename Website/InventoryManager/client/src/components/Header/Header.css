@@ -1,0 +1,10 @@
+.header {
+    background-color: #00aaff;
+    color: white;
+    text-align: center;
+    padding: 20px;
+  }
+  p{
+    color: black;
+    font-weight: 500;
+  }
