@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-// import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:supabase_flutter/supabase_flutter.dart'; // Supabase package
 
 class BookAmbulanceCard extends StatefulWidget {
   @override
@@ -34,38 +34,34 @@ class _BookAmbulanceCardState extends State<BookAmbulanceCard> {
       _amformKey.currentState!.save();
 
       // Prepare data to be inserted into the Supabase database
-      // final data = {
-      //   'hospital': selectedHospital,
-      //   'pickup_location': pickupLocation,
-      //   'patient_name': patientName,
-      //   'problem': problemDescription,
-      //   'recorded_time': recordedTime,
-      // };
+      final data = {
+        'hospital': selectedHospital,
+        'pickup_location': pickupLocation,
+        'patient_name': patientName,
+        'problem': problemDescription,
+        'recorded_time': recordedTime,
+      };
 
-      // try {
-        // final supabase = Supabase.instance.client;
+      try {
+        final supabase = Supabase.instance.client;
 
         // Insert data into the table
-        // ignore: unused_local_variable
-        // final response = await supabase
-        //     .from('patient_emergency_booking') // Replace with your table name
-        //     .insert(data);
-  
-        // if (response.error == null) {
-        //   // Show success message
-        //    throw response.error!;
-          
-        // } else {
-        //  ScaffoldMessenger.of(context).showSnackBar(
-        //     SnackBar(content: Text('Ambulance booked successfully!')),
-        //   );
-        // }
-      // } catch (error) {
-      //   // Handle error
-      //   ScaffoldMessenger.of(context).showSnackBar(
-      //     SnackBar(content: Text('Failed to book ambulance: $error')),
-      //   );
-      // }
+        final response = await supabase
+            .from('patient_emergency_booking') // Replace with your table name
+            .insert(data);
+
+        if (response.error == null) {
+          // Show success message
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Ambulance booked successfully!')),
+          );
+        } else {
+          throw response.error!;
+        }
+      } catch (error) {
+        // Handle error
+        
+      }
     }
   }
 
@@ -140,7 +136,7 @@ class _BookAmbulanceCardState extends State<BookAmbulanceCard> {
                 validator: (value) =>
                     value!.isEmpty ? 'Please enter your name' : null,
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               GestureDetector(
                 onTap: () {
                   if (isRecording) {
@@ -150,8 +146,8 @@ class _BookAmbulanceCardState extends State<BookAmbulanceCard> {
                   }
                 },
                 child: Container(
-                  padding:
-                      EdgeInsets.symmetric(vertical: 16.0, horizontal: 12.0),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 16.0, horizontal: 12.0),
                   decoration: BoxDecoration(
                     color: Colors.lightBlue[100],
                     borderRadius: BorderRadius.circular(8.0),
@@ -160,7 +156,7 @@ class _BookAmbulanceCardState extends State<BookAmbulanceCard> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Row(
-                        children: [
+                        children: const [
                           Icon(
                             Icons.mic,
                             color: Colors.white,
@@ -177,7 +173,7 @@ class _BookAmbulanceCardState extends State<BookAmbulanceCard> {
                       ),
                       Text(
                         recordedTime,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 10.0,
                           color: Colors.white,
                         ),
@@ -186,8 +182,8 @@ class _BookAmbulanceCardState extends State<BookAmbulanceCard> {
                   ),
                 ),
               ),
-              SizedBox(height: 8.0),
-              Center(
+              const SizedBox(height: 8.0),
+              const Center(
                 child: Text(
                   "OR",
                   style: TextStyle(
@@ -196,7 +192,7 @@ class _BookAmbulanceCardState extends State<BookAmbulanceCard> {
                   ),
                 ),
               ),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               TextFormField(
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
@@ -210,17 +206,17 @@ class _BookAmbulanceCardState extends State<BookAmbulanceCard> {
                 validator: (value) =>
                     value!.isEmpty ? 'Please describe the problem' : null,
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: _submitForm,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.lightBlue,
-                  minimumSize: Size(double.infinity, 48.0),
+                  minimumSize: const Size(double.infinity, 48.0),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                 ),
-                child: Text(
+                child: const Text(
                   'Book Now',
                   style: TextStyle(
                     fontSize: 16.0,
