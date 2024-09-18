@@ -117,7 +117,7 @@ const Neurologist = () => {
           REGISTER NEW PATIENT
         </div>
 
-        <div className='absolute top-[20%] left-0 right-0 bottom-0 bg-white overflow-y-auto p-4'>
+        <div className='absolute top-[25%] left-0 right-0 bottom-0 bg-white overflow-y-auto p-4 mt-4'>
           <h1 className='text-[20px] text-center font-bold'>Neurologist</h1>
           <div className='my-4'>
             <select
@@ -180,7 +180,7 @@ const Neurologist = () => {
           <p className='font-bold text-[40px] p-3'>{currentTime}</p>
           <p className='font-bold text-[30px] p-3'>{currentDateDetails}</p>
         </div>
-        <div className='absolute top-[20%] left-0 right-0 bottom-0 bg-white overflow-y-auto p-4'>
+        <div className='absolute top-[25%] left-0 right-0 bottom-0 bg-white overflow-y-auto p-4 mt-4'>
           <div className='flex justify-between items-center'>
             <div>
               <h1 className='text-[20px] font-semibold p-2'>Patient Name:</h1>
