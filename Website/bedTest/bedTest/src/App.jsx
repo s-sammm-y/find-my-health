@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react"
 import axios from "axios"
 import Popup from "./components/Add-Bed-Popup"
+
+
 function App() {
   const [bedData, setBedData] = useState([])
   const [bedDetail, setBedDetail] = useState([])
@@ -41,7 +43,7 @@ function App() {
     }
   }
 
-  
+
   //function to hide patient details
   const handleHideDetails = (bedId) => {
     setBedDetail((prevBedDetail) => {

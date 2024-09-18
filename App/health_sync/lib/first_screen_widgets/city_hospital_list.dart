@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:health_sync/hospital_list/doctors.list.dart';
-import 'package:supabase_flutter/supabase_flutter.dart'; 
  // Import DoctorsList page
+import 'package:supabase_flutter/supabase_flutter.dart'; 
 
 class CityHospitalList extends StatefulWidget {
   final String cityName;
@@ -91,6 +91,7 @@ class _CityHospitalListState extends State<CityHospitalList> {
                               MaterialPageRoute(
                                 builder: (context) => DoctorsList(
                                   hospitalName: hospital['name'],
+                                  cityName: widget.cityName, // Pass city name
                                 ),
                               ),
                             );
