@@ -7,6 +7,7 @@
 .app-container {
     font-family: Arial, sans-serif;
     background-color: rgb(223, 223, 244);
+    flex :1;
   }
 
   
@@ -42,6 +43,7 @@
   }
   .main-content{
     display: flex;
+    flex :1;
   }
   .main{
     padding: 60px 20px 0 20px;
