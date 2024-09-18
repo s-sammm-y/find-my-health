@@ -1,0 +1,23 @@
+
+.list {
+    top: 50px;       /* Adjust as needed */
+    left: 50px;      /* Adjust as needed */
+    width: 50%;      /* Adjust the width of the div */
+    height: 400px;   /* Set a fixed height for the div */
+    overflow-y: auto; /* Allows vertical scrolling when content overflows */
+    border: 1px solid #ccc; /* Optional: Adds a border around the div */
+    padding: 10px;   /* Optional: Adds padding inside the div */
+    background-color: #f9f9f9; /* Optional: Background color for the div */
+}
+.head{
+    font-weight:900;
+}
+.table {
+    margin-top:30px;
+    width: 100%;
+    text-align: center;  /* Centers the text horizontally */
+}
+
+.table th, .table td {
+    vertical-align: middle;  /* Centers the text vertically */
+}
