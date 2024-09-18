@@ -1,7 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:health_sync/authentication/phone_auth.dart';
+import 'package:supabase_flutter/supabase_flutter.dart'; // Import Supabase
+ // Assuming this is where your login screen is
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({super.key});
+
+  // Function to handle user sign out
+  Future<void> _signOut(BuildContext context) async {
+    try {
+      // Call Supabase sign out method
+      await Supabase.instance.client.auth.signOut();
+
+      // Navigate to the Phone Number Login screen after sign out
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => PhoneNumberScreen()),
+      );
+    } catch (error) {
+      // Show an error message if sign out fails
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Sign out failed: $error')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +45,11 @@ class CustomDrawer extends StatelessWidget {
               ),
             ),
             ListTile(
-              title: const Text('Invite & Earn'),
-              subtitle: const Text('Refer Health Sync and Earn'),
+              title: const Text('Sign Out'),
+              subtitle: const Text('login from another Number'),
               onTap: () {
-                // Add your functionality here
+                // Call the sign out function when the Sign Out tile is tapped
+                _signOut(context);
               },
             ),
             const Divider(),
