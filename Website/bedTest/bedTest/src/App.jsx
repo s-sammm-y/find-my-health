@@ -4,7 +4,6 @@ import Popup from "./components/Add-Bed-Popup"
 
 
 function App() {
-  const [bedData, setBedData] = useState([])
   const [bedDetail, setBedDetail] = useState([])
   const [beds, setBeds] = useState([])
   const [showPopup, setShowPopup] = useState(false)
@@ -89,8 +88,8 @@ function App() {
     <>
       {/* rendering beds */}
       <div className="bed-container flex bg-blue-400 gap-4 h-32">
-        {beds.map((bed) => (
-          <div className="bed p-1 bg-red-400" key={`${bed.bed_id}`}>
+        {beds && beds.map((bed) => (
+          <div className={`bed p-1 ${!bed.empty ? 'bg-red-400' : 'bg-green-400'}`} key={`${bed.bed_id}`}>
             <p>BED ID:{bed.bed_id}</p>
             <button className="rounded-md bg-green-200" type="button" onClick={() => handleSeeDetails(bed.bed_id)}>See details</button>
 
