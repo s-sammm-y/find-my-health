@@ -5,15 +5,13 @@ import { IoIosAddCircleOutline } from "react-icons/io";
 import { SlCalender } from "react-icons/sl";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css'; // Import DatePicker CSS
-import axios from 'axios'
 import Dosage from './Dosage'
 
 const BackButton = () => {
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState(null); // State for managing selected date
-  /* const [categoryDetails,setCategoryDetails]=useState([])
-  const [medicineOptions,setMedicineOptions]=useState([]) */
-  const [addMed,setAddMed]=useState(false)
+  const [addMed, setAddMed] = useState(0)
+  const [selectedMedicine,setSelectedMedicine]=useState([])
 
   const handleClick = () => {
     navigate('/'); // Adjust the route to the patient queue as needed
@@ -24,45 +22,25 @@ const BackButton = () => {
     console.log("Form submitted with date: ", selectedDate);
   };
 
-  //function to fetch catagories
-/*   useEffect(()=>{
-    const handleCatagoryData=async()=>{
-      try{
-        const response=await axios.get('http://localhost:5000/fetch-catagory')
-        setCategoryDetails(response.data.data)
-      }catch(err){
-        console.error('Feror fetching api',err)
-        alert('Error selecting catagory')
-      }
-    }
-    handleCatagoryData();
-  },[]) */
 
-  //function to handle catagory change
- /*  const handleCatagoryDetails=async (e)=>{
-    const catagoryId = e.target.value
+  //funtion to handle add med
+  const handleAddMed = async () => {
+    setAddMed(prevAddMed => prevAddMed + 1); 
+}; 
 
-    if(catagoryId){
-      try{
-        const response = await axios.get('http://localhost:5000/fetch-medicine',{
-          params:{category_id:catagoryId}
-        })
-        setMedicineOptions(response.data.data)
-      }catch(err){
-        console.error('Error in medicine api',err)
-      }
-    }else{
-      alert('category not selected')
-    }
+  //function to add multiple medicine
+  const updateSelectedMedicine=(index,medicine)=>{
+    setSelectedMedicine(prev=>{
+      const newSelected = [...prev]
+      newSelected[index]=medicine
+      return newSelected;
+    })
   }
 
   useEffect(()=>{
-    console.log(medicineOptions)
-  },[medicineOptions]) */
-  //funtion to handle add med
-  const handleAddMed=()=>{
+    console.log(selectedMedicine)
+  },[selectedMedicine])
 
-  }
   return (
     <div className='w-full h-screen bg-sky-100 flex flex-col items-start p-4'>
       <button
@@ -81,55 +59,21 @@ const BackButton = () => {
               className='bg-slate-200 rounded-xl p-2 text-black placeholder-black w-full h-[150px] resize-none'
               style={{ paddingTop: '1rem', paddingBottom: '0.5rem' }}
             />
-            
+
             <div className='bg-gray-100 p-4 rounded-lg space-y-4 w-full'>
               <p className='font-bold'>Medicine</p>
 
-              {/* <div className='space-y-2'>
-                <div>
-                  <label htmlFor="category" className='block text-sm font-medium text-gray-700'>Category</label>
-                  <select id="category" className='bg-slate-200 rounded-lg p-2 w-full' value={categoryDetails.data} onChange={handleCatagoryDetails} >
-                    <option value="">Select Category</option>
-                    {categoryDetails.map(data=>(
-                      <option key={data.id} value={data.id}>{data.name}</option>
-                    ))}
-                  </select>
-                </div>
+              {/* Render the Dosage component addMed times */}
+              {Array.from({ length: addMed }).map((_, index) => (
+                <Dosage key={index} updateSelectedMedicine={(medicine)=>{updateSelectedMedicine(index,medicine)}} />
+              ))}
 
-                <div>
-                  <label htmlFor="dosage" className='block text-sm font-medium text-gray-700'>Dosage</label>
-                  <select id="dosage" className='bg-slate-200 rounded-lg p-2 w-full'>
-                    <option value="">Select Dosage</option>
-                    <option value="dosage1">Dosage 1</option>
-                    <option value="dosage2">Dosage 2</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label htmlFor="frequency" className='block text-sm font-medium text-gray-700'>Frequency</label>
-                  <select id="frequency" className='bg-slate-200 rounded-lg p-2 w-full'>
-                    <option value="">Select Frequency</option>
-                    <option value="frequency1">Frequency 1</option>
-                    <option value="frequency2">Frequency 2</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label htmlFor="medicine" className='block text-sm font-medium text-gray-700'>Medicine</label>
-                  <select id="medicine" className='bg-slate-200 rounded-lg p-2 w-full'>
-                    <option value="">Select Medicine</option>
-                    {medicineOptions.map(data=>(
-                      <option key={data.id} value={data.id}> {data.name} </option>
-                    ))}
-                  </select>
-                </div>
-              </div> */}
-                <Dosage/>
               <div className='space-y-4 mt-4'>
                 <h1 className='text-lg font-bold flex items-center'>
                   Add Medicine
-                  <button className='inline-flex items-center justify-center rounded-full bg-sky-400 p-1 text-white hover:bg-sky-500 transition-colors duration-300 ml-2' 
-                  onClick={()=>{handleAddMed}}>
+                  <button className='inline-flex items-center justify-center rounded-full bg-sky-400 p-1 text-white hover:bg-sky-500 transition-colors duration-300 ml-2'
+                    type='button'
+                    onClick={ handleAddMed }>
                     <IoIosAddCircleOutline className='text-xl' />
                   </button>
                 </h1>

@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from 'react';  // Import useState
-import { useNavigate } from 'react-router-dom';
-import { IoArrowBackSharp } from 'react-icons/io5';
-import { IoIosAddCircleOutline } from "react-icons/io";
-import { SlCalender } from "react-icons/sl";
-import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css'; // Import DatePicker CSS
 import axios from 'axios'
 
-export default function Medicine() {
+export default function Medicine({updateSelectedMedicine}) {
     const [categoryDetails, setCategoryDetails] = useState([])
     const [medicineOptions, setMedicineOptions] = useState([])
+    const [selectedMedicine,setSelectedMedicine]= useState([])
+
     //function to fetch catagories
     useEffect(() => {
         const handleCatagoryData = async () => {
@@ -24,8 +21,9 @@ export default function Medicine() {
         handleCatagoryData();
     }, [])
 
+
     //function to handle catagory change
-    const handleCatagoryDetails = async (e) => {
+    const handleMedicineDetails = async (e) => {
         const catagoryId = e.target.value
 
         if (catagoryId) {
@@ -42,14 +40,23 @@ export default function Medicine() {
         }
     }
 
+    //function to pass new selected medicine as a callback
+    const handleMedicineChange=(e)=>{
+        const val = e.target.value
+        const updatedMedicine = val? [val]:[]
+        setSelectedMedicine(updatedMedicine)
+        updateSelectedMedicine(updatedMedicine)
+    }
+
     /* useEffect(() => {
-        console.log(medicineOptions)
-    }, [medicineOptions]) */
+        console.log(selectedMedicine)
+    }, [selectedMedicine])  */
+
     return (<>
         <div className='space-y-2'>
             <div>
                 <label htmlFor="category" className='block text-sm font-medium text-gray-700'>Category</label>
-                <select id="category" className='bg-slate-200 rounded-lg p-2 w-full' value={categoryDetails.data} onChange={handleCatagoryDetails} >
+                <select id="category" className='bg-slate-200 rounded-lg p-2 w-full' value={categoryDetails.data} onChange={handleMedicineDetails} >
                     <option value="">Select Category</option>
                     {categoryDetails.map(data => (
                         <option key={data.id} value={data.id}>{data.name}</option>
@@ -77,10 +84,10 @@ export default function Medicine() {
 
             <div>
                 <label htmlFor="medicine" className='block text-sm font-medium text-gray-700'>Medicine</label>
-                <select id="medicine" className='bg-slate-200 rounded-lg p-2 w-full'>
+                <select id="medicine" className='bg-slate-200 rounded-lg p-2 w-full' onChange={handleMedicineChange}>
                     <option value="">Select Medicine</option>
                     {medicineOptions.map(data => (
-                        <option key={data.id} value={data.id}> {data.name} </option>
+                        <option key={data.id} value={data.name}> {data.name} </option>
                     ))}
                 </select>
             </div>
