@@ -5,11 +5,11 @@ justify-content: space-between;
 .sos{
     background-color: aqua;
     width:50%;
-    height:400px;
+    height:440px;
 
 }
 .list-parent {
-    width: 55%;
+    width: 80%;
     position: relative; /* Keeps the parent fixed relative to the viewport */
     margin-right: 30px;
 }
@@ -21,6 +21,7 @@ justify-content: space-between;
     z-index: 1; /* Keeps the heading on top while scrolling */
     padding: 10px;
     margin: 0;
+    font-weight :600
 }
 
 .list {
@@ -41,4 +42,7 @@ justify-content: space-between;
 
 .table th, .table td {
     vertical-align: middle;  /* Centers the text vertically */
+}
+td.verify{
+    color:green
 }

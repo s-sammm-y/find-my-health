@@ -1,34 +1,40 @@
-.main-content{
+.main-content {
   display: flex;
   background-color: rgb(213, 211, 211);
 }
 
-.beds{
+.beds {
   display: flex;
   flex-wrap: wrap;
   gap: 30px;
+  overflow-y: auto;  /* Enable vertical scroll */
+  max-height: 400px; /* Set a maximum height for the scrollable area */
 }
 
-.beds div{
+.beds div {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
-  
 }
-
-.BedContainer{
+.babu{
+  width:50%;
+  height:40px;
+  padding:10px
+}
+.BedContainer {
   height: 40%;
-  width: 46%;
+  width: 80%;
   margin: 100px auto 20px;
   display: flex;
   flex-direction: column;
-  align-items: center;
   padding: 35px;
   background-color: white;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden; /* Prevent overflow */
 }
-.bed{
+
+.bed {
   width: 100px;
   height: 200px;
   background-color: #f8f9fa;
@@ -37,9 +43,9 @@
   transition: transform 0.3s;
 }
 
-.Add_btn{
+.Add_btn {
   width: 19%;
-  margin-top: 45px;
+  margin-top: 300px;
   margin-bottom: 15px;
   padding: 10px 25px;
   background-color: #00c2f0;
@@ -50,19 +56,21 @@
   transition: all 0.5s;
 }
 
-.btn{
-  padding:0 5px;
+.btn {
+  padding: 0 5px;
   border-radius: 50%;
   color: white;
   border-radius: 5px;
 }
-.red{
+
+.red {
   background-color: red;
 }
-.green{
+
+.green {
   background-color: rgb(2, 199, 2);
 }
 
-.Add_btn:hover{
+.Add_btn:hover {
   background-color: #035f76;
 }

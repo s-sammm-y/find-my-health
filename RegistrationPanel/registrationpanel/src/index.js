@@ -20,13 +20,32 @@ app.use(express.json());
 app.get('/api/emergency-list', async (req, res) => {
     const { data, error } = await supabase
         .from('patient_emergency_booking')  
-        .select('*');  
+        .select('*')
+        .eq('triage', false);;  
 
     if (error) {
         return res.status(500).json({ error: error.message });
     }
 
     return res.status(200).json(data);
+});
+app.post('/api/add-triage', async (req, res) => {
+    const { emergency_id } = req.body;
+
+    const { data, error } = await supabase
+        .from('triage')  // Supabase table for triage
+        .insert([{ admission_id : emergency_id }]);
+    const { error: updateError } = await supabase
+        .from('patient_emergency_booking')
+        .update({ triage : true })
+        .eq('emergency_id', emergency_id);
+    
+    if (error) {
+        return res.status(500).json({ error: error.message });
+    }
+    
+
+    return res.status(200).json({ message: "Triage added successfully", data });
 });
 
 app.listen(port, () => {

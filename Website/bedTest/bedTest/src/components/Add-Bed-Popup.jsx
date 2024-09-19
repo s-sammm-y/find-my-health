@@ -65,14 +65,14 @@ export default function Popup({onChange}) {
                     {/* input box for bedId adding */}
                     <div className="bed-add-id">
                         <label htmlFor="bedId">Bed-Id</label>
-                        <input className='border border-black rounded-md ml-2' id='bed-id' type='text' value={bedId} onChange={handleInputChange} />
+                        <input className='border border-black rounded-md ml-2 babu' id='bed-id' type='text' value={bedId} onChange={handleInputChange} />
                     </div>
 
 
                     {/* input for number of rooms */}
                     <div className="room-add-num">
                         <label htmlFor="room-number ">Room</label>
-                        <input className='border border-green-600 m-2 rounded-md' type="number" value={roomNo} onChange={handleRoomNumber} />
+                        <input className='border border-green-600 m-2 rounded-md babu' type="number" value={roomNo} onChange={handleRoomNumber} />
                     </div>
 
 

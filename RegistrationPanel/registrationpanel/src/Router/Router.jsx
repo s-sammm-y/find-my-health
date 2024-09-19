@@ -3,6 +3,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import Layout from '../Layout/Layout';
 import Opd from '../Components/OPD/Opd';
 import Emergency from '../Components/EMERGENCY/Emergency';
+import Triage from '../Components/TRIAGE/Triage';
 import PatientStatus from '../Components/PatientStatus/PatientStatus';
 import BedAvaibility from '../Components/BedAvaibility/BedAvaibility';
 import General from '../Components/Opdcomponents/General';
@@ -39,6 +40,10 @@ const Router = createBrowserRouter([
       {
         path: 'emergency',
         element: <Emergency />
+      },
+      {
+        path: 'triage',
+        element: <Triage />
       },
       {
         path: 'patient-status',

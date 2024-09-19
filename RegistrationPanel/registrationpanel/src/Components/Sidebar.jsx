@@ -111,6 +111,18 @@ const Sidebar = () => {
             EMERGENCY
           </NavLink>
         </li>
+        <li className="p-2">
+          <NavLink
+            to="/triage"
+            className={({ isActive }) =>
+              `block w-full text-center py-2 px-4 rounded-md ${
+                isActive ? 'bg-sky-600 text-white' : 'bg-white text-black'
+              } duration-200 hover:bg-blue-300 hover:text-white`
+            }
+          >
+            TRIAGE
+          </NavLink>
+        </li>
 
         <li className="p-2">
           <NavLink
