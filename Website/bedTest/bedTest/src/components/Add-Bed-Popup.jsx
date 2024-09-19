@@ -81,8 +81,6 @@ export default function Popup({onChange}) {
                         <button className='confirm-and-add bg-blue-300 rounded-md' onClick={confirmAddBed}>Confirm</button>
                         <button className='hide-popup bg-green-400 ml-2 rounded-md' onClick={handleOnCancle}>Cancle</button>
                     </div>
-
-                    
                 </div>
             </form>
         </div>

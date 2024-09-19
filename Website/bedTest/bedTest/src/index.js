@@ -23,7 +23,7 @@ app.listen(port,()=>{
 //fetching bed details for display from database
 app.get('/data',async(req,res)=>{
     try{
-        const {data,error}=await supabase.from('bed').select('bed_id')
+        const {data,error}=await supabase.from('bed').select('bed_id,empty')
         if(error){
         console.log("error fetching data")
     }

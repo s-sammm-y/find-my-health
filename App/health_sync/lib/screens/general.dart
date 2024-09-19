@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:health_sync/Profile/drawer_slider.dart';
+import 'package:health_sync/chatbot/chatbot_page.dart';
 import 'package:health_sync/first_screen_widgets/city_hospital_list.dart';
 import 'package:health_sync/first_screen_widgets/notification.dart';
 import 'package:health_sync/screens/first_screen.dart';
@@ -34,6 +35,18 @@ class _GeneralScreenState extends State<GeneralScreen> {
       ),
       drawer: const CustomDrawer(),
       body: _buildBody(),
+
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Navigate to the Chatbot page when the button is clicked
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ChatbotPage()),
+          );
+        },
+        child: Icon(Icons.chat),
+        backgroundColor: Colors.blue,
+      ),
 
       // Bottom Bar Navigation Implementation
       bottomNavigationBar: BottomNavigationBar(
@@ -197,7 +210,7 @@ class _TopBarState extends State<TopBar> {
                     if (cityName.isNotEmpty) {
                       // Show a loading indicator while searching
                       showDialog(
-                        context: context,
+                        context: context, 
                         barrierDismissible: false,
                         builder: (BuildContext context) {
                           return const Center(
