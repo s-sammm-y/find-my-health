@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:health_sync/screens/general.dart';
 import 'package:intl/intl.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';//aniruddha is a donkey
+import 'package:supabase_flutter/supabase_flutter.dart'; //aniruddha is a donkey
 
 class TimeSelect extends StatefulWidget {
   final Map<String, dynamic> registrationData;
@@ -294,3 +294,4 @@ class _TimeSelectState extends State<TimeSelect> {
     );
   }
 }
+//check github

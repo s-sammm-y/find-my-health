@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class ChatbotPage extends StatelessWidget {
   @override
@@ -7,8 +8,10 @@ class ChatbotPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Chatbot'),
       ),
-      body: Center(
-        child: Text('This is the Chatbot page.'),
+      body: WebView(
+        initialUrl:
+            'https://your-chatbot-url.com', // Replace with your chatbot's hosted URL
+        javascriptMode: JavascriptMode.unrestricted,
       ),
     );
   }
