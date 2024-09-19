@@ -1,14 +1,19 @@
-import React, { useState } from 'react';  // Import useState
+import React, { useEffect, useState } from 'react';  // Import useState
 import { useNavigate } from 'react-router-dom';
 import { IoArrowBackSharp } from 'react-icons/io5';
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { SlCalender } from "react-icons/sl";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css'; // Import DatePicker CSS
+import axios from 'axios'
+import Dosage from './Dosage'
 
 const BackButton = () => {
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState(null); // State for managing selected date
+  /* const [categoryDetails,setCategoryDetails]=useState([])
+  const [medicineOptions,setMedicineOptions]=useState([]) */
+  const [addMed,setAddMed]=useState(false)
 
   const handleClick = () => {
     navigate('/'); // Adjust the route to the patient queue as needed
@@ -19,6 +24,45 @@ const BackButton = () => {
     console.log("Form submitted with date: ", selectedDate);
   };
 
+  //function to fetch catagories
+/*   useEffect(()=>{
+    const handleCatagoryData=async()=>{
+      try{
+        const response=await axios.get('http://localhost:5000/fetch-catagory')
+        setCategoryDetails(response.data.data)
+      }catch(err){
+        console.error('Feror fetching api',err)
+        alert('Error selecting catagory')
+      }
+    }
+    handleCatagoryData();
+  },[]) */
+
+  //function to handle catagory change
+ /*  const handleCatagoryDetails=async (e)=>{
+    const catagoryId = e.target.value
+
+    if(catagoryId){
+      try{
+        const response = await axios.get('http://localhost:5000/fetch-medicine',{
+          params:{category_id:catagoryId}
+        })
+        setMedicineOptions(response.data.data)
+      }catch(err){
+        console.error('Error in medicine api',err)
+      }
+    }else{
+      alert('category not selected')
+    }
+  }
+
+  useEffect(()=>{
+    console.log(medicineOptions)
+  },[medicineOptions]) */
+  //funtion to handle add med
+  const handleAddMed=()=>{
+
+  }
   return (
     <div className='w-full h-screen bg-sky-100 flex flex-col items-start p-4'>
       <button
@@ -41,13 +85,14 @@ const BackButton = () => {
             <div className='bg-gray-100 p-4 rounded-lg space-y-4 w-full'>
               <p className='font-bold'>Medicine</p>
 
-              <div className='space-y-2'>
+              {/* <div className='space-y-2'>
                 <div>
                   <label htmlFor="category" className='block text-sm font-medium text-gray-700'>Category</label>
-                  <select id="category" className='bg-slate-200 rounded-lg p-2 w-full'>
+                  <select id="category" className='bg-slate-200 rounded-lg p-2 w-full' value={categoryDetails.data} onChange={handleCatagoryDetails} >
                     <option value="">Select Category</option>
-                    <option value="category1">Category 1</option>
-                    <option value="category2">Category 2</option>
+                    {categoryDetails.map(data=>(
+                      <option key={data.id} value={data.id}>{data.name}</option>
+                    ))}
                   </select>
                 </div>
 
@@ -73,16 +118,18 @@ const BackButton = () => {
                   <label htmlFor="medicine" className='block text-sm font-medium text-gray-700'>Medicine</label>
                   <select id="medicine" className='bg-slate-200 rounded-lg p-2 w-full'>
                     <option value="">Select Medicine</option>
-                    <option value="medicine1">Medicine 1</option>
-                    <option value="medicine2">Medicine 2</option>
+                    {medicineOptions.map(data=>(
+                      <option key={data.id} value={data.id}> {data.name} </option>
+                    ))}
                   </select>
                 </div>
-              </div>
-
+              </div> */}
+                <Dosage/>
               <div className='space-y-4 mt-4'>
                 <h1 className='text-lg font-bold flex items-center'>
                   Add Medicine
-                  <button className='inline-flex items-center justify-center rounded-full bg-sky-400 p-1 text-white hover:bg-sky-500 transition-colors duration-300 ml-2'>
+                  <button className='inline-flex items-center justify-center rounded-full bg-sky-400 p-1 text-white hover:bg-sky-500 transition-colors duration-300 ml-2' 
+                  onClick={()=>{handleAddMed}}>
                     <IoIosAddCircleOutline className='text-xl' />
                   </button>
                 </h1>

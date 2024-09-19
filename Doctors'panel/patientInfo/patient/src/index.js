@@ -39,8 +39,9 @@ app.get('/fetch-catagory',async(req,res)=>{
 })
 
 app.get('/fetch-medicine',async(req,res)=>{
+    const categoryId=req.query.category_id
     try{
-        const {data,error}=await supabase.from('medicine').select('*')
+        const {data,error}=await supabase.from('medicine').select('*').eq('category_id',categoryId)
         if(error){
             return res.status(400).json({message:'Error fetching medicine data',error})
         }
