@@ -24,30 +24,35 @@ const EmergencyList = () => {
     }
 
     return (
-        <div className="list">
-            <h2 className='head'>Emergency Bookings</h2>
-            <table className="table table-striped">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Token</th>
-                        <th scope="col">Mobile</th>
-                        <th scope="col">Est. Arrival</th>
-                        <th scope="col">Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {emergencyData.map((item, index) => (
-                        <tr key={index}>
-                            <th scope="row">{index + 1}</th>
-                            <td>{generateRandomId()}</td>
-                            <td>{item.phone_number}</td>
-                            <td>~30m</td>
-                            <td><button className="btn btn-primary">Arrived</button></td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+        <div className = "parent">
+            <div className = "list-parent">
+                <h1 className="bookinghead">All Bookings</h1>
+                <div className="list">
+                    <table className="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Token</th>
+                                <th scope="col">Mobile</th>
+                                <th scope="col">Est. Arrival</th>
+                                <th scope="col">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {emergencyData.map((item, index) => (
+                                <tr key={index}>
+                                    <th scope="row">{index + 1}</th>
+                                    <td>{generateRandomId()}</td>
+                                    <td>{item.phone_number}</td>
+                                    <td>~30m</td>
+                                    <td><button className="btn btn-primary">Arrived</button></td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div className="sos"></div>
         </div>
     );
 };

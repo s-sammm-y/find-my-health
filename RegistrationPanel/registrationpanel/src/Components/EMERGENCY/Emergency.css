@@ -1,13 +1,34 @@
+.parent{
+display:flex;
+justify-content: space-between;
+}
+.sos{
+    background-color: aqua;
+    width:50%;
+    height:400px;
+
+}
+.list-parent {
+    width: 55%;
+    position: relative; /* Keeps the parent fixed relative to the viewport */
+    margin-right: 30px;
+}
+
+.bookinghead {
+    position: sticky;
+    top: 0; /* Makes the heading stick at the top of the container when scrolling */
+    background-color: white; /* Optional: adds a background to avoid overlap */
+    z-index: 1; /* Keeps the heading on top while scrolling */
+    padding: 10px;
+    margin: 0;
+}
 
 .list {
-    top: 50px;       /* Adjust as needed */
-    left: 50px;      /* Adjust as needed */
-    width: 50%;      /* Adjust the width of the div */
-    height: 400px;   /* Set a fixed height for the div */
-    overflow-y: auto; /* Allows vertical scrolling when content overflows */
-    border: 1px solid #ccc; /* Optional: Adds a border around the div */
-    padding: 10px;   /* Optional: Adds padding inside the div */
-    background-color: #f9f9f9; /* Optional: Background color for the div */
+    width: 100%;      
+    height: 400px;   
+    overflow-y: auto; /* Allows vertical scrolling */
+    padding: 10px; 
+    background-color: #f9f9f9; 
 }
 .head{
     font-weight:900;

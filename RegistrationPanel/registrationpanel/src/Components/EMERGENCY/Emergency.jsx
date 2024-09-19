@@ -1,10 +1,10 @@
 import React from 'react'
-import EmergencyList from './EmergencyList'
+import EmergencySection from './EmergencyList'
 
 const Emergency = () => {
   return (
     <div>
-      <EmergencyList />
+      <EmergencySection/>
     </div>
   )
 }
