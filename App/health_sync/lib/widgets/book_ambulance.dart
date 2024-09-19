@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart'; // Supabase package
+import 'package:geolocator/geolocator.dart'; // For location access
 
 class BookAmbulanceCard extends StatefulWidget {
   @override
@@ -8,12 +9,12 @@ class BookAmbulanceCard extends StatefulWidget {
 
 class _BookAmbulanceCardState extends State<BookAmbulanceCard> {
   final _amformKey = GlobalKey<FormState>();
-  String? selectedHospital;
   bool isRecording = false;
   String recordedTime = "0:00"; // Placeholder for the recording time
-  String pickupLocation = '';
-  String patientName = '';
+  String pickupLocation = 'Not detected';
+  String phoneNumber = '';
   String problemDescription = '';
+  bool isLoadingLocation = false; // To show loading when fetching location
 
   // Start and stop recording functions (as per your current logic)
   void _startRecording() {
@@ -29,15 +30,85 @@ class _BookAmbulanceCardState extends State<BookAmbulanceCard> {
     });
   }
 
+  // Function to get the location
+  Future<void> _getLocation() async {
+    setState(() {
+      isLoadingLocation = true; // Show loading indicator
+    });
+
+    // Check for location permissions
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Check if location services are enabled
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Location services are disabled.')),
+      );
+      setState(() {
+        isLoadingLocation = false;
+      });
+      return;
+    }
+
+    // Check for location permission
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Location permissions are denied.')),
+        );
+        setState(() {
+          isLoadingLocation = false;
+        });
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Location permissions are permanently denied.')),
+      );
+      setState(() {
+        isLoadingLocation = false;
+      });
+      return;
+    }
+
+    // If all permissions are granted, get the current location
+    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+
+    setState(() {
+      pickupLocation = '${position.latitude}, ${position.longitude}'; // Set the location as latitude and longitude
+      isLoadingLocation = false; // Hide loading indicator
+    });
+    try {
+    // ignore: deprecated_member_use
+    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
+    setState(() {
+      pickupLocation = '${position.latitude}, ${position.longitude}';
+      isLoadingLocation = false;
+    });
+  } catch (error) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Error getting location: $error')),
+    );
+    setState(() {
+      isLoadingLocation = false;
+    });
+  }
+  }
+
   void _submitForm() async {
     if (_amformKey.currentState!.validate()) {
       _amformKey.currentState!.save();
 
       // Prepare data to be inserted into the Supabase database
       final data = {
-        'hospital': selectedHospital,
         'pickup_location': pickupLocation,
-        'patient_name': patientName,
+        'phone_number': phoneNumber,
         'problem': problemDescription,
         'recorded_time': recordedTime,
       };
@@ -60,7 +131,9 @@ class _BookAmbulanceCardState extends State<BookAmbulanceCard> {
         }
       } catch (error) {
         // Handle error
-        
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $error')),
+        );
       }
     }
   }
@@ -89,52 +162,61 @@ class _BookAmbulanceCardState extends State<BookAmbulanceCard> {
                   color: Colors.lightBlue,
                 ),
               ),
-              const SizedBox(height: 5.0),
-              DropdownButtonFormField<String>(
-                value: selectedHospital,
-                hint: const Text('Select Hospital'),
-                onChanged: (value) {
-                  setState(() {
-                    selectedHospital = value;
-                  });
-                },
-                items: <String>['Hospital A', 'Hospital B', 'Hospital C']
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                validator: (value) =>
-                    value == null ? 'Please select a hospital' : null,
+              const SizedBox(height: 16.0),
+
+              // Location Button (Detect Location)
+              GestureDetector(
+                onTap: _getLocation,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 12.0),
+                  decoration: BoxDecoration(
+                    color: Colors.lightBlue[100],
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Pickup Location: $pickupLocation',
+                        style: const TextStyle(
+                          fontSize: 14.0,
+                          color: Colors.white,
+                        ),
+                      ),
+                      if (isLoadingLocation)
+                        const CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        )
+                      else
+                        const Icon(
+                          Icons.location_on,
+                          color: Colors.white,
+                        ),
+                    ],
+                  ),
+                ),
               ),
+
               const SizedBox(height: 16.0),
               TextFormField(
+                keyboardType: TextInputType.phone,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8.0),
                   ),
-                  labelText: 'Enter pickup location',
+                  labelText: 'Enter your Phone Number',
                 ),
                 onSaved: (value) {
-                  pickupLocation = value!;
+                  phoneNumber = value!;
                 },
-                validator: (value) =>
-                    value!.isEmpty ? 'Please enter a pickup location' : null,
-              ),
-              const SizedBox(height: 16.0),
-              TextFormField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  labelText: 'Write your Name',
-                ),
-                onSaved: (value) {
-                  patientName = value!;
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter your phone number';
+                  } else if (value.length != 10) {
+                    return 'Phone number must be 10 digits';
+                  }
+                  return null;
                 },
-                validator: (value) =>
-                    value!.isEmpty ? 'Please enter your name' : null,
               ),
               const SizedBox(height: 16.0),
               GestureDetector(
@@ -146,8 +228,7 @@ class _BookAmbulanceCardState extends State<BookAmbulanceCard> {
                   }
                 },
                 child: Container(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 16.0, horizontal: 12.0),
+                  padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 12.0),
                   decoration: BoxDecoration(
                     color: Colors.lightBlue[100],
                     borderRadius: BorderRadius.circular(8.0),
