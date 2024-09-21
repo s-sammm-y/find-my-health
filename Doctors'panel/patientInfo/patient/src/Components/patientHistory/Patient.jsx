@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';  // Import useState
+import React, { useEffect, useState } from 'react';  
 import { useNavigate } from 'react-router-dom';
 import { IoArrowBackSharp } from 'react-icons/io5';
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { SlCalender } from "react-icons/sl";
 import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css'; // Import DatePicker CSS
-import Dosage from './Dosage'
+import 'react-datepicker/dist/react-datepicker.css'; 
+import Dosage from './Dosage';
 
 const BackButton = () => {
   const navigate = useNavigate();
-  const [selectedDate, setSelectedDate] = useState(null); // State for managing selected date
-  const [addMed, setAddMed] = useState(0)
-  const [selectedMedicine,setSelectedMedicine]=useState([])
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [addMed, setAddMed] = useState(0);
+  const [selectedData, setSelectedData] = useState([]);
 
   const handleClick = () => {
     navigate('/'); // Adjust the route to the patient queue as needed
@@ -20,26 +20,27 @@ const BackButton = () => {
   const handleSubmit = () => {
     // Handle form submission
     console.log("Form submitted with date: ", selectedDate);
+    console.log("Selected Medicines: ", selectedData);
   };
 
+  // Function to handle add medicine
+  const handleAddMed = () => {
+    setAddMed(prevAddMed => prevAddMed + 1);
+    setSelectedData(prevData => [...prevData, { medicine: '', dosage: '', frequency: '' }]); // Initialize new medicine data
+  }; 
 
-  //funtion to handle add med
-  const handleAddMed = async () => {
-    setAddMed(prevAddMed => prevAddMed + 1); 
-}; 
-
-  //function to add multiple medicine
-  const updateSelectedMedicine=(index,medicine)=>{
-    setSelectedMedicine(prev=>{
-      const newSelected = [...prev]
-      newSelected[index]=medicine
+  // Function to update selected medicine data
+  const updateSelectedMedicine = (index,medicineData) => {
+    setSelectedData(prev => {
+      const newSelected = [...prev];
+      newSelected[index] = medicineData; // Update the specific index with new medicine data
       return newSelected;
-    })
-  }
+    });
+  };
 
-  useEffect(()=>{
-    console.log(selectedMedicine)
-  },[selectedMedicine])
+  useEffect(() => {
+    console.log(selectedData); // Log the selected data correctly
+  }, [selectedData]);
 
   return (
     <div className='w-full h-screen bg-sky-100 flex flex-col items-start p-4'>
@@ -53,7 +54,7 @@ const BackButton = () => {
 
       <div className='flex w-full h-[90%] gap-4'>
         <div className='w-full max-w-[68vh] bg-white shadow-2xl flex flex-col items-start h-full p-4 overflow-auto'>
-          <form action="" className='w-full h-full flex flex-col space-y-4'>
+          <form className='w-full h-full flex flex-col space-y-4'>
             <textarea
               placeholder='Write Description'
               className='bg-slate-200 rounded-xl p-2 text-black placeholder-black w-full h-[150px] resize-none'
@@ -65,7 +66,7 @@ const BackButton = () => {
 
               {/* Render the Dosage component addMed times */}
               {Array.from({ length: addMed }).map((_, index) => (
-                <Dosage key={index} updateSelectedMedicine={(medicine)=>{updateSelectedMedicine(index,medicine)}} />
+                <Dosage key={index} updateSelectedMedicine={(medicine) => updateSelectedMedicine(index,medicine)} index={index} />
               ))}
 
               <div className='space-y-4 mt-4'>
@@ -73,16 +74,18 @@ const BackButton = () => {
                   Add Medicine
                   <button className='inline-flex items-center justify-center rounded-full bg-sky-400 p-1 text-white hover:bg-sky-500 transition-colors duration-300 ml-2'
                     type='button'
-                    onClick={ handleAddMed }>
+                    onClick={handleAddMed}>
                     <IoIosAddCircleOutline className='text-xl' />
                   </button>
                 </h1>
+
                 <h1 className='text-lg font-bold flex items-center'>
                   Schedule Next Appointment
                   <button className='inline-flex items-center justify-center rounded-full bg-sky-400 p-1 text-white hover:bg-sky-500 transition-colors duration-300 ml-2'>
                     <SlCalender className='text-xl' />
                   </button>
                 </h1>
+
                 <DatePicker
                   selected={selectedDate}
                   onChange={(date) => setSelectedDate(date)}
@@ -90,6 +93,7 @@ const BackButton = () => {
                   placeholderText="Select date"
                   className="bg-slate-200 p-2 rounded-lg w-full mt-2"
                 />
+
                 <h1 className='font-bold text-xl'>Advice Admission</h1>
                 <div className='space-y-2'>
                   <div className='flex items-center'>

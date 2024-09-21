@@ -1,62 +1,56 @@
-import React, { useEffect, useState } from 'react';  // Import useState
-import 'react-datepicker/dist/react-datepicker.css'; // Import DatePicker CSS
-import axios from 'axios'
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
-export default function Medicine({updateSelectedMedicine}) {
-    const [categoryDetails, setCategoryDetails] = useState([])
-    const [medicineOptions, setMedicineOptions] = useState([])
-    const [selectedMedicine,setSelectedMedicine]= useState([])
+export default function Medicine({ updateSelectedMedicine, index }) {
+    const [categoryDetails, setCategoryDetails] = useState([]);
+    const [medicineOptions, setMedicineOptions] = useState([]);
+    const [changedData, setChangedData] = useState({ medicine: '', dosage: '', frequency: '' });
 
-    //function to fetch catagories
+    // Fetch categories
     useEffect(() => {
-        const handleCatagoryData = async () => {
+        const fetchCategories = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/fetch-catagory')
-                setCategoryDetails(response.data.data)
+                const response = await axios.get('http://localhost:5000/fetch-catagory');
+                setCategoryDetails(response.data.data);
             } catch (err) {
-                console.error('Feror fetching api', err)
-                alert('Error selecting catagory')
+                console.error('Error fetching categories', err);
+                alert('Error selecting category');
             }
-        }
-        handleCatagoryData();
-    }, [])
+        };
+        fetchCategories();
+    }, []);
 
-
-    //function to handle catagory change
+    // Fetch medicines based on category selection
     const handleMedicineDetails = async (e) => {
-        const catagoryId = e.target.value
+        const categoryId = e.target.value;
 
-        if (catagoryId) {
+        if (categoryId) {
             try {
                 const response = await axios.get('http://localhost:5000/fetch-medicine', {
-                    params: { category_id: catagoryId }
-                })
-                setMedicineOptions(response.data.data)
+                    params: { category_id: categoryId }
+                });
+                setMedicineOptions(response.data.data);
             } catch (err) {
-                console.error('Error in medicine api', err)
+                console.error('Error fetching medicines', err);
             }
         } else {
-            alert('category not selected')
+            setMedicineOptions([]);
         }
-    }
+    };
 
-    //function to pass new selected medicine as a callback
-    const handleMedicineChange=(e)=>{
-        const val = e.target.value
-        const updatedMedicine = val? [val]:[]
-        setSelectedMedicine(updatedMedicine)
-        updateSelectedMedicine(updatedMedicine)
-    }
+    // Handle data changes and update state
+    const handleDataChange = (key, value) => {
+        const updatedData = { ...changedData, [key]: value };
+        setChangedData(updatedData);
+        console.log(`at handle data change ${index}:`,updatedData)
+        updateSelectedMedicine(index, updatedData); // Pass updated data to the parent
+    };
 
-    /* useEffect(() => {
-        console.log(selectedMedicine)
-    }, [selectedMedicine])  */
-
-    return (<>
+    return (
         <div className='space-y-2'>
             <div>
                 <label htmlFor="category" className='block text-sm font-medium text-gray-700'>Category</label>
-                <select id="category" className='bg-slate-200 rounded-lg p-2 w-full' value={categoryDetails.data} onChange={handleMedicineDetails} >
+                <select id="category" className='bg-slate-200 rounded-lg p-2 w-full' onChange={handleMedicineDetails}>
                     <option value="">Select Category</option>
                     {categoryDetails.map(data => (
                         <option key={data.id} value={data.id}>{data.name}</option>
@@ -66,31 +60,37 @@ export default function Medicine({updateSelectedMedicine}) {
 
             <div>
                 <label htmlFor="dosage" className='block text-sm font-medium text-gray-700'>Dosage</label>
-                <select id="dosage" className='bg-slate-200 rounded-lg p-2 w-full'>
-                    <option value="">Select Dosage</option>
-                    <option value="dosage1">Dosage 1</option>
-                    <option value="dosage2">Dosage 2</option>
-                </select>
+                <input
+                    id='dosage'
+                    type="text"
+                    className='bg-slate-200 rounded-lg p-2 w-full'
+                    onChange={(e) => handleDataChange('dosage', e.target.value)}
+                />
             </div>
 
             <div>
                 <label htmlFor="frequency" className='block text-sm font-medium text-gray-700'>Frequency</label>
-                <select id="frequency" className='bg-slate-200 rounded-lg p-2 w-full'>
-                    <option value="">Select Frequency</option>
-                    <option value="frequency1">Frequency 1</option>
-                    <option value="frequency2">Frequency 2</option>
-                </select>
+                <input
+                    type="text"
+                    className='bg-slate-200 rounded-lg p-2 w-full'
+                    id='frequency'
+                    onChange={(e) => handleDataChange('frequency', e.target.value)}
+                />
             </div>
 
             <div>
                 <label htmlFor="medicine" className='block text-sm font-medium text-gray-700'>Medicine</label>
-                <select id="medicine" className='bg-slate-200 rounded-lg p-2 w-full' onChange={handleMedicineChange}>
+                <select
+                    id="medicine"
+                    className='bg-slate-200 rounded-lg p-2 w-full'
+                    onChange={(e) => handleDataChange('medicine', e.target.value)}
+                >
                     <option value="">Select Medicine</option>
                     {medicineOptions.map(data => (
-                        <option key={data.id} value={data.name}> {data.name} </option>
+                        <option key={data.id} value={data.name}>{data.name}</option>
                     ))}
                 </select>
             </div>
         </div>
-    </>)
+    );
 }
