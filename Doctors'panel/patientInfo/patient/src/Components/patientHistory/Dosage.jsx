@@ -4,7 +4,7 @@ import axios from 'axios';
 export default function Medicine({ updateSelectedMedicine, index }) {
     const [categoryDetails, setCategoryDetails] = useState([]);
     const [medicineOptions, setMedicineOptions] = useState([]);
-    const [changedData, setChangedData] = useState({ medicine: '', dosage: '', frequency: '' });
+    const [changedData, setChangedData] = useState({ description:'',medicine: '', dosage: '', frequency: ''});
 
     // Fetch categories
     useEffect(() => {
@@ -42,8 +42,8 @@ export default function Medicine({ updateSelectedMedicine, index }) {
     const handleDataChange = (key, value) => {
         const updatedData = { ...changedData, [key]: value };
         setChangedData(updatedData);
-        console.log(`at handle data change ${index}:`,updatedData)
-        updateSelectedMedicine(index, updatedData); // Pass updated data to the parent
+        //console.log(`At handleDataChange ${index}:`, updatedData);
+        updateSelectedMedicine(index, updatedData);
     };
 
     return (
