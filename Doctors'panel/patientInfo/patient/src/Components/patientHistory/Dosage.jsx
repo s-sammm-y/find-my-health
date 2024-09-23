@@ -37,6 +37,7 @@ export default function Medicine({ updateSelectedMedicine, index }) {
             setMedicineOptions([]);
         }
     };
+    
 
     // Handle data changes and update state
     const handleDataChange = (key, value) => {

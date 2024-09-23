@@ -5,6 +5,7 @@ import { IoIosAddCircleOutline } from "react-icons/io";
 import { SlCalender } from "react-icons/sl";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import axios from 'axios';
 import Dosage from './Dosage';
 
 const BackButton = () => {
@@ -18,10 +19,20 @@ const BackButton = () => {
     navigate('/'); // Adjust the route to the patient queue as needed
   };
 
-  const handleSubmit = () => {
-    // Handle form submission
-    //console.log("Form submitted with date: ", selectedDate);
-    console.log("Selected Medicines: ", selectedData);
+  const handleSubmit = async() => {
+    try{ 
+      const response = await axios.post('http://localhost:5000/submit-medicine',{
+        /* description:selectedData.description,
+        medicine:selectedData.medicine,
+        dosage:selectedData.dosage,
+        frequency:selectedData.frequency */
+        data:selectedData
+      })
+      console.log('Data posted succesfully',response.data)
+    }catch(err){
+      console.error(err.message)
+      alert('Api issue')
+    }
   };
 
   // Function to handle add medicine

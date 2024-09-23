@@ -3,6 +3,7 @@ import bodyParser from 'body-parser'
 import dotenv from 'dotenv'
 import { createClient } from '@supabase/supabase-js'
 import cors from 'cors'
+import { da } from 'date-fns/locale'
 
 
 dotenv.config()
@@ -49,5 +50,19 @@ app.get('/fetch-medicine',async(req,res)=>{
     }catch(err)
     {
         return res.status(500).json({message:'Server error',error:err.message})
+    }
+})
+
+app.post('/submit-medicine',async(req,res)=>{
+    const selectedData = req.body.data
+    //console.log(selectedData)
+    try{
+        const {data,error}=await supabase.from('user_prescription_details').insert(selectedData)
+        if(error){
+            return res.status(400).json({messege:'error posting details',error})
+        }
+        return res.status(201).json({message:'details added succesfully',data})
+    }catch(err){
+        return res.status(500).json({message:'server error',error:err.message})
     }
 })
