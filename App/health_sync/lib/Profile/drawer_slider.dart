@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:health_sync/authentication/phone_auth.dart';
+import 'package:health_sync/authentication/login_signup.dart'; // Import PhoneNumberScreen
 import 'package:supabase_flutter/supabase_flutter.dart'; // Import Supabase
- // Assuming this is where your login screen is
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({super.key});
@@ -15,7 +14,7 @@ class CustomDrawer extends StatelessWidget {
       // Navigate to the Phone Number Login screen after sign out
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => PhoneNumberScreen()),
+        MaterialPageRoute(builder: (context) => LoginSignupScreen()), // ✅ Fixed Reference
       );
     } catch (error) {
       // Show an error message if sign out fails
@@ -27,7 +26,7 @@ class CustomDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: 250, // Set your desired width here
       child: Drawer(
         child: ListView(
@@ -46,17 +45,16 @@ class CustomDrawer extends StatelessWidget {
             ),
             ListTile(
               title: const Text('Sign Out'),
-              subtitle: const Text('login from another Number'),
+              subtitle: const Text('Login from another number'),
               onTap: () {
-                // Call the sign out function when the Sign Out tile is tapped
-                _signOut(context);
+                _signOut(context); // Call sign out function
               },
             ),
             const Divider(),
             ListTile(
               title: const Text('Change Language'),
               onTap: () {
-                // Add your functionality here
+                // Add functionality here
               },
             ),
           ],
