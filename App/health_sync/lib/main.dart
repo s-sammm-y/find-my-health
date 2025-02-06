@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:health_sync/authentication/login_signup.dart';
 import 'package:health_sync/screens/general.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:dart_ipify/dart_ipify.dart'; // To get user IP
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:dart_ipify/dart_ipify.dart'; // user IP
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
-  // Initialize Supabase
+
+  await dotenv.load();
+
   await Supabase.initialize(
-    url: 'https://aeouxmudgmiawyqnwsic.supabase.co',
-    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFlb3V4bXVkZ21pYXd5cW53c2ljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzg3ODA0MzAsImV4cCI6MjA1NDM1NjQzMH0.wK9aPGh5Myh62Mjs1pfHKc6PoFLaj35thvmMpy8qJ1s',
+    url: dotenv.env['supabaseUrl']!,
+    anonKey: dotenv.env['supabasekey']!,
   );
 
   runApp(const MyApp());
@@ -28,7 +30,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// Check if user's IP exists in 'logged_in_users'
 class AuthCheckScreen extends StatefulWidget {
   const AuthCheckScreen({super.key});
 
@@ -55,13 +56,11 @@ class _AuthCheckScreenState extends State<AuthCheckScreen> {
           .maybeSingle();
 
       if (response != null) {
-        // If IP is found, navigate to home screen
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => GeneralScreen()),
         );
       } else {
-        // If IP is not found, navigate to login/signup screen
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => LoginSignupScreen()),
