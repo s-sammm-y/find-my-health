@@ -16,7 +16,34 @@ class _FirstScreenState extends State<FirstScreen> {
     setState(() {
       selectedButtonIndex = index;
     });
+
+    String hospitalType;
+    switch (index) {
+      case 0:
+        hospitalType = "Govt Hospital";
+        break;
+      case 1:
+        hospitalType = "Pvt Hospital";
+        break;
+      case 2:
+        hospitalType = "Diagnostic Centre";
+        break;
+      case 3:
+        hospitalType = "Nursing Home";
+        break;
+      default:
+        hospitalType = "Unknown";
+    }
+
+    // Navigate to CityHospitalList and pass the hospitalType
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CityHospitalList(cityName: hospitalType),
+      ),
+    );
   }
+
 
   @override
   Widget build(BuildContext context) {
