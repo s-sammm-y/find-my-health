@@ -3,7 +3,6 @@ import 'package:health_sync/second%20screen%20widget/gov_aided_cards.dart';
 import 'package:health_sync/second%20screen%20widget/goverment_cards.dart';
 import 'package:health_sync/second%20screen%20widget/pvt_hospitalcard.dart';
 import 'package:health_sync/widgets/book_ambulance.dart';
- // Import the cards
 
 class SecondScreen extends StatefulWidget {
   const SecondScreen({super.key});
@@ -26,7 +25,7 @@ class _SecondScreenState extends State<SecondScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               BookAmbulanceCard(),
-              const SizedBox(height: 16,),
+              const SizedBox(height: 16),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.0),
                 child: Column(
@@ -43,7 +42,7 @@ class _SecondScreenState extends State<SecondScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 10,),
+              const SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12.0),
                 child: Container(
@@ -68,7 +67,7 @@ class _SecondScreenState extends State<SecondScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 10,),
+              const SizedBox(height: 10),
 
               // Radio buttons for hospital type selection
               Column(
@@ -115,12 +114,17 @@ class _SecondScreenState extends State<SecondScreen> {
                 ],
               ),
 
-              const SizedBox(height: 10,),
+              const SizedBox(height: 10),
 
-              // Display corresponding card based on selected radio button
-              if (_selectedHospitalType == 1) const GovernmentHospitalCard(),
-              if (_selectedHospitalType == 2) const GovtRequisitionedHospitalCard(),
-              if (_selectedHospitalType == 3) const PrivateHospitalCard(),
+              // Display corresponding card using IndexedStack to prevent disposal issues
+              IndexedStack(
+                index: _selectedHospitalType - 1,
+                children: const [
+                  GovernmentHospitalCard(),
+                  GovtRequisitionedHospitalCard(),
+                  PrivateHospitalCard(),
+                ],
+              ),
             ],
           ),
         ),
