@@ -7,13 +7,20 @@ import 'package:dart_ipify/dart_ipify.dart'; // user IP
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: "assets/.env");
 
-  await dotenv.load();
+  final String? supabaseUrl = dotenv.env['supabaseUrl'];
+  final String? supabaseKey = dotenv.env['supabaseKey'];
+
+  if (supabaseUrl == null || supabaseKey == null) {
+    throw Exception("Missing Supabase URL or Key.");
+  }
 
   await Supabase.initialize(
-    url: dotenv.env['supabaseUrl']!,
-    anonKey: dotenv.env['supabasekey']!,
+    url: supabaseUrl,
+    anonKey: supabaseKey,
   );
+
 
   runApp(const MyApp());
 }
