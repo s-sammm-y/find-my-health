@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:health_sync/Profile/drawer_slider.dart';
 import 'package:health_sync/chatbot/chatbot_page.dart';
-import 'package:health_sync/first_screen_widgets/city_hospital_list.dart';
+
 import 'package:health_sync/first_screen_widgets/notification.dart';
 import 'package:health_sync/screens/first_screen.dart';
 import 'package:health_sync/screens/second_screen.dart';
@@ -44,8 +44,9 @@ class _GeneralScreenState extends State<GeneralScreen> {
             MaterialPageRoute(builder: (context) => ChatbotPage()),
           );
         },
-        child: Icon(Icons.chat),
+        
         backgroundColor: Colors.blue,
+        child: const Icon(Icons.chat),
       ),
 
       // Bottom Bar Navigation Implementation
@@ -219,33 +220,14 @@ class _TopBarState extends State<TopBar> {
                       );
 
                       // Check if the city is available in Supabase
+                      // ignore: unused_local_variable
                       bool isAvailable = await _isCityAvailable(cityName);
 
                       // Hide the loading indicator after the check
                       Navigator.pop(context);
 
                       // If available, navigate to CityHospitalList page
-                      if (isAvailable) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                CityHospitalList(cityName: cityName),
-                          ),
-                        );
-                      } else {
-                        // If not available, navigate to CityHospitalList and show "No Hospitals Available"
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CityHospitalList(
-                              cityName: cityName,
-                              noHospitalsAvailable:
-                                  true, // Pass flag to show no hospitals available message
-                            ),
-                          ),
-                        );
-                      }
+                      
                     }
                   },
                 ),
