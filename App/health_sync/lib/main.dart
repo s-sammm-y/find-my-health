@@ -21,7 +21,6 @@ void main() async {
     anonKey: supabaseKey,
   );
 
-
   runApp(const MyApp());
 }
 
