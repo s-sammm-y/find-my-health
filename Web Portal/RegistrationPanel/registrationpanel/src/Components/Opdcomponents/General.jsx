@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useDropdown } from '../../Context/DropdownContext'; // Ensure correct import
+import { useDropdown } from '../../Context/DropdownContext';
+import axios from 'axios'; // Ensure correct import
 
 const General = () => {
   const { selectedDropdownValue } = useDropdown();
   const [currentTime, setCurrentTime] = useState(getCurrentTime());
   const [selectedDoctor, setSelectedDoctor] = useState(''); // State to track selected doctor
+  const [doctors, setDoctors] = useState([]);
   const [morningTokenCount, setMorningTokenCount] = useState(0); // Initial morning token count
   const [eveningTokenCount, setEveningTokenCount] = useState(0); // Initial evening token count
   const [tokenType, setTokenType] = useState(''); // State to track token type (MORNING/EVENING)
@@ -34,7 +36,19 @@ const General = () => {
     const seconds = date.getSeconds();
     return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
   }
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/api/doctor-list');
+        setDoctors(response.data); // Set the fetched doctors in state
+      } catch (error) {
+        console.error('Error fetching doctors:', error);
+      }
+    };
 
+    fetchDoctors();
+  }, []);
+  
   const currentDateDetails = getCurrentDateDetails();
 
   useEffect(() => {
@@ -127,9 +141,11 @@ const General = () => {
               onChange={handleDropdownChange} // Handle change event
             >
               <option value="" disabled selected>Select Doctor</option>
-              <option value="Doctor 1">Doctor 1</option>
-              <option value="Doctor 2">Doctor 2</option>
-              <option value="Doctor 3">Doctor 3</option>
+              {doctors.map((doctor) => (
+        <option key={doctor.doctor_id} value={doctor.name}>
+          {doctor.name}
+        </option>
+      ))}
             </select>
           </div>
           <div className='h-[110px] w-[100%] border-slate-500 border flex items-center'>

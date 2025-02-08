@@ -39,7 +39,7 @@ const EmergencyList = () => {
     return (
         <div className = "parent">
             <div className = "list-parent">
-                <h1 className="bookinghead">All Bookings</h1>
+                <h1 className="bookinghead">ALL BOOKINGS</h1>
                 <div className="list">
                     <table className="table table-striped">
                         <thead>

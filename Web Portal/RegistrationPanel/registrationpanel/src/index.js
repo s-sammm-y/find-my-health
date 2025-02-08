@@ -29,6 +29,18 @@ app.get('/api/emergency-list', async (req, res) => {
 
     return res.status(200).json(data);
 });
+app.get('/api/doctor-list', async(req,res)=>{
+    const { data, error } = await supabase
+    .from('doctors')
+    .select('*')
+    .eq('opd_department', 'General');
+
+if (error) {
+    return res.status(500).json({ error: error.message });
+}
+
+return res.status(200).json(data);
+})
 app.post('/api/add-triage', async (req, res) => {
     const { emergency_id } = req.body;
 
