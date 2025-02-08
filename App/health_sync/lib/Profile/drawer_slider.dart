@@ -3,21 +3,27 @@ import 'package:health_sync/authentication/login_signup.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:dart_ipify/dart_ipify.dart';
 
+/// Static class to hold user details globally.
+class UserData {
+  static int? userId;
+  static String? userName;
+  static String? userMobile;
+}
+
 class CustomDrawer extends StatefulWidget {
   const CustomDrawer({super.key});
 
   @override
-  _CustomDrawerState createState() => _CustomDrawerState();
+  CustomDrawerState createState() => CustomDrawerState();
 }
 
-class _CustomDrawerState extends State<CustomDrawer> {
-  String userName = "Fetching...";
-  String userMobile = "Fetching...";
-
+class CustomDrawerState extends State<CustomDrawer> {
   @override
   void initState() {
     super.initState();
-    _fetchUserData();
+    if (UserData.userName == null || UserData.userMobile == null) {
+      _fetchUserData();
+    }
   }
 
   Future<void> _fetchUserData() async {
@@ -30,8 +36,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
           .select('userid')
           .eq('ip', userIp)
           .maybeSingle();
+      if (loggedInUser == null || loggedInUser.isEmpty) {
+        print("No logged-in user found for this IP.");
+        return; 
+      }
 
-      if (loggedInUser != null) {
         int userId = loggedInUser['userid'];
 
         final user = await supabase
@@ -39,41 +48,46 @@ class _CustomDrawerState extends State<CustomDrawer> {
             .select('user_id, mobile_no')
             .eq('user_id', userId)
             .maybeSingle();
-
-        if (user != null) {
-          setState(() {
-            userName = "User ID: ${user['user_id']}";
-            userMobile = user['mobile_no'];
-          });
+        if (user == null || user.isEmpty) {
+          print("No user found with userId: $userId");
+          return;
         }
-      }
+        setState(() {
+          UserData.userId = user['user_id'];
+          UserData.userName = "User ID: ${user['user_id']}";
+          UserData.userMobile = user['mobile_no'];
+        });
     } catch (error) {
       print("Error fetching user data: $error");
     }
   }
 
   Future<void> _signOut(BuildContext context) async {
-  try {
-    final String userIp = await Ipify.ipv4();
+    try {
+      final String userIp = await Ipify.ipv4();
 
-    await Supabase.instance.client
-        .from('logged_in_users')
-        .delete()
-        .eq('ip', userIp);
+      await Supabase.instance.client
+          .from('logged_in_users')
+          .delete()
+          .eq('ip', userIp);
 
-    await Supabase.instance.client.auth.signOut();
+      await Supabase.instance.client.auth.signOut();
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => LoginSignupScreen()),
-    );
-  } catch (error) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Sign out failed: $error')),
-    );
+      // Reset UserData when signing out
+      UserData.userId = null;
+      UserData.userName = null;
+      UserData.userMobile = null;
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginSignupScreen()),
+      );
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Sign out failed: $error')),
+      );
+    }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -84,8 +98,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
           padding: EdgeInsets.zero,
           children: <Widget>[
             UserAccountsDrawerHeader(
-              accountName: Text(userName),
-              accountEmail: Text(userMobile),
+              accountName: Text(UserData.userName ?? "Fetching..."),
+              accountEmail: Text(UserData.userMobile ?? "Fetching..."),
               currentAccountPicture: const CircleAvatar(
                 backgroundColor: Colors.white,
                 child: Icon(Icons.person, size: 50, color: Colors.lightBlue),

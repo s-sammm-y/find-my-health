@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:health_sync/authentication/login_signup.dart';
 import 'package:health_sync/screens/general.dart';
-import 'package:intl/date_symbol_data_file.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:dart_ipify/dart_ipify.dart'; // user IP
