@@ -29,13 +29,23 @@ class _FirstScreenState extends State<FirstScreen> {
                 padding: const EdgeInsets.all(10.0),
                 child: Row(
                   children: [
-                    // Icon Container
+                    // Doctor Image Container
                     Container(
                       width: 60,
                       height: 60,
                       decoration: BoxDecoration(
                         color: Colors.lightBlue[100],
                         borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.network(
+                          "https://i.pinimg.com/736x/2a/0e/8c/2a0e8cb609405d9ca87bc81154b9c443.jpg", // Replace with an actual doctor image URL
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Icon(Icons.person, size: 40, color: Colors.grey);
+                          },
+                        ),
                       ),
                     ),
                     const SizedBox(width: 15),
@@ -45,7 +55,7 @@ class _FirstScreenState extends State<FirstScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: const [
                         Text(
-                          "Find By Hospitals",
+                          "Find By Doctors",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,

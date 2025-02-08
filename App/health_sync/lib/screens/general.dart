@@ -201,7 +201,7 @@ class _TopBarState extends State<TopBar> {
                   controller:
                       _searchController, // Attach the controller to capture user input
                   decoration: InputDecoration(
-                    hintText: 'Search city...',
+                    hintText: 'Search your Disease',
                     hintStyle:
                         TextStyle(color: Colors.lightBlue.withOpacity(0.5)),
                     border: InputBorder.none,

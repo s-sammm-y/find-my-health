@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:health_sync/authentication/login_signup.dart';
 import 'package:health_sync/screens/general.dart';
+import 'package:intl/date_symbol_data_file.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:dart_ipify/dart_ipify.dart'; // user IP
@@ -8,6 +9,7 @@ import 'package:dart_ipify/dart_ipify.dart'; // user IP
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: "assets/.env");
+  
 
   final String? supabaseUrl = dotenv.env['supabaseUrl'];
   final String? supabaseKey = dotenv.env['supabaseKey'];
