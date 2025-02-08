@@ -36,6 +36,7 @@ const General = () => {
     const seconds = date.getSeconds();
     return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
   }
+
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
@@ -105,7 +106,7 @@ const General = () => {
 
   const renderTokenBoxes = () => {
     const tokenBoxCount = tokenType === 'EVENING' ? eveningTokenCount : morningTokenCount;
-    return Array.from({ length: tokenBoxCount+10 }).map((_, index) => {
+    return Array.from({ length: tokenBoxCount + 10 }).map((_, index) => {
       const tokenNumber = index + 1;
       const isArrived = arrivedTokens.includes(tokenNumber); // Check if the token is marked as arrived
       const isYellow = yellowTokens.has(tokenNumber); // Check if token should be yellow
@@ -127,13 +128,7 @@ const General = () => {
   return (
     <div className='flex w-full h-screen bg-sky-100'>
       <div className='flex-1 h-screen bg-sky-100 relative mr-4'>
-        <div className='bg-gray-200 w-full h-[20%] text-center text-3xl font-bold p-10'>
-          REGISTER NEW PATIENT
-        </div>
-        
-
-        <div className='absolute top-[25%] left-0 right-0 bottom-0 bg-white overflow-y-auto p-4 mt-4'>
-
+        <div className='absolute top-0 left-0 right-0 bottom-0 bg-white overflow-y-auto p-4'>
           <h1 className='text-[20px] text-center font-bold'>General</h1>
           <div className='my-4'>
             <select
@@ -142,10 +137,10 @@ const General = () => {
             >
               <option value="" disabled selected>Select Doctor</option>
               {doctors.map((doctor) => (
-        <option key={doctor.doctor_id} value={doctor.name}>
-          {doctor.name}
-        </option>
-      ))}
+                <option key={doctor.doctor_id} value={doctor.name}>
+                  {doctor.name}
+                </option>
+              ))}
             </select>
           </div>
           <div className='h-[110px] w-[100%] border-slate-500 border flex items-center'>
