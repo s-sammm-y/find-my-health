@@ -137,7 +137,7 @@ class _BookAmbulanceCardState extends State<BookAmbulanceCard> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Book Ambulance',
+                'Emergency Booking',
                 style: TextStyle(
                   fontSize: 17.0,
                   fontWeight: FontWeight.bold,

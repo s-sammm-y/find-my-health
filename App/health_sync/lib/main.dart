@@ -3,7 +3,8 @@ import 'package:health_sync/authentication/login_signup.dart';
 import 'package:health_sync/screens/general.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:dart_ipify/dart_ipify.dart'; // user IP
+import 'package:dart_ipify/dart_ipify.dart'; 
+import 'package:health_sync/Profile/drawer_slider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,6 +22,8 @@ void main() async {
     url: supabaseUrl,
     anonKey: supabaseKey,
   );
+
+  await UserData.fetchUserData();
 
   runApp(const MyApp());
 }

@@ -8,34 +8,44 @@ class NotificationScreen extends StatefulWidget {
 
 class _NotificationScreenState extends State<NotificationScreen> {
   List<Map<String, dynamic>> notifications = [];
-  bool _isLoading = true;
+  final supabase = Supabase.instance.client;
+
   @override
   void initState() {
     super.initState();
-    _fetchNotifications();
+    _listenForNewEmergencyBookings();
   }
 
-  Future<void> _fetchNotifications() async {
-    try {
-        final response = await Supabase.instance.client
-        .from('appointments')
-        .select()
-        .order('id', ascending: false);
-
-      if (response.isNotEmpty) {
+  void _listenForNewEmergencyBookings() {
+    supabase
+        .from('emergency_booking')
+        .stream(primaryKey: ['emergency_id'])
+        .order('created_at', ascending: false)
+        .listen((data) {
+      if (data.isNotEmpty) {
         setState(() {
-          notifications = response;
-          _isLoading = false;
+          notifications.insert(0, data.first);
         });
-      } else {
-        
-        print('No notifications found');
-      }
-    } catch (error) {
-      print('Error fetching notifications: $error');
-    }
-    
 
+        // Show a Snackbar notification
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+                '🚨 Emergency booked: ${data.first['problem']}'),
+            action: SnackBarAction(
+              label: 'Dismiss',
+              onPressed: () {},
+            ),
+          ),
+        );
+      }
+    });
+  }
+
+  void _clearNotification(int index) {
+    setState(() {
+      notifications.removeAt(index);
+    });
   }
 
   @override
@@ -43,23 +53,38 @@ class _NotificationScreenState extends State<NotificationScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Notifications"),
+        actions: [
+          if (notifications.isNotEmpty)
+            IconButton(
+              icon: const Icon(Icons.clear_all),
+              onPressed: () {
+                setState(() {
+                  notifications.clear();
+                });
+              },
+            ),
+        ],
       ),
       body: notifications.isEmpty
-          ? const Center(child: Text('No notifications'))
-          : _isLoading
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
+          ? const Center(child: Text('No notifications yet'))
           : ListView.builder(
               itemCount: notifications.length,
               itemBuilder: (context, index) {
-                final appointment = notifications[index];
-                return ListTile(
-                  title: Text(
-                    'Appointment Booked',
+                final notification = notifications[index];
+                return Dismissible(
+                  key: Key(notification['emergency_id']),
+                  onDismissed: (direction) => _clearNotification(index),
+                  background: Container(
+                    color: Colors.red,
+                    alignment: Alignment.centerRight,
+                    padding: const EdgeInsets.only(right: 20.0),
+                    child: const Icon(Icons.delete, color: Colors.white),
                   ),
-                  subtitle: Text(
-                    'Date: ${appointment['date']} | Time: ${appointment['time_slot']} | Token: ${appointment['token']}',
+                  child: ListTile(
+                    title: const Text('Emergency Booking Alert 🚨'),
+                    subtitle: Text(
+                      'Problem: ${notification['problem']} | Name: ${notification['name']}',
+                    ),
                   ),
                 );
               },
@@ -67,5 +92,3 @@ class _NotificationScreenState extends State<NotificationScreen> {
     );
   }
 }
-
-
