@@ -19,7 +19,7 @@ app.use(express.json());
 
 app.get('/api/emergency-list', async (req, res) => {
     const { data, error } = await supabase
-        .from('patient_emergency_booking')  
+        .from('emergency_booking')  
         .select('*')
         .eq('triage', false);;  
 
