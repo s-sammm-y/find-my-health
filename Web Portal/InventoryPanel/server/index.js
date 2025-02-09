@@ -37,7 +37,7 @@ app.get('/api/inventory', async (req, res) => {
 // Add new item
 app.post('/api/inventory', async (req, res) => {
     const { item_name, quantity } = req.body;
-    let category = 'MMM'
+    let category = 'test'
     let update_timestamp = new Date();
     try {
       const { data, error } = await supabase

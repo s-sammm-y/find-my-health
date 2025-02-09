@@ -3,7 +3,7 @@ function Header() {
     return (
       <header className="header">
         <h1>HOSPITAL NAME</h1>
-        <p>NURSE PANEL</p>
+        <p>INVENTORY PANEL</p>
       </header>
     );
 }

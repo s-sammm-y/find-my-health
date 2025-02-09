@@ -11,8 +11,7 @@ const Sidebar = () => {
   return (
     <div className="sidebar">
       <ul className="sidebar-menu">
-        <li className="sidebar-item">Edit Bed</li>
-        <li className="sidebar-item">Patien Status</li>
+        <li className="sidebar-item">Inventory Overview</li>
         <li className="dropDown">
           <button onClick={toggleInventoryDropdown} className="dropdown-btn">
             Medicine Inventory 
