@@ -71,7 +71,7 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
         'time_slot': _selectedTime,
         'created_at': DateTime.now().toIso8601String(),
       });
-      // .select(); // Use `select()` for validation or omit it if unnecessary.
+      // .select(); // Use select() for validation or omit it if unnecessary.
 
       // Check response for errors
       if (response.isNotEmpty) {
@@ -155,6 +155,7 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
                 });
               },
             ),
+            
             SizedBox(height: 20),
             Center(
               child: ElevatedButton(

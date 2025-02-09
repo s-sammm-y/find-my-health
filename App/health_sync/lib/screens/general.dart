@@ -5,6 +5,7 @@ import 'package:health_sync/chatbot/chatbot_page.dart';
 import 'package:health_sync/first_screen_widgets/notification.dart';
 import 'package:health_sync/screens/first_screen.dart';
 import 'package:health_sync/screens/second_screen.dart';
+import 'package:health_sync/widgets/opd_book_ticket.dart';
 import 'package:supabase_flutter/supabase_flutter.dart'; // Import Supabase package
 
 class GeneralScreen extends StatefulWidget {
@@ -73,18 +74,19 @@ class _GeneralScreenState extends State<GeneralScreen> {
     );
   }
 
-  Widget _buildBody() {
+    Widget _buildBody() {
     switch (_selectedIndex) {
       case 0:
         return const FirstScreen();
       case 1:
         return const SecondScreen();
       case 2:
-        return const Center(child: Text('Docs'));
+        return OPDBookTicket(supabase: Supabase.instance.client); // Pass Supabase client here
       default:
         return const FirstScreen();
     }
   }
+
 }
 
 // Top bar implementation
