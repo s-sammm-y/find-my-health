@@ -120,7 +120,18 @@ function App() {
                       ADD
                     </button>
                   </form>
-                  <button className="removeBtn">Remove</button>
+                  <form onSubmit={(e) => handleUpdateSubmit(e, item.item_name)}>
+                    <input
+                      type="number"
+                      value={newQuantity[item.item_name] || ""}
+                      onChange={(e) => handleQuantityChange(e, item.item_name)}
+                      required
+                    />
+                    <button className="submitBtn" type="submit">
+                      Remove
+                    </button>
+                  </form>
+                  
                 </div>
               </div>
             ))}

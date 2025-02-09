@@ -9,19 +9,18 @@ justify-content: space-between;
 
 }
 .list-parent {
-    width: 80%;
+    width: 100%;
     position: relative; /* Keeps the parent fixed relative to the viewport */
-    margin-right: 30px;
 }
 
 .bookinghead {
     position: sticky;
     top: 0; /* Makes the heading stick at the top of the container when scrolling */
     background-color: white; /* Optional: adds a background to avoid overlap */
-    z-index: 1; /* Keeps the heading on top while scrolling */
-    padding: 10px;
-    margin: 0;
-    font-weight :600
+    font-size: 20px;
+    font-weight :700;
+    padding-top: 5px;
+    padding-left:10px;
 }
 
 .list {
@@ -35,7 +34,6 @@ justify-content: space-between;
     font-weight:900;
 }
 .table {
-    margin-top:30px;
     width: 100%;
     text-align: center;  /* Centers the text horizontally */
 }

@@ -44,7 +44,7 @@ const Opd = () => {
             <div className='bg-gray-200 w-full h-[20%] text-center text-3xl font-bold p-10'>
               REGISTER NEW PATIENT
             </div>
-            <div className='absolute top-[20%] left-0 right-0 bottom-0 bg-white overflow-y-auto p-4'></div>
+            <div className='absolute top-[20%] left-0 right-0 bottom-0 bg-white overflow-y-auto p-4 ki2'></div>
           </div>
 
           <div className='flex-1 h-screen bg-sky-100 relative ml-4'>

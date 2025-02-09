@@ -39,15 +39,14 @@ const EmergencyList = () => {
     return (
         <div className = "parent">
             <div className = "list-parent">
-                <h1 className="bookinghead">All Bookings</h1>
+                <h1 className="bookinghead">ALL BOOKINGS</h1>
                 <div className="list">
                     <table className="table table-striped">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Token</th>
+                                <th scope="col">name</th>
                                 <th scope="col">Problem</th>
-                                <th scope="col">Mobile</th>
                                 <th scope="col">Est. Arrival</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">Verify</th>
@@ -57,9 +56,8 @@ const EmergencyList = () => {
                             {emergencyData.map((item, index) => (
                                 <tr key={index}>
                                     <th scope="row">{index + 1}</th>
-                                    <td>{generateRandomId()}</td>
+                                    <td>{item.name}</td>
                                     <td>{item.problem}</td>
-                                    <td>{item.phone_number}</td>
                                     <td>~30m</td>
                                     <td><button
                                             className="btn btn-primary"

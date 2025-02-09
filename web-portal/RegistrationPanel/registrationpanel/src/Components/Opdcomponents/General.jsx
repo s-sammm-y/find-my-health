@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useDropdown } from '../../Context/DropdownContext'; // Ensure correct import
+import { useDropdown } from '../../Context/DropdownContext';
+import axios from 'axios'; // Ensure correct import
 
 const General = () => {
   const { selectedDropdownValue } = useDropdown();
   const [currentTime, setCurrentTime] = useState(getCurrentTime());
   const [selectedDoctor, setSelectedDoctor] = useState(''); // State to track selected doctor
+  const [doctors, setDoctors] = useState([]);
   const [morningTokenCount, setMorningTokenCount] = useState(0); // Initial morning token count
   const [eveningTokenCount, setEveningTokenCount] = useState(0); // Initial evening token count
   const [tokenType, setTokenType] = useState(''); // State to track token type (MORNING/EVENING)
@@ -35,6 +37,19 @@ const General = () => {
     return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
   }
 
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/api/doctor-list');
+        setDoctors(response.data); // Set the fetched doctors in state
+      } catch (error) {
+        console.error('Error fetching doctors:', error);
+      }
+    };
+
+    fetchDoctors();
+  }, []);
+  
   const currentDateDetails = getCurrentDateDetails();
 
   useEffect(() => {
@@ -91,7 +106,7 @@ const General = () => {
 
   const renderTokenBoxes = () => {
     const tokenBoxCount = tokenType === 'EVENING' ? eveningTokenCount : morningTokenCount;
-    return Array.from({ length: tokenBoxCount+10 }).map((_, index) => {
+    return Array.from({ length: tokenBoxCount + 10 }).map((_, index) => {
       const tokenNumber = index + 1;
       const isArrived = arrivedTokens.includes(tokenNumber); // Check if the token is marked as arrived
       const isYellow = yellowTokens.has(tokenNumber); // Check if token should be yellow
@@ -113,13 +128,7 @@ const General = () => {
   return (
     <div className='flex w-full h-screen bg-sky-100'>
       <div className='flex-1 h-screen bg-sky-100 relative mr-4'>
-        <div className='bg-gray-200 w-full h-[20%] text-center text-3xl font-bold p-10'>
-          REGISTER NEW PATIENT
-        </div>
-        
-
-        <div className='absolute top-[25%] left-0 right-0 bottom-0 bg-white overflow-y-auto p-4 mt-4'>
-
+        <div className='absolute top-0 left-0 right-0 bottom-0 bg-white overflow-y-auto p-4'>
           <h1 className='text-[20px] text-center font-bold'>General</h1>
           <div className='my-4'>
             <select
@@ -127,9 +136,11 @@ const General = () => {
               onChange={handleDropdownChange} // Handle change event
             >
               <option value="" disabled selected>Select Doctor</option>
-              <option value="Doctor 1">Doctor 1</option>
-              <option value="Doctor 2">Doctor 2</option>
-              <option value="Doctor 3">Doctor 3</option>
+              {doctors.map((doctor) => (
+                <option key={doctor.doctor_id} value={doctor.name}>
+                  {doctor.name}
+                </option>
+              ))}
             </select>
           </div>
           <div className='h-[110px] w-[100%] border-slate-500 border flex items-center'>

@@ -14,7 +14,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className='fixed top-15 left-0 h-full w-[20vh] bg-white shadow-2xl'>
+    <div className='fixed top-15 left-0 h-full w-[30vh] bg-white shadow-2xl'>
       <ul className="flex flex-col mt-4 w-full font-medium">
         {/* OPD with dropdown */}
         <li className="p-2">
