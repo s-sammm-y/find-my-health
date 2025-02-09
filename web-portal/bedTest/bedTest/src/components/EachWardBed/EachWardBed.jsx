@@ -2,7 +2,6 @@ import React from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 import { faUserPen } from "@fortawesome/free-solid-svg-icons";
-
 function EachWardBed({beds,handleSeeDetails}) {
     return (
       <>
