@@ -38,11 +38,10 @@ app.get('/api/inventory', async (req, res) => {
 app.post('/api/inventory', async (req, res) => {
     const { item_name, quantity } = req.body;
     let category = 'test'
-    let update_timestamp = new Date();
     try {
       const { data, error } = await supabase
         .from('inventory')
-        .insert([{ item_name, quantity, category, update_timestamp}]);
+        .insert([{ item_name, category, quantity}]);
   
       if (error) {
         throw error;
@@ -59,7 +58,6 @@ app.post('/api/inventory', async (req, res) => {
 app.put('/api/inventory/:item_name', async (req, res) => {
   const { item_name } = req.params;
   const { quantity } = req.body;
-  let update_timestamp = new Date();
 
   try {
     // First, get the current quantity
@@ -81,7 +79,7 @@ app.put('/api/inventory/:item_name', async (req, res) => {
     // Update the quantity in the database
     const { data, error } = await supabase
       .from('inventory')
-      .update({ quantity: newQuantity, update_timestamp })
+      .update({ quantity: newQuantity})
       .eq('item_name', item_name);
 
     if (error) {
