@@ -102,3 +102,63 @@ app.delete('/data',async(req,res)=>{
         return res.status(500).json({message:'server error in backend',error:err.message})
     }
 })
+
+//edit bed section
+
+app.put('/edit-bed',async (req,res)=>{
+    const editBedDetails = {
+        bed_id:req.body.bed_id,
+        dept_id:req.body.dept_id,
+        ward_id:req.body.ward_id,
+        patient_id:req.body.patient_id,
+        empty:req.body.empty
+    }
+
+    console.log(editBedDetails)
+
+    try{
+        const {data,error} = await supabase.from('bed')
+        .update({
+            dept_id:editBedDetails.dept_id,
+            ward_id:editBedDetails.ward_id,
+            patient_id:editBedDetails.patient_id,
+            empty:editBedDetails.empty
+        }).eq('bed_id',editBedDetails.bed_id)
+
+        if(error){
+            console.log('Pushing error',error.message);
+        }
+        console.log('Sent Succesfully:',data)
+    }catch(err){
+        console.log('Error in back end',err)
+    }
+    
+})
+
+app.put('/remove-bed-details',async (req,res)=>{
+    const editBedDetails = {
+        bed_id:req.body.bed_id,
+        dept_id:req.body.dept_id,
+        patient_id:req.body.patient_id,
+        empty:req.body.empty
+    }
+
+    console.log(editBedDetails)
+
+    try{
+        const {data,error} = await supabase.from('bed')
+        .update({
+            dept_id:editBedDetails.dept_id,
+            patient_id:editBedDetails.patient_id,
+            empty:editBedDetails.empty
+        }).eq('bed_id',editBedDetails.bed_id)
+
+        if(error){
+            console.log('Pushing error',error.message);
+        }
+        console.log('Sent Succesfully:',data)
+    }catch(err){
+        console.log('Error in back end',err)
+    }
+    
+})

@@ -2,18 +2,19 @@ import React from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 import { faUserPen } from "@fortawesome/free-solid-svg-icons";
-function EachWardBed({beds,handleSeeDetails}) {
+function EachWardBed({beds,handleSeeDetails,handleEditPopup}) {
     return (
       <>
       <div className="inside-ward">
-        <h3>Ward: {beds[0].ward_id.toUpperCase()}</h3>
+        <h3 className="bg-blue-500 text-center p-4 text-white rounded-md border border-black shadow-lg">WARD:- {beds[0].ward_id.toUpperCase()}</h3>
         <div className="beds">
           {beds.map((bed, idx) => (
-            <div className={`each-ward bed ${bed.empty ? 'bg-green-500':bg-red-500}`} key={bed.bed_id}>
+            <div className={`each-ward bed ${bed.empty ? 'bg-green-500':'bg-red-500'}`} key={bed.bed_id}>
               <p>Bed-Id: {bed.bed_id}</p>
               <button className="btn">
               <FontAwesomeIcon icon={faUserPen} 
               className="text-2xl text-black-600 hover:text-black transition-colors duration-300"
+              onClick={()=>handleEditPopup(bed.bed_id)}
               />
               </button>
               <button className="btn"

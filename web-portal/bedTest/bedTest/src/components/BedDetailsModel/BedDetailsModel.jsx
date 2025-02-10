@@ -13,6 +13,7 @@ function BedDetailsModal({ bedDetail, onClose ,onDelete}) {
               <p>Patient ID: {data.dept_id}</p>
               <p>Room No: {data.room}</p>
               <p>Ward: {data.ward_id}</p>
+              <p>Department: {data.dept_id} </p>
             </div>
           ))}
         </div>

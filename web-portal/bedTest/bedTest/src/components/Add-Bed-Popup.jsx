@@ -57,7 +57,7 @@ export default function Popup({onChange}) {
             setWardID('')
             window.location.reload(); 
         }catch(err){
-            console.error('Error:', err.response ? err.response.data : err.message);
+            console.error('Error:-', err.response ? err.response.data : err.message);
             alert('Server error');
         }
     }

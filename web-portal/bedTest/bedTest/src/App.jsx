@@ -15,8 +15,11 @@ function App() {
   const [showPopup, setShowPopup] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showDetailsModal, setShowDetailsModal] = useState(false); // New state for modal visibility
-  const [showEditBedModal,setShowEditBedModal] = useState(false);
   const [ward,setWards] = useState([]);
+  const [showEditPopup,setShowEditPopup] = useState(false);
+  const [selectedEditBed,setSelectedEditBed] = useState(null);
+
+
 
   //fetch each ward
   useEffect(()=>{
@@ -105,6 +108,15 @@ function App() {
     }
   };
 
+  //show editpopup
+  const handelEditPopup = async(bedID)=>{
+    setShowEditPopup(true);
+    setSelectedEditBed(bedID)
+    //console.log(selectedEditBed)
+  }
+
+
+
   return (
     <>
       <Header />
@@ -123,7 +135,8 @@ function App() {
           <EachWardBed 
             key={`${ward.ward_id}-${idx}`}        
             beds={wardBeds}
-            handleSeeDetails={handleSeeDetails}    
+            handleSeeDetails={handleSeeDetails}
+            handleEditPopup={handelEditPopup}   
           />
         );
       })}
@@ -148,7 +161,11 @@ function App() {
               onDelete={handleDeleteBed} // Pass delete handler
             />
       )}
-      <EditBedPopup/>
+      {showEditPopup && (
+        <EditBedPopup
+        editVar={setShowEditPopup}
+        bedID={selectedEditBed}/>
+      )}
     </div>
       </div>
     </>
