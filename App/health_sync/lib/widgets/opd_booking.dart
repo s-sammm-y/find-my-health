@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:health_sync/screens/general.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class OPDBookingPage extends StatefulWidget {
   final String selectedDisease;
@@ -20,15 +21,15 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
   final TextEditingController _aadhaarController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
 
+  String? _selectedDate;
+  String? _selectedTime;
+  final List<String> _timeSlots = ["Morning", "Afternoon"];
+
   @override
   void initState() {
     super.initState();
     _initializeNotifications();
   }
-
-  String? _selectedDate;
-  String? _selectedTime;
-  final List<String> _timeSlots = ["Morning", "Afternoon"];
 
   Future<void> _selectDate(BuildContext context) async {
     DateTime? picked = await showDatePicker(
@@ -44,7 +45,36 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
     }
   }
 
-  Future<void> _submitForm() async {
+  Future<void> _showPaymentDialog() async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Select Payment Method"),
+          content: Text("How would you like to pay for your appointment?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                _submitForm(isPaid: false);
+              },
+              child: Text("Pay on Site"),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.pop(context);
+                await launchUrl(Uri.parse("https://razorpay.com/"));
+                _submitForm(isPaid: true);
+              },
+              child: Text("Pay Online"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _submitForm({required bool isPaid}) async {
     String name = _nameController.text;
     String phone = _phoneController.text;
     String age = _ageController.text;
@@ -66,9 +96,7 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
     }
 
     try {
-      // Insert data into Supabase
-      final response =
-          await Supabase.instance.client.from('opd_bookings').insert({
+      final response = await Supabase.instance.client.from('opd_bookings').insert({
         'name': name,
         'phone': phone,
         'age': age,
@@ -78,6 +106,7 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
         'appointment_date': _selectedDate,
         'time_slot': _selectedTime,
         'created_at': DateTime.now().toIso8601String(),
+        'is_paid': isPaid,
       }).select();
 
       if (response.isNotEmpty) {
@@ -98,16 +127,15 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
           SnackBar(content: Text("Error: Booking failed")),
         );
       }
-    } 
-    catch (e) {
-      // Handle exceptions
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Booking Done!")),
       );
     }
   }
+
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
+      FlutterLocalNotificationsPlugin();
 
   Future<void> _initializeNotifications() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
@@ -121,7 +149,7 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
 
   Future<void> _showLocalNotification(String disease, String name) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
-    AndroidNotificationDetails(
+        AndroidNotificationDetails(
       'opd_channel',
       'OPD Alerts',
       importance: Importance.high,
@@ -143,25 +171,16 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
         title: Text("OPD Booking"),
         backgroundColor: Colors.blue,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildTextField("Full Name", _nameController, TextInputType.text),
-            _buildTextField(
-                "Phone Number", _phoneController, TextInputType.phone),
+            _buildTextField("Phone Number", _phoneController, TextInputType.phone),
             Padding(
               padding: const EdgeInsets.only(bottom: 12.0),
               child: TextFormField(
@@ -174,22 +193,14 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
               ),
             ),
             _buildTextField("Age", _ageController, TextInputType.number),
-            _buildTextField(
-                "Aadhaar Number", _aadhaarController, TextInputType.number),
-            _buildTextField("Address", _addressController, TextInputType.text,
-                maxLines: 2),
+            _buildTextField("Aadhaar Number", _aadhaarController, TextInputType.number),
+            _buildTextField("Address", _addressController, TextInputType.text, maxLines: 2),
             ListTile(
               title: Text(_selectedDate ?? "Select Appointment Date"),
-              leading: Icon(Icons.calendar_today, color: Colors.blue),
               onTap: () => _selectDate(context),
-              tileColor: Colors.white,
             ),
-            SizedBox(height: 12),
             DropdownButtonFormField<String>(
-              decoration: InputDecoration(
-                labelText: "Select Time Slot",
-                border: OutlineInputBorder(),
-              ),
+              decoration: InputDecoration(labelText: "Select Time Slot"),
               value: _selectedTime,
               items: _timeSlots.map((time) {
                 return DropdownMenuItem<String>(
@@ -203,30 +214,18 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
                 });
               },
             ),
-            
             SizedBox(height: 20),
-            Center(
-              child: ElevatedButton(
-                onPressed: _submitForm,
-                child: Text("Submit Booking"),
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(horizontal: 90, vertical: 15),
-                  textStyle: const TextStyle(
-                      fontSize: 15,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  backgroundColor: Colors.lightBlue,
-                ),
-              ),
+            ElevatedButton(
+              onPressed: _showPaymentDialog,
+              child: Text("Submit"),
             ),
           ],
         ),
       ),
     );
   }
+
+
 
   Widget _buildTextField(String label, TextEditingController controller,
       TextInputType keyboardType,
