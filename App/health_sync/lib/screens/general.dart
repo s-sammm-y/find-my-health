@@ -6,7 +6,7 @@ import 'package:health_sync/first_screen_widgets/notification.dart';
 import 'package:health_sync/screens/first_screen.dart';
 import 'package:health_sync/screens/second_screen.dart';
 import 'package:health_sync/widgets/opd_book_ticket.dart';
-import 'package:supabase_flutter/supabase_flutter.dart'; // Import Supabase package
+import 'package:supabase_flutter/supabase_flutter.dart'; 
 
 class GeneralScreen extends StatefulWidget {
   const GeneralScreen({super.key});

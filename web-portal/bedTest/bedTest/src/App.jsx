@@ -5,6 +5,7 @@ import Header from "./components/Header/Header";
 import Sidebar from "./components/Sidebar/Sidebar";
 import EachWardBed from "./components/EachWardBed/EachWardBed"
 import BedDetailsModal from "./components/BedDetailsModel/BedDetailsModel"; 
+import EditBedPopup from "./components/EditBedPopup/EditBedPopup";
 import "./App.css";
 
 function App() {
@@ -14,7 +15,7 @@ function App() {
   const [showPopup, setShowPopup] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showDetailsModal, setShowDetailsModal] = useState(false); // New state for modal visibility
-  const filteredBeds = beds.filter(bed => bed.ward_id === 'general');
+  const [showEditBedModal,setShowEditBedModal] = useState(false);
   const [ward,setWards] = useState([]);
 
   //fetch each ward
@@ -147,6 +148,7 @@ function App() {
               onDelete={handleDeleteBed} // Pass delete handler
             />
       )}
+      <EditBedPopup/>
     </div>
       </div>
     </>
