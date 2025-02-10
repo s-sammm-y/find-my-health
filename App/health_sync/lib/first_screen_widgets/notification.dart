@@ -10,7 +10,8 @@ class NotificationScreen extends StatefulWidget {
 class _NotificationScreenState extends State<NotificationScreen> {
   List<Map<String, dynamic>> notifications = [];
   final supabase = Supabase.instance.client;
-  static Set<String> dismissedNotifications = {};
+  static Set<String> dismissedNotifications_OPD = {};
+  static Set<String> dismissedNotifications_emergency = {};
 
   @override
   void initState() {
@@ -29,7 +30,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
         setState(() {
           notifications.addAll(data.where((notification) =>
               notification['userid'] == UserData.userId &&
-              !dismissedNotifications.contains(notification['emergency_id'])));
+              !dismissedNotifications_emergency.contains(notification['emergency_id'])));
         });
         _showStackableNotifications();
       }
@@ -45,8 +46,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
       if (data.isNotEmpty) {
         setState(() {
           notifications.addAll(data.where((notification) =>
-            //(notifications['phone']) == UserData.userMobile &&
-            !dismissedNotifications.contains(notification['opd_id'])));
+            ("+91"+notification['phone'].toString() == UserData.userMobile.toString()) &&
+            !dismissedNotifications_OPD.contains(notification['id'])));
         });
         _showStackableNotifications();
       }
@@ -71,7 +72,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
   void _clearNotification(int index) {
     setState(() {
-      dismissedNotifications.add(notifications[index]['emergency_id'] ?? notifications[index]['opd_id']);
+      dismissedNotifications_OPD.add(notifications[index]['emergency_id'] ?? notifications[index]['id']);
+      dismissedNotifications_emergency.add(notifications[index]['emergency_id'] ?? notifications[index]['id']);
       notifications.removeAt(index);
     });
   }
@@ -137,7 +139,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                             style: const TextStyle(fontSize: 14, color: Colors.black87),
                           ),
                           Text(
-                            'Booking ID: ${notification['emergency_id'] ?? notification['opd_id']}',
+                            'Booking ID: ${notification['id'] ?? notification['opd_id']}',
                             style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                           ),
                         ],
