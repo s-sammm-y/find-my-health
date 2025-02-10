@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:health_sync/Profile/drawer_slider.dart';
 
 class OPDBookTicket extends StatelessWidget {
   final SupabaseClient supabase;
@@ -7,7 +8,7 @@ class OPDBookTicket extends StatelessWidget {
   OPDBookTicket({required this.supabase});
 
   Future<List<Map<String, dynamic>>> fetchOpdBookings() async {
-    final response = await supabase.from('opd_bookings').select();
+    final response = await supabase.from('opd_bookings').select().eq('phone',UserData.userMobile.toString().substring(3));
 
     return List<Map<String, dynamic>>.from(response);
   }
