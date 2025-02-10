@@ -45,7 +45,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
       if (data.isNotEmpty) {
         setState(() {
           notifications.addAll(data.where((notification) =>
-            (notifications['phone']) == UserData.userMobile &&
+            //(notifications['phone']) == UserData.userMobile &&
             !dismissedNotifications.contains(notification['opd_id'])));
         });
         _showStackableNotifications();

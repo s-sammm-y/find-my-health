@@ -121,10 +121,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
               onTap: () => _signOut(context),
             ),
             const Divider(),
-            ListTile(
-              title: const Text('Change Language'),
-              onTap: () {},
-            ),
+            // ListTile(
+            //   title: const Text('Change Language'),
+            //   onTap: () {},
+            // ),
           ],
         ),
       ),
