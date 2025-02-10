@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:supabase_flutter/supabase_flutter.dart'; // Import Supabase
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:health_sync/screens/general.dart';
 
 class OPDBookingPage extends StatefulWidget {
   final String selectedDisease;
@@ -17,6 +19,12 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
   final TextEditingController _ageController = TextEditingController();
   final TextEditingController _aadhaarController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeNotifications();
+  }
 
   String? _selectedDate;
   String? _selectedTime;
@@ -70,14 +78,21 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
         'appointment_date': _selectedDate,
         'time_slot': _selectedTime,
         'created_at': DateTime.now().toIso8601String(),
-      });
-      // .select(); // Use `select()` for validation or omit it if unnecessary.
+      }).select();
 
-      // Check response for errors
       if (response.isNotEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Booking Successful!")),
         );
+        _showLocalNotification(disease, name);
+        if (mounted) {
+          Future.delayed(Duration(seconds: 1), () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => GeneralScreen()),
+            );
+          });
+        }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Error: Booking failed")),
@@ -87,9 +102,42 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
     catch (e) {
       // Handle exceptions
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Booked Done!")),
+        SnackBar(content: Text("Booking Done!")),
       );
     }
+  }
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
+  Future<void> _initializeNotifications() async {
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    final InitializationSettings initializationSettings =
+        InitializationSettings(android: initializationSettingsAndroid);
+
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  }
+
+  Future<void> _showLocalNotification(String disease, String name) async {
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+    AndroidNotificationDetails(
+      'opd_channel',
+      'OPD Alerts',
+      importance: Importance.high,
+      priority: Priority.high,
+      ticker: 'ticker',
+    );
+
+    const NotificationDetails platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      '🚨 OPD Booking Done!',
+      'Problem: $disease | Name: $name',
+      platformChannelSpecifics,
+    );
   }
 
   @override

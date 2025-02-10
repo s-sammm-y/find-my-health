@@ -141,7 +141,6 @@ Future<void> _initializeNotifications() async {
   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
 }
 
-// Show local notification
 Future<void> _showLocalNotification(String problem, String name) async {
   const AndroidNotificationDetails androidPlatformChannelSpecifics =
       AndroidNotificationDetails(
