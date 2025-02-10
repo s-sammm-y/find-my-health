@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart'; // Supabase package
 
-class GovernmentHospitalCard extends StatefulWidget {
-  const GovernmentHospitalCard({super.key});
+class GeneralWardHospitalCard extends StatefulWidget {
+  const GeneralWardHospitalCard({super.key});
 
   @override
-  State<GovernmentHospitalCard> createState() => _GovernmentHospitalCardState();
+  State<GeneralWardHospitalCard> createState() => _GeneralWardHospitalCardState();
 }
 
-class _GovernmentHospitalCardState extends State<GovernmentHospitalCard> {
+class _GeneralWardHospitalCardState extends State<GeneralWardHospitalCard> {
   int availableBeds = 0;
-  int totalBeds = 0;
+  final int totalBeds = 200; // Fixed total beds count
   String errorMessage = '';
 
   @override
@@ -23,14 +23,14 @@ class _GovernmentHospitalCardState extends State<GovernmentHospitalCard> {
     try {
       final supabase = Supabase.instance.client;
 
-      // Fetch total beds
-      final totalBedsResponse = await supabase.from('bed').select('bed_id');
-      // Fetch available beds where empty = true
-      final availableBedsResponse =
-          await supabase.from('bed').select('bed_id').eq('empty', true);
+      // Fetch available beds where empty = true for General Ward
+      final availableBedsResponse = await supabase
+          .from('bed')
+          .select('bed_id')
+          .eq('empty', true)
+          .eq('ward_id', 'general');
 
       setState(() {
-        totalBeds = totalBedsResponse.length;
         availableBeds = availableBedsResponse.length;
       });
     } catch (e) {
@@ -69,35 +69,13 @@ class _GovernmentHospitalCardState extends State<GovernmentHospitalCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const [
                     Text(
-                      'Calcutta National Medical College and Hospital',
+                      'General Ward',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 16.0,
-                      ),
-                    ),
-                    Text(
-                      '(Government Hospital)',
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 14.0,
+                        fontSize: 20.0,
                       ),
                     ),
                   ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-
-          // Address
-          Row(
-            children: const [
-              Icon(Icons.location_on, color: Colors.lightBlue, size: 20),
-              SizedBox(width: 5),
-              Expanded(
-                child: Text(
-                  '32 Gora Chand Road, Beniapukur, Kolkata, West Bengal 700014, KOLKATA METROPOLITAN AREA',
-                  style: TextStyle(color: Colors.black54, fontSize: 14.0),
                 ),
               ),
             ],

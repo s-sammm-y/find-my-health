@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:health_sync/second%20screen%20widget/gov_aided_cards.dart';
 import 'package:health_sync/second%20screen%20widget/goverment_cards.dart';
-import 'package:health_sync/second%20screen%20widget/pvt_hospitalcard.dart';
+
 import 'package:health_sync/widgets/book_ambulance.dart';
 
 class SecondScreen extends StatefulWidget {
@@ -31,11 +31,11 @@ class _SecondScreenState extends State<SecondScreen> {
                 child: Column(
                   children: <Widget>[
                     Text(
-                      'Book Ambulance',
+                      'Live Bed Tracking',
                       textAlign: TextAlign.left,
                       style: TextStyle(
                         color: Colors.lightBlue,
-                        fontSize: 15.0,
+                        fontSize: 18.0,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -83,7 +83,7 @@ class _SecondScreenState extends State<SecondScreen> {
                         });
                       },
                     ),
-                    title: const Text('Government Hospitals'),
+                    title: const Text('Generel Word'),
                   ),
                   ListTile(
                     leading: Radio<int>(
@@ -96,21 +96,9 @@ class _SecondScreenState extends State<SecondScreen> {
                         });
                       },
                     ),
-                    title: const Text('Govt. Requisitioned Pvt. Hospitals'),
+                    title: const Text('cardio ward'),
                   ),
-                  ListTile(
-                    leading: Radio<int>(
-                      value: 3,
-                      groupValue: _selectedHospitalType,
-                      activeColor: Colors.lightBlue,
-                      onChanged: (int? value) {
-                        setState(() {
-                          _selectedHospitalType = value!;
-                        });
-                      },
-                    ),
-                    title: const Text('Private Hospitals'),
-                  ),
+                  
                 ],
               ),
 
@@ -120,9 +108,9 @@ class _SecondScreenState extends State<SecondScreen> {
               IndexedStack(
                 index: _selectedHospitalType - 1,
                 children: const [
-                  GovernmentHospitalCard(),
-                  GovtRequisitionedHospitalCard(),
-                  PrivateHospitalCard(),
+                  GeneralWardHospitalCard(),
+                  CardioWardHospitalCard(),
+                  
                 ],
               ),
             ],

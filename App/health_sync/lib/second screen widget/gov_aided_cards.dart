@@ -1,7 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-class GovtRequisitionedHospitalCard extends StatelessWidget {
-  const GovtRequisitionedHospitalCard({super.key});
+class CardioWardHospitalCard extends StatefulWidget {
+  const CardioWardHospitalCard({super.key});
+
+  @override
+  _CardioWardHospitalCardState createState() =>
+      _CardioWardHospitalCardState();
+}
+
+class _CardioWardHospitalCardState
+    extends State<CardioWardHospitalCard> {
+  final SupabaseClient supabase = Supabase.instance.client;
+  int availableBeds = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchAvailableBeds();
+  }
+
+  Future<void> fetchAvailableBeds() async {
+    final response = await supabase
+        .from('bed')
+        .select('empty')
+        .eq('ward_id', 'cough'); // Fetch only 'Cardiac Ward' beds
+
+    if (response != null) {
+      int count = response.where((bed) => bed['empty'] == true).length;
+      setState(() {
+        availableBeds = count;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +46,7 @@ class GovtRequisitionedHospitalCard extends StatelessWidget {
             color: Colors.grey.withOpacity(0.3),
             spreadRadius: 2,
             blurRadius: 5,
-            offset: const Offset(0, 3), // changes position of shadow
+            offset: const Offset(0, 3),
           ),
         ],
       ),
@@ -25,24 +56,18 @@ class GovtRequisitionedHospitalCard extends StatelessWidget {
           // Hospital Name and Type
           Row(
             children: [
-              const Icon(Icons.local_hospital, color: Colors.lightBlue, size: 30),
+              const Icon(Icons.local_hospital,
+                  color: Colors.lightBlue, size: 30),
               const SizedBox(width: 10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const [
                     Text(
-                      'Govt. Requisitioned Pvt. Hospital Name',
+                      'Cardio Ward',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 16.0,
-                      ),
-                    ),
-                    Text(
-                      '(Govt. Requisitioned Pvt. Hospital)',
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 14.0,
+                        fontSize: 20.0,
                       ),
                     ),
                   ],
@@ -50,21 +75,7 @@ class GovtRequisitionedHospitalCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 10),
 
-          // Address
-          Row(
-            children: const [
-              Icon(Icons.location_on, color: Colors.lightBlue, size: 20),
-              SizedBox(width: 5),
-              Expanded(
-                child: Text(
-                  'Hospital Address for Govt. Requisitioned Pvt. Hospital',
-                  style: TextStyle(color: Colors.black54, fontSize: 14.0),
-                ),
-              ),
-            ],
-          ),
           const SizedBox(height: 16),
 
           // Beds Information
@@ -83,7 +94,7 @@ class GovtRequisitionedHospitalCard extends StatelessWidget {
                   ),
                   SizedBox(height: 5),
                   Text(
-                    '180',
+                    '180', // Keep total beds static or fetch from database if needed
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 28.0,
@@ -97,8 +108,8 @@ class GovtRequisitionedHospitalCard extends StatelessWidget {
                 color: Colors.grey.withOpacity(0.5),
               ),
               Column(
-                children: const [
-                  Text(
+                children: [
+                  const Text(
                     'Available Beds',
                     style: TextStyle(
                       color: Colors.lightBlue,
@@ -106,10 +117,10 @@ class GovtRequisitionedHospitalCard extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 5),
+                  const SizedBox(height: 5),
                   Text(
-                    '90',
-                    style: TextStyle(
+                    '$availableBeds', // Dynamic data from Supabase
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 28.0,
                     ),

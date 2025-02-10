@@ -64,7 +64,7 @@ class _GeneralScreenState extends State<GeneralScreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.document_scanner),
-            label: 'Docs',
+            label: 'Bookings',
           ),
         ],
         currentIndex: _selectedIndex,
