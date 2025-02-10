@@ -142,7 +142,7 @@ function App() {
       })}
 
       {/* Add bed trigger */}
-      <div className="Add_btn">
+      <div className="Add_btn exo-2-ward text-black">
           <button type="button" onClick={handlePopup}>
             Add beds
           </button>

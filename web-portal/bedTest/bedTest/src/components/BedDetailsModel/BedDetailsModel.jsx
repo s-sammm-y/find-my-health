@@ -10,7 +10,7 @@ function BedDetailsModal({ bedDetail, onClose ,onDelete}) {
         <div className="details">
           {bedDetail.map((data, index) => (
             <div key={index} className="flex flex-col mb-2">
-              <p>Patient ID: {data.dept_id}</p>
+              <p>Patient ID: {data.patient_id}</p>
               <p>Room No: {data.room}</p>
               <p>Ward: {data.ward_id}</p>
               <p>Department: {data.dept_id} </p>

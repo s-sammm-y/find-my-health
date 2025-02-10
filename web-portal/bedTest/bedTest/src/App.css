@@ -44,6 +44,7 @@
   border-radius: 10px;
   box-shadow: 0 5px 10px rgba(0,0,0,0.2);
   transition: transform 0.3s;
+  
 }
 
 .Add_btn {
@@ -76,4 +77,12 @@
 
 .Add_btn:hover {
   background-color: #035f76;
+}
+
+
+.exo-2-ward {
+  font-family: "Exo 2", serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
 }

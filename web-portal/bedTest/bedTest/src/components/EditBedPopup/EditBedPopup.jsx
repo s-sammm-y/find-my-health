@@ -9,6 +9,8 @@ function EditBedPopup({editVar,bedID}){
     const [editDept,setEditDept] = useState('');
     const [editWard,setEditWard] = useState('');
     const [editEmpty,setEditEmpty] = useState(false);
+    const [showSaveText,setShowSaveText] = useState(false)
+    const [showRemoveText,setShowRemoveText] = useState(false)
 
     const handleOnChangePatient=(data)=>{
         setEditPatient(data.target.value);
@@ -22,8 +24,7 @@ function EditBedPopup({editVar,bedID}){
         setEditWard(data.target.value);
     }
 
-    const handleSave= async(event)=>{
-        event.preventDefault();
+    const handleSave= async()=>{
         try{
             const response = await axios.put('http://localhost:3000/edit-bed',{
                 bed_id:BedId,
@@ -32,7 +33,8 @@ function EditBedPopup({editVar,bedID}){
                 patient_id:editPateint,
                 empty:editEmpty
             })
-            //console.log(response.data)
+            setShowSaveText(true)
+            //console.log('request sent',response.data)
         }catch(err){
             console.error('Error: in forntend',err.message)
             alert('Server Error')
@@ -48,6 +50,7 @@ function EditBedPopup({editVar,bedID}){
                 patient_id:null,
                 empty:null
             })
+            setShowRemoveText(true)
         }catch(err){
             console.error('Error in remove all',err)
             alert('Server Error')

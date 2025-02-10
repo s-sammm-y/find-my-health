@@ -70,7 +70,7 @@ export default function Popup({onChange}) {
 
 
     return (<>
-        <div className="popup-box">
+        <div className="popup-box exo-2-ward">
             <form>
                 <div className="pop-up-from">
                     {/* input box for bedId adding */}
@@ -82,14 +82,14 @@ export default function Popup({onChange}) {
 
                     {/* input for number of rooms */}
                     <div className="room-add-num">
-                        <label htmlFor="room-number ">Room</label>
-                        <input className='border border-green-600 m-2 rounded-md babu' type="number" value={roomNo} onChange={handleRoomNumber} />
+                        <label htmlFor="room-number ">Room:-</label>
+                        <input className='border border-black m-2 rounded-md babu' type="number" value={roomNo} onChange={handleRoomNumber} />
                     </div>
 
                     {/*input for ward */}
                     <div className="ward-add-id">
                         <label htmlFor="ward-name">Ward:-</label>
-                        <input className="border border-green-600 m-2 rounded-md babu" id='ward-id' type='text' value={wardID} onChange={handleWardName}/>
+                        <input className="border border-black m-2 rounded-md babu" id='ward-id' type='text' value={wardID} onChange={handleWardName}/>
                     </div>
 
                     {/* cancle or add button trigger */}

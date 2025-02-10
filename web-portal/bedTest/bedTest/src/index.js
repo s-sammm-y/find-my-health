@@ -143,7 +143,7 @@ app.put('/remove-bed-details',async (req,res)=>{
         empty:req.body.empty
     }
 
-    console.log(editBedDetails)
+    //console.log(editBedDetails)
 
     try{
         const {data,error} = await supabase.from('bed')
