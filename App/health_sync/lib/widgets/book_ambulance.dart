@@ -4,6 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:uuid/uuid.dart';
 import 'package:health_sync/Profile/drawer_slider.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class BookAmbulanceCard extends StatefulWidget {
   @override
@@ -19,10 +20,15 @@ class _BookAmbulanceCardState extends State<BookAmbulanceCard> {
   String problemDescription = '';
   bool isLoadingLocation = false;
 
+  stt.SpeechToText _speechToText = stt.SpeechToText();
+  bool _isListening = false;
+  TextEditingController _problemController = TextEditingController();
   @override
   void initState() {
     super.initState();
+    _initializeSpeech();
     _initializeNotifications();
+    _problemController = TextEditingController();
   }
 
   // void _startRecording() {
@@ -31,12 +37,53 @@ class _BookAmbulanceCardState extends State<BookAmbulanceCard> {
   //     recordedTime = "2:30";
   //   });
   // }
-
   // void _stopRecording() {
   //   setState(() {
   //     isRecording = false;
   //   });
   // }
+
+  Future<void> _initializeSpeech() async {
+    bool available = await _speechToText.initialize();
+    if (!available) {
+      print("Speech recognition not available");
+    }
+  }
+  void _startListening() async {
+    bool available = await _speechToText.initialize(
+      onStatus: (status) {
+        print("Speech status: $status");
+        if (status == "notListening") {
+          setState(() => _isListening = false); // Stop animation or update UI
+        }
+      },
+      onError: (error) {
+        print("Speech error: $error");
+      },
+    );
+
+    if (available) {
+      setState(() => _isListening = true);
+
+      _speechToText.listen(
+        onResult: (result) {
+          setState(() {
+            _problemController.text = result.recognizedWords;
+          });
+        },
+        listenFor: Duration(seconds: 5),
+        pauseFor: Duration(seconds: 2),
+        cancelOnError: true,
+      );
+    }
+  }
+
+  void _stopListening() {
+    setState(() {
+      _isListening = false;
+    });
+    _speechToText.stop();
+  }
 
   Future<void> _getLocation() async {
     setState(() {
@@ -222,11 +269,16 @@ Future<void> _showLocalNotification(String problem, String name) async {
               ),
               const SizedBox(height: 16.0),
               TextFormField(
+                controller: _problemController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
                   labelText: 'State your Problem',
+                  suffixIcon: IconButton(
+                    icon: Icon(_isListening ? Icons.mic_off : Icons.mic),
+                    onPressed: _isListening ? _stopListening : _startListening,
+                  ),
                 ),
-                onSaved: (value) => problemDescription = value!,
+                onSaved: (value) => problemDescription = value!, // Still needed for form submission
                 validator: (value) => value!.isEmpty ? 'Please describe the problem' : null,
               ),
               const SizedBox(height: 16.0),
