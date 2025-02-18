@@ -26,7 +26,7 @@ class _CardioWardHospitalCardState
         .select('empty')
         .eq('ward_id', 'cough'); // Fetch only 'Cardiac Ward' beds
 
-    if (response != null) {
+    if (response.isNotEmpty) {
       int count = response.where((bed) => bed['empty'] == true).length;
       setState(() {
         availableBeds = count;
