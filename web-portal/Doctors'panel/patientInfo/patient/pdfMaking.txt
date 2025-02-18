@@ -1,0 +1,11 @@
+change frontend
+add delete medicine feature
+In pdf add fields:	
+add need appointment
+todays date 
+next schedule 
+add patient name with age 
+
+Also need to make Emergency section in website
+fetch data
+show patient emergency queue

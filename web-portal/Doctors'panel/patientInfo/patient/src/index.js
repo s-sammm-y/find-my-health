@@ -3,7 +3,7 @@ import bodyParser from 'body-parser'
 import dotenv from 'dotenv'
 import { createClient } from '@supabase/supabase-js'
 import cors from 'cors'
-import { da } from 'date-fns/locale'
+import PDFDocument from 'pdfkit';
 
 
 dotenv.config()
@@ -66,3 +66,39 @@ app.post('/submit-medicine',async(req,res)=>{
         return res.status(500).json({message:'server error',error:err.message})
     }
 })
+
+app.post('/generate-pdf', async (req, res) => {
+    const pdfdata = req.body.pdfdata; // Array of prescription objects
+    console.log(pdfdata);
+
+    try {
+        const doc = new PDFDocument();
+        res.setHeader('Content-Type', "application/pdf");
+        res.setHeader('Content-Disposition', 'inline; filename="prescription.pdf"');
+
+        doc.pipe(res);
+
+        // Title
+        doc.fontSize(20).text("Doctor's Prescription", { align: 'center' }).moveDown(1.5);
+
+        pdfdata.forEach((item, index) => {
+            doc.fontSize(14).text(`Medicine ${index + 1}`, { underline: true }).moveDown(0.5);
+
+            if (item.description) {
+                doc.fontSize(12).text(`Description: ${item.description}`).moveDown(0.3);
+            }
+            doc.fontSize(12).text(`Medicine: ${item.medicine}`).moveDown(0.3);
+            doc.fontSize(12).text(`Dosage: ${item.dosage}`).moveDown(0.3);
+            doc.fontSize(12).text(`Frequency: ${item.frequency}`).moveDown(1);
+
+            doc.moveDown(1); // Space between prescriptions
+            doc.text('------------------------------------------------------').moveDown(1);
+        });
+
+        doc.end();
+    } catch (err) {
+        console.log("Something went wrong in backend", err);
+        res.status(500).send("Error generating PDF");
+    }
+});
+

@@ -19,6 +19,24 @@ const BackButton = () => {
     navigate('/'); // Adjust the route to the patient queue as needed
   };
 
+  //function to call generate pdf api
+  const genPdf = async () => {
+    try {
+        const response = await axios.post('http://localhost:5000/generate-pdf', {
+            pdfdata: selectedData
+        }, { responseType: 'blob' }); // Ensure the response is treated as a blob
+
+        const blob = await response.data;
+        const url = window.URL.createObjectURL(blob);
+        window.open(url);
+
+        console.log('PDF generated successfully');
+    } catch (err) {
+        console.error('Error caught in frontend PDF function', err.message);
+        alert('PDF API problem');
+    }
+};
+
   const handleSubmit = async() => {
     try{ 
       const response = await axios.post('http://localhost:5000/submit-medicine',{
@@ -55,6 +73,7 @@ const BackButton = () => {
   const handleDescriptionChange = async (value) => {
     setDescription(value); // Update the description state
   };
+
 
   //loading the description as sooon as child object is created inside the parent
   useEffect(() => {
@@ -137,6 +156,7 @@ const BackButton = () => {
                       name="advice-admission"
                       value="yes"
                       className='mr-2'
+                      
                     />
                     <label htmlFor="advice-admission-yes" className='text-sm'>Yes</label>
                   </div>
@@ -153,21 +173,30 @@ const BackButton = () => {
                 </div>
               </div>
             </div>
+            
+            <div className='buttons flex justify-center items-center gap-4 text-center p-3'>
+              <button
+                type="button"
+                onClick={handleSubmit}
+                className=' bg-sky-400 text-white py-2 px-3 rounded-lg hover:bg-sky-500 transition-colors duration-300 self-center'
+              >
+                Submit
+              </button>
 
-            <button
-              type="button"
-              onClick={handleSubmit}
-              className='bg-sky-400 text-white py-2 px-4 rounded-lg hover:bg-sky-500 transition-colors duration-300 self-center'
-            >
-              Submit
-            </button>
+              <button className='bg-sky-400 text-white py-2 px-4 rounded-lg hover:bg-sky-500 transition-colors duration-300 self-center'
+              onClick={genPdf}
+              type='button'>
+                PDF
+              </button>
+            </div>
           </form>
         </div>
 
-        <div className='flex flex-col w-[90%] gap-4'>
+        {/*maybe paditent queue details*/}
+        {/* <div className='flex flex-col w-[90%] gap-4'>
           <div className='bg-gray-300 h-[50%] text-center p-3'>Patient details...</div>
           <div className='bg-gray-300 h-[50%] text-center p-3'>Research...</div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
