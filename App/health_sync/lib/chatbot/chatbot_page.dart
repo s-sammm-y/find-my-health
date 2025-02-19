@@ -1,78 +1,128 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
-class ChatbotPage extends StatefulWidget {
+class ChatBotScreen extends StatefulWidget {
   @override
-  _ChatbotPageState createState() => _ChatbotPageState();
+  _ChatBotScreenState createState() => _ChatBotScreenState();
 }
 
-class _ChatbotPageState extends State<ChatbotPage> {
+class _ChatBotScreenState extends State<ChatBotScreen> {
   final TextEditingController _controller = TextEditingController();
   List<Map<String, String>> messages = [];
+  final String apiKey = "AIzaSyCdrHwzXKZxPDO62WebdPT3eQ4uOK7_pdQ";
+  bool isLoading = false;
 
-  void _sendMessage() {
-    String userMessage = _controller.text.trim();
-    if (userMessage.isNotEmpty) {
+  Future<void> sendMessage(String userMessage) async {
+    setState(() {
+      messages.add({"role": "user", "text": userMessage});
+      isLoading = true;
+    });
+
+    try {
+      final response = await http.post(
+        Uri.parse(
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=$apiKey"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "contents": [
+            {
+              "role": "user",
+              "parts": [
+                {"text": userMessage}
+              ]
+            }
+          ],
+          "generationConfig": {
+            "maxOutputTokens": 100,
+            "temperature": 0.7, // Controls randomness
+            "topP": 0.8 // Limit response to 150 tokens
+          }
+        }),
+      );
+
+      print("Response Status: ${response.statusCode}");
+      print("Response Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final responseBody = jsonDecode(response.body);
+        String botReply = responseBody["candidates"]?[0]?["content"]?["parts"]
+                ?[0]?["text"] ??
+            "I couldn't understand that.";
+
+        setState(() {
+          messages.add({"role": "bot", "text": botReply});
+        });
+      } else {
+        setState(() {
+          messages.add({
+            "role": "bot",
+            "text": "Error: ${response.body}"
+          }); // Show full error
+        });
+      }
+    } catch (e) {
       setState(() {
-        messages.add({'role': 'user', 'text': userMessage});
-        messages.add({'role': 'bot', 'text': 'Processing...'}); // Placeholder for chatbot response
+        messages.add({"role": "bot", "text": "Error: $e"});
       });
-      _controller.clear();
-      
-      // Future integration: Replace 'Processing...' with actual chatbot response
     }
+
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Chatbot'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Text("Gemini Chatbot")),
       body: Column(
         children: [
           Expanded(
             child: ListView.builder(
-              padding: EdgeInsets.all(10),
               itemCount: messages.length,
               itemBuilder: (context, index) {
-                bool isUser = messages[index]['role'] == 'user';
+                bool isUser = messages[index]["role"] == "user";
                 return Align(
-                  alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
+                  alignment:
+                      isUser ? Alignment.centerRight : Alignment.centerLeft,
                   child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 14),
-                    margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                    padding: EdgeInsets.all(10),
+                    margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                     decoration: BoxDecoration(
                       color: isUser ? Colors.blueAccent : Colors.grey[300],
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Text(
-                      messages[index]['text']!,
-                      style: TextStyle(color: isUser ? Colors.white : Colors.black87),
-                    ),
+                    child: Text(messages[index]["text"] ?? "",
+                        style: TextStyle(
+                            color: isUser ? Colors.white : Colors.black)),
                   ),
                 );
               },
             ),
           ),
+          if (isLoading) CircularProgressIndicator(),
           Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
                 Expanded(
                   child: TextField(
                     controller: _controller,
                     decoration: InputDecoration(
-                      hintText: 'Enter a message...',
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
-                    ),
+                        hintText: "Ask something...",
+                        border: OutlineInputBorder()),
                   ),
                 ),
-                SizedBox(width: 8),
                 IconButton(
-                  icon: Icon(Icons.send, color: Colors.blueAccent),
-                  onPressed: _sendMessage,
-                )
+                  icon: Icon(Icons.send, color: Colors.blue),
+                  onPressed: () {
+                    if (_controller.text.isNotEmpty) {
+                      sendMessage(_controller.text);
+                      _controller.clear();
+                    }
+                  },
+                ),
               ],
             ),
           ),

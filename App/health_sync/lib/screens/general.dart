@@ -42,7 +42,7 @@ class _GeneralScreenState extends State<GeneralScreen> {
           // Navigate to the Chatbot page when the button is clicked
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ChatbotPage()),
+            MaterialPageRoute(builder: (context) => ChatBotScreen()),
           );
         },
         
