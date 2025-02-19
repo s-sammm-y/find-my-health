@@ -4,44 +4,16 @@ import 'package:health_sync/widgets/opd_booking.dart'; // Import the OPD Booking
 class CityHospitalList extends StatelessWidget {
   final List<Map<String, String>> diseases = [
     {
-      "name": "Influenza",
-      "image": "https://influenzahub.com/wp-content/uploads/2023/02/influenza-rsv.jpg"
+      "name": "Chest OPD",
+      "image": "https://lasecosmetic.com/wp-content/uploads/2019/12/Breast-Chest-Male-Chest-Redefinition-Surgery-1.jpg"
     },
     {
-      "name": "Dengue",
-      "image": "https://www.cdc.gov/dengue/images/socialmedia/LVV7_Aedes_aegypti_Adult_Feeding_2022_029.jpg"
+      "name": "Dental OPD",
+      "image": "https://dentallavelle.com/wp-content/uploads/2019/06/Dental-Lavelle-Why-you-need-to-visit-your-Dentist-every-6-months.jpg"
     },
     {
-      "name": "COVID-19",
-      "image": "https://lh6.googleusercontent.com/proxy/_hqesV327apghyZcw6CyNpIGK5nSqArxGaFzVNkZFkCO9CS_b7W8ahN_grFdg_sHUy8xRWXfDaQVG1TwAzSaP0z2mGGXMcs_G4xxd9IJ"
-    },
-    {
-      "name": "Malaria",
-      "image": "https://cdn.baptistjax.com//image/upload/c_fill,g_auto,f_auto,q_auto,w_580/v1688586960/Juice/Malaria_Juice.jpg"
-    },
-    {
-      "name": "Typhoid",
-      "image": "https://www.mdrcindia.com/uploads/blog/122023//251701689993.jpeg"
-    },
-    {
-      "name": "Chikungunya",
-      "image": "https://example.com/images/chikungunya.png"
-    },
-    {
-      "name": "Hepatitis B",
-      "image": "https://example.com/images/hepatitis_b.png"
-    },
-    {
-      "name": "Tuberculosis",
-      "image": "https://example.com/images/tuberculosis.png"
-    },
-    {
-      "name": "Pneumonia",
-      "image": "https://example.com/images/pneumonia.png"
-    },
-    {
-      "name": "Asthma",
-      "image": "https://example.com/images/asthma.png"
+      "name": "General OPD",
+      "image": "https://nmc.ae/_next/image?url=https%3A%2F%2Fstatic-cdn.nmc.ae%2Fstrapi%2FGeneral_Medicine_Getty_Images_175264754_706x500px_8673c31a59.jpg&w=3840&q=75"
     },
   ];
 
@@ -54,66 +26,74 @@ class CityHospitalList extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Trending Diseases Title
-            Text(
-              "Trending Diseases",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+            // Title
+            const Text(
+              "Our OPD Services",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
 
-            // Disease List
+            // Grid of OPD Services
             Expanded(
-              child: ListView.builder(
+              child: GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2, // 2 columns
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  childAspectRatio: 0.9, // Adjust for a balanced look
+                ),
                 itemCount: diseases.length,
                 itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          
+                          builder: (context) => OPDBookingPage(
+                            selectedDisease: diseases[index]["name"]!,
+                            
+                          ),
+                        ),
+                      );
+                    },
                     child: Card(
                       elevation: 3,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: ListTile(
-                        leading: ClipRRect(
-                          borderRadius: BorderRadius.circular(8), // Rounded corners
-                          child: Image.network(
-                            diseases[index]["image"]!,
-                            width: 70,
-                            height: 60,
-                            fit: BoxFit.cover,
-                            loadingBuilder: (context, child, loadingProgress) {
-                              if (loadingProgress == null) return child;
-                              return SizedBox(
-                                width: 50,
-                                height: 50,
-                                child: Center(
-                                  child: CircularProgressIndicator(),
-                                ),
-                              );
-                            },
-                            errorBuilder: (context, error, stackTrace) {
-                              return Icon(Icons.error, size: 50, color: Colors.red);
-                            },
-                          ),
-                        ),
-                        title: Text(
-                          diseases[index]["name"]!,
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                        ),
-                        subtitle: Text("Common disease in recent trends", style: TextStyle(fontSize: 14)),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => OPDBookingPage(
-                                selectedDisease: diseases[index]["name"]!,
-                              ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          // Disease Image
+                          ClipRRect(
+                            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                            child: Image.network(
+                              diseases[index]["image"]!,
+                              height: 100,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                              loadingBuilder: (context, child, loadingProgress) {
+                                if (loadingProgress == null) return child;
+                                return const SizedBox(
+                                  height: 100,
+                                  child: Center(child: CircularProgressIndicator()),
+                                );
+                              },
+                              errorBuilder: (context, error, stackTrace) {
+                                return const Icon(Icons.error, size: 50, color: Colors.red);
+                              },
                             ),
-                          );
-                        },
+                          ),
+                          const SizedBox(height: 8),
+                          
+                          // Disease Name
+                          Text(
+                            diseases[index]["name"]!,
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
                       ),
                     ),
                   );

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 class ChatBotScreen extends StatefulWidget {
@@ -10,7 +11,7 @@ class ChatBotScreen extends StatefulWidget {
 class _ChatBotScreenState extends State<ChatBotScreen> {
   final TextEditingController _controller = TextEditingController();
   List<Map<String, String>> messages = [];
-  final String apiKey = "AIzaSyCdrHwzXKZxPDO62WebdPT3eQ4uOK7_pdQ";
+  final String? apiKey = dotenv.env['apiKey'];
   bool isLoading = false;
 
   Future<void> sendMessage(String userMessage) async {
@@ -75,7 +76,17 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Gemini Chatbot")),
+      appBar: AppBar(title: Text("Health Sync AI"),
+      actions: [
+    IconButton(
+      icon: Icon(Icons.delete, color: const Color.fromARGB(255, 0, 0, 0)),
+      onPressed: () {
+        setState(() {
+          messages.clear(); // Clears all chat messages
+        });
+      },
+    ),
+  ],),
       body: Column(
         children: [
           Expanded(
