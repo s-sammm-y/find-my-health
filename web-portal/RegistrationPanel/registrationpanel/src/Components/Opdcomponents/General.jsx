@@ -150,7 +150,7 @@ const General = () => {
   return (
     <div className='flex w-full h-screen bg-sky-100'>
       <div className='flex-1 h-screen bg-sky-100 relative mr-4'>
-        <div className='absolute top-0 left-0 right-0 bottom-0 bg-white overflow-y-auto p-4'>
+        <div className='absolute top-[1rem] left-0 right-0 bottom-0 bg-white overflow-y-auto p-4 mt-4'>
           <h1 className='text-[20px] text-center font-bold'>General</h1>
           <div className='my-4'>
             <select

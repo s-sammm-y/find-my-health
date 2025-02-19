@@ -113,68 +113,63 @@ const Skin = () => {
   return (
     <div className='flex w-full h-screen bg-sky-100'>
       <div className='flex-1 h-screen bg-sky-100 relative mr-4'>
-        <div className='bg-gray-200 w-full h-[20%] text-center text-3xl font-bold p-10'>
-          REGISTER NEW PATIENT
-        </div>
-
-        <div className='absolute top-[25%] left-0 right-0 bottom-0 bg-white overflow-y-auto p-4 mt-4'>
-
-          <h1 className='text-[20px] text-center font-bold'>Skin</h1>
-          <div className='my-4'>
-            <select
-              className='w-full bg-gray-200 p-2 rounded-md'
-              onChange={handleDropdownChange} // Handle change event
-            >
-              <option value="" disabled selected>Select Doctor</option>
-              <option value="Doctor 1">Doctor 1</option>
-              <option value="Doctor 2">Doctor 2</option>
-              <option value="Doctor 3">Doctor 3</option>
-            </select>
-          </div>
-          <div className='h-[110px] w-[100%] border-slate-500 border flex items-center'>
-            <div className='flex items-center'>
-              <div className='h-[90px] w-[90px] border-slate-600 border m-2'></div>
-              <div className='mr-5'>
-                <h1 className='font-bold ml-[8px] m-[1px]'>{selectedDoctor || "Doctor's Name"}</h1> {/* Display selected doctor */}
-                <h2>Doctor's Qualification</h2>
-              </div>
-            </div>
-          </div>
-          <div className='flex items-center gap-[50px] m-5 ml-[0px]'>
-            <button
-              className={`w-[400px] h-[40px] border-zinc-600 p-2 rounded hover:bg-sky-500 ${tokenType === 'MORNING' ? 'bg-sky-500 text-white' : 'bg-sky-300 text-black'} ${!selectedDoctor ? 'cursor-not-allowed opacity-50' : ''}`}
-              onClick={handleMorningClick} // Set token type to MORNING
-              disabled={!selectedDoctor} // Disable button if no doctor is selected
-            >
-              MORNING
-            </button>
-            <button
-              className={`w-[450px] h-[40px] border-zinc-600 p-2 rounded hover:bg-sky-500 ${tokenType === 'EVENING' ? 'bg-sky-500 text-white' : 'bg-sky-300 text-black'} ${!selectedDoctor ? 'cursor-not-allowed opacity-50' : ''}`}
-              onClick={handleEveningClick} // Set token type to EVENING
-              disabled={!selectedDoctor} // Disable button if no doctor is selected
-            >
-              EVENING
-            </button>
-          </div>
-          <div className='flex items-center gap-[300px]'>
-            <h1 className='text-[20px] font-bold'>Today's Bookings</h1>
-            <button
-              className='w-[140px] h-[40px] border-zinc-600 bg-sky-300 text-black p-2 rounded hover:bg-sky-500'
-              onClick={handleAddToken} // Handle click event
-            >
-              Add Token+ {tokenType === 'MORNING' ? morningTokenCount : eveningTokenCount} {/* Display token count inside the button */}
-            </button>
-          </div>
-
-          {tokenType && ( // Render token boxes only if tokenType is set
-            <div className='h-[200px] w-[99%] border-slate-500 border m-3 ml-1 overflow-y-auto'>
-              <div className='grid grid-cols-5 gap-2 p-2'>
-                {renderTokenBoxes()}
-              </div>
-            </div>
-          )}
+  <div className='absolute top-[1rem] left-0 right-0 bottom-0 bg-white overflow-y-auto p-4 mt-4'>
+    <h1 className='text-[20px] text-center font-bold'>Skin</h1>
+    <div className='my-4'>
+      <select
+        className='w-full bg-gray-200 p-2 rounded-md'
+        onChange={handleDropdownChange} // Handle change event
+      >
+        <option value="" disabled selected>Select Doctor</option>
+        <option value="Doctor 1">Doctor 1</option>
+        <option value="Doctor 2">Doctor 2</option>
+        <option value="Doctor 3">Doctor 3</option>
+      </select>
+    </div>
+    <div className='h-[110px] w-[100%] border-slate-500 border flex items-center'>
+      <div className='flex items-center'>
+        <div className='h-[90px] w-[90px] border-slate-600 border m-2'></div>
+        <div className='mr-5'>
+          <h1 className='font-bold ml-[8px] m-[1px]'>{selectedDoctor || "Doctor's Name"}</h1>
+          <h2>Doctor's Qualification</h2>
         </div>
       </div>
+    </div>
+    <div className='flex items-center gap-[50px] m-5 ml-[0px]'>
+      <button
+        className={`w-[400px] h-[40px] border-zinc-600 p-2 rounded hover:bg-sky-500 ${tokenType === 'MORNING' ? 'bg-sky-500 text-white' : 'bg-sky-300 text-black'} ${!selectedDoctor ? 'cursor-not-allowed opacity-50' : ''}`}
+        onClick={handleMorningClick}
+        disabled={!selectedDoctor}
+      >
+        MORNING
+      </button>
+      <button
+        className={`w-[450px] h-[40px] border-zinc-600 p-2 rounded hover:bg-sky-500 ${tokenType === 'EVENING' ? 'bg-sky-500 text-white' : 'bg-sky-300 text-black'} ${!selectedDoctor ? 'cursor-not-allowed opacity-50' : ''}`}
+        onClick={handleEveningClick}
+        disabled={!selectedDoctor}
+      >
+        EVENING
+      </button>
+    </div>
+    <div className='flex items-center gap-[300px]'>
+      <h1 className='text-[20px] font-bold'>Today's Bookings</h1>
+      <button
+        className='w-[140px] h-[40px] border-zinc-600 bg-sky-300 text-black p-2 rounded hover:bg-sky-500'
+        onClick={handleAddToken}
+      >
+        Add Token+ {tokenType === 'MORNING' ? morningTokenCount : eveningTokenCount}
+      </button>
+    </div>
+    {tokenType && (
+      <div className='h-[200px] w-[99%] border-slate-500 border m-3 ml-1 overflow-y-auto'>
+        <div className='grid grid-cols-5 gap-2 p-2'>
+          {renderTokenBoxes()}
+        </div>
+      </div>
+    )}
+  </div>
+</div>
+
 
       <div className='flex-1 h-screen bg-sky-100 relative ml-4'>
         <div className='bg-gray-200 w-full h-[20%] font-medium text-xl p-6 text-center'>
