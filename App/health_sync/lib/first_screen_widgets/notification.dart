@@ -47,7 +47,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
         setState(() {
           notifications.addAll(data.where((notification) =>
             ("+91"+notification['phone'].toString() == UserData.userMobile.toString()) &&
-            !dismissedNotifications_OPD.contains(notification['id'])));
+            !dismissedNotifications_OPD.contains(notification['id'].toString())));
         });
         _showStackableNotifications();
       }
@@ -72,10 +72,14 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
   void _clearNotification(int index) {
     setState(() {
-      dismissedNotifications_OPD.add(notifications[index]['emergency_id'] ?? notifications[index]['id']);
-      dismissedNotifications_emergency.add(notifications[index]['emergency_id'] ?? notifications[index]['id']);
-      notifications.removeAt(index);
-    });
+    final notification = notifications[index];
+    if (notification.containsKey('problem')) {
+      dismissedNotifications_emergency.add(notification['emergency_id']);
+    } else {
+      dismissedNotifications_OPD.add(notification['id'].toString());
+    }
+    notifications.removeAt(index);
+  });
   }
 
   @override
@@ -103,7 +107,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 final notification = notifications[index];
                 final isEmergency = notification.containsKey('problem');
                 return Dismissible(
-                  key: Key(notification['emergency_id']?.toString() ?? notification['opd_id']?.toString() ?? UniqueKey().toString()),
+                  key: Key(notification['emergency_id']?.toString() ?? notification['id']?.toString() ?? UniqueKey().toString()),
                   onDismissed: (direction) => _clearNotification(index),
                   background: Container(
                     color: Colors.red,
@@ -139,7 +143,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                             style: const TextStyle(fontSize: 14, color: Colors.black87),
                           ),
                           Text(
-                            'Booking ID: ${notification['id'] ?? notification['opd_id']}',
+                            'Booking ID: ${notification['emergency_id'] ?? notification['id']}',
                             style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                           ),
                         ],
