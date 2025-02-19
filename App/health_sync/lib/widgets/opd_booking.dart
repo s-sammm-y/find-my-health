@@ -23,7 +23,7 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
 
   String? _selectedDate;
   String? _selectedTime;
-  final List<String> _timeSlots = ["Morning", "Afternoon"];
+  final List<String> _timeSlots = ["morning", "afternoon"];
 
   @override
   void initState() {
@@ -80,7 +80,7 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
     String age = _ageController.text;
     String aadhaar = _aadhaarController.text;
     String address = _addressController.text;
-    String disease = widget.selectedDisease;
+    String dept = widget.selectedDisease;
 
     if (name.isEmpty ||
         phone.isEmpty ||
@@ -102,13 +102,14 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
     }
 
     try {
+      //if(_selectedTime)
       final response = await Supabase.instance.client.from('opd_bookings').insert({
         'name': name,
         'phone': phone,
         'age': age,
         'aadhar': aadhaar,
         'address': address,
-        'OPD_dept': disease,
+        'OPD_dept': dept,
         'appointment_date': _selectedDate,
         'time_slot': _selectedTime,
         'created_at': DateTime.now().toIso8601String(),
@@ -119,7 +120,7 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Booking Successful!")),
         );
-        _showLocalNotification(disease, name);
+        _showLocalNotification(dept, name);
         if (mounted) {
           Future.delayed(Duration(seconds: 1), () {
             Navigator.pushReplacement(
@@ -153,7 +154,7 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
-  Future<void> _showLocalNotification(String disease, String name) async {
+  Future<void> _showLocalNotification(String dept, String name) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
       'opd_channel',
@@ -162,7 +163,6 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
       priority: Priority.high,
       ticker: 'ticker',
     );
-    String dept = disease.substring(0,disease.length-3);
 
     const NotificationDetails platformChannelSpecifics =
         NotificationDetails(android: androidPlatformChannelSpecifics);
@@ -170,7 +170,7 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
     await flutterLocalNotificationsPlugin.show(
       0,
       '🚨 OPD Booking Done!',
-      'OPD Department: $dept | Name: $name',
+      'Department: $dept | Name: $name',
       platformChannelSpecifics,
     );
   }
