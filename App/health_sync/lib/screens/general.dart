@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:health_sync/Profile/drawer_slider.dart';
 import 'package:health_sync/chatbot/chatbot_page.dart';
-
 import 'package:health_sync/first_screen_widgets/notification.dart';
 import 'package:health_sync/screens/first_screen.dart';
 import 'package:health_sync/screens/second_screen.dart';
@@ -31,7 +30,7 @@ class _GeneralScreenState extends State<GeneralScreen> {
       backgroundColor: Colors.white,
       appBar: const PreferredSize(
         preferredSize:
-            Size.fromHeight(130.0), // Adjusting height to fit the search bar
+            Size.fromHeight(80.0), // Adjusting height after removing search bar
         child: TopBar(), // Adding the custom top bar
       ),
       drawer: const CustomDrawer(),
@@ -45,7 +44,6 @@ class _GeneralScreenState extends State<GeneralScreen> {
             MaterialPageRoute(builder: (context) => ChatBotScreen()),
           );
         },
-        
         backgroundColor: Colors.blue,
         child: const Icon(Icons.chat),
       ),
@@ -74,7 +72,7 @@ class _GeneralScreenState extends State<GeneralScreen> {
     );
   }
 
-    Widget _buildBody() {
+  Widget _buildBody() {
     switch (_selectedIndex) {
       case 0:
         return const FirstScreen();
@@ -86,54 +84,17 @@ class _GeneralScreenState extends State<GeneralScreen> {
         return const FirstScreen();
     }
   }
-
 }
+
 
 // Top bar implementation
-class TopBar extends StatefulWidget {
+class TopBar extends StatelessWidget {
   const TopBar({super.key});
-
-  @override
-  State<TopBar> createState() => _TopBarState();
-}
-
-class _TopBarState extends State<TopBar> {
-  final TextEditingController _searchController =
-      TextEditingController(); // To control the input text
-  final SupabaseClient _supabase =
-      Supabase.instance.client; // Initialize Supabase client
-
-  // Function to check if the city is available in Supabase
-  Future<bool> _isCityAvailable(String cityName) async {
-  try {
-    final response = await _supabase
-        .from('cities')
-        .select('*') // Selecting all columns to see what's returned
-        .eq('city', cityName)
-        .single(); // Fetch a single result if available, or return null
-
-    // Print the response for debugging
-    print('Response: $response');
-
-    // ignore: unnecessary_null_comparison
-    if (response == null) {
-      print('City not found');
-      return false;
-    }
-
-    print('City found: ${response['name']}');
-    return true;
-  } catch (error) {
-    print('Error fetching city: $error');
-    return false;
-  }
-}
-
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 14.0),
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
@@ -175,66 +136,14 @@ class _TopBarState extends State<TopBar> {
                     color: Colors.lightBlue, size: 28),
                 onPressed: () {
                   Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => NotificationScreen(),
-          ),
-        );
-                  // Add your functionality here
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => NotificationScreen(),
+                    ),
+                  );
                 },
               ),
             ],
-          ),
-          const SizedBox(height: 10), // Space between row and search bar
-
-          // Search Bar
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(30.0),
-                border:
-                    Border.all(color: Colors.grey.withOpacity(0.5), width: 1.0),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                child: TextField(
-                  controller:
-                      _searchController, // Attach the controller to capture user input
-                  decoration: InputDecoration(
-                    hintText: 'Search your Disease',
-                    hintStyle:
-                        TextStyle(color: Colors.lightBlue.withOpacity(0.5)),
-                    border: InputBorder.none,
-                    icon: const Icon(Icons.search, color: Colors.lightBlue),
-                  ),
-                  onSubmitted: (String cityName) async {
-                    if (cityName.isNotEmpty) {
-                      // Show a loading indicator while searching
-                      showDialog(
-                        context: context, 
-                        barrierDismissible: false,
-                        builder: (BuildContext context) {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        },
-                      );
-
-                      // Check if the city is available in Supabase
-                      // ignore: unused_local_variable
-                      bool isAvailable = await _isCityAvailable(cityName);
-
-                      // Hide the loading indicator after the check
-                      Navigator.pop(context);
-
-                      // If available, navigate to CityHospitalList page
-                      
-                    }
-                  },
-                ),
-              ),
-            ),
           ),
         ],
       ),
