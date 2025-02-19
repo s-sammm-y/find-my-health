@@ -14,6 +14,8 @@ const BackButton = () => {
   const [addMed, setAddMed] = useState(0);
   const [selectedData, setSelectedData] = useState([]);
   const [description, setDescription] = useState(''); // New state for textarea
+  const [patientName,setPatientName] = useState('');
+  const [patientAge,setPatientAge] = useState('');
 
   const handleClick = () => {
     navigate('/'); // Adjust the route to the patient queue as needed
@@ -23,7 +25,10 @@ const BackButton = () => {
   const genPdf = async () => {
     try {
         const response = await axios.post('http://localhost:5000/generate-pdf', {
-            pdfdata: selectedData
+            pdfdata: selectedData,
+            name:patientName,
+            age:patientAge,
+            date:selectedDate
         }, { responseType: 'blob' }); // Ensure the response is treated as a blob
 
         const blob = await response.data;
@@ -59,6 +64,13 @@ const BackButton = () => {
     setSelectedData(prevData => [...prevData, { description: '', medicine: '', dosage: '', frequency: ''}]); // Initialize new medicine data
   };
 
+  //deleting a specific meducine
+  const handleDelete = (index)=>{
+    const updatedData = selectedData.filter((_,i)=> i!==index);
+    setSelectedData(updatedData);
+    setAddMed(prev=>prev-1)
+  }
+
   // Function to update selected medicine data
   const updateSelectedMedicine = (index, medicineData) => {
     setSelectedData(prev => {
@@ -68,6 +80,17 @@ const BackButton = () => {
       return newSelected;
     });
   };
+
+  //function to change handlePatient Name
+  const handlePatientName = (e)=>{
+    setPatientName(e.target.value);
+    console.log(patientName)
+  }
+
+  const handlePatientAge = (e)=>{
+    setPatientAge(e.target.value)
+    console.log(patientAge)
+  }
 
   //function to set description
   const handleDescriptionChange = async (value) => {
@@ -100,11 +123,30 @@ const BackButton = () => {
         Back to the Patient Queue
       </button>
 
+
       <div className='flex w-full h-[90%] gap-4'>
-        <div className='w-full max-w-[68vh] bg-white shadow-2xl flex flex-col items-start h-full p-4 overflow-auto'>
+        <div className='w-full bg-white shadow-2xl flex flex-col items-start h-full p-4 overflow-auto'>
           <form className='w-full h-full flex flex-col space-y-4'>
             <div className='bg-gray-100 p-4 rounded-lg space-y-4 w-full'>
               <p className='font-bold'>Medicine</p>
+
+                <label htmlFor="patient-name">
+                  Name:-
+                </label>
+
+                <input type="text" className='bg-slate-200 rounded-lg p-2 w-full' 
+                value={patientName}
+                onChange={handlePatientName}/>
+
+
+                <label htmlFor="patient-age" className='pr-4'
+                >
+                  Age:-
+                </label>
+                
+                <input type="text" className='bg-slate-200 rounded-lg p-2 w-20' 
+                onChange={handlePatientAge}
+                value={patientAge}/>
 
               {/* Render the Dosage component addMed times */}
               {Array.from({ length: addMed }).map((_, index) => (
@@ -112,6 +154,7 @@ const BackButton = () => {
                   key={index}
                   updateSelectedMedicine={updateSelectedMedicine} // Pass the function directly
                   index={index} // Pass the index for identification
+                  deleteMedicine={handleDelete}
                 />
               ))}
 

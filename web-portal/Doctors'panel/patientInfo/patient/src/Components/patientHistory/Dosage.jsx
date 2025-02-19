@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-export default function Medicine({ updateSelectedMedicine, index }) {
+export default function Medicine({ updateSelectedMedicine, index ,deleteMedicine}) {
     const [categoryDetails, setCategoryDetails] = useState([]);
     const [medicineOptions, setMedicineOptions] = useState([]);
     const [changedData, setChangedData] = useState({ description:'',medicine: '', dosage: '', frequency: ''});
+    const [currentIndex,setCurrentIndex]=useState(index);
 
     // Fetch categories
     useEffect(() => {
@@ -91,6 +92,15 @@ export default function Medicine({ updateSelectedMedicine, index }) {
                         <option key={data.id} value={data.name}>{data.name}</option>
                     ))}
                 </select>
+
+                <div className='pt-4'>
+                    <button type='button' 
+                    className='bg-red-400 text-white py-2 px-4 rounded-lg hover:bg-sky-500 transition-colors duration-300 self-center'
+                    onClick={()=>deleteMedicine(currentIndex)}
+                    >
+                        Remove
+                    </button>
+                </div>
             </div>
         </div>
     );

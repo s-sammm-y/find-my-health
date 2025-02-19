@@ -69,6 +69,9 @@ app.post('/submit-medicine',async(req,res)=>{
 
 app.post('/generate-pdf', async (req, res) => {
     const pdfdata = req.body.pdfdata; // Array of prescription objects
+    const name = req.body.name;
+    const age = req.body.age;
+    const date = req.body.date;
     console.log(pdfdata);
 
     try {
@@ -81,6 +84,12 @@ app.post('/generate-pdf', async (req, res) => {
         // Title
         doc.fontSize(20).text("Doctor's Prescription", { align: 'center' }).moveDown(1.5);
 
+        // Patient Information
+        doc.fontSize(12).text(`Name: ${name}`, { align: 'left' }).moveDown(0.5);
+        doc.fontSize(12).text(`Age: ${age}`, { align: 'left' }).moveDown(0.5);
+        doc.fontSize(12).text(`Next Appointment Date: ${date}`, { align: 'left' }).moveDown(1);
+
+        // Loop through the pdfdata to add medicine details
         pdfdata.forEach((item, index) => {
             doc.fontSize(14).text(`Medicine ${index + 1}`, { underline: true }).moveDown(0.5);
 
@@ -95,10 +104,21 @@ app.post('/generate-pdf', async (req, res) => {
             doc.text('------------------------------------------------------').moveDown(1);
         });
 
+        // Set the Y position for the line to be a fixed position at the bottom of the page
+        const bottomMargin = 40; // Space from the bottom of the page
+        const lineYPosition = doc.page.height - bottomMargin; // Fixed position for the line
+
+        // Draw the line at the bottom
+        doc.moveTo(50, lineYPosition)  // Starting point of the line (horizontal)
+           .lineTo(550, lineYPosition) // End point of the line (horizontal)
+           .stroke(); // Draw the line
+
         doc.end();
     } catch (err) {
         console.log("Something went wrong in backend", err);
         res.status(500).send("Error generating PDF");
     }
 });
+
+
 
