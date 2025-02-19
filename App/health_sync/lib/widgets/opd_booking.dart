@@ -94,15 +94,21 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
       );
       return;
     }
+    if(aadhaar.length != 12){
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Invalid Aadhar Number !")),
+      );
+      return;
+    }
 
     try {
       final response = await Supabase.instance.client.from('opd_bookings').insert({
         'name': name,
         'phone': phone,
         'age': age,
-        'aadhaar': aadhaar,
+        'aadhar': aadhaar,
         'address': address,
-        'disease': disease,
+        'OPD_dept': disease,
         'appointment_date': _selectedDate,
         'time_slot': _selectedTime,
         'created_at': DateTime.now().toIso8601String(),
@@ -156,6 +162,7 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
       priority: Priority.high,
       ticker: 'ticker',
     );
+    String dept = disease.substring(0,disease.length-3);
 
     const NotificationDetails platformChannelSpecifics =
         NotificationDetails(android: androidPlatformChannelSpecifics);
@@ -163,7 +170,7 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
     await flutterLocalNotificationsPlugin.show(
       0,
       '🚨 OPD Booking Done!',
-      'Problem: $disease | Name: $name',
+      'OPD Department: $dept | Name: $name',
       platformChannelSpecifics,
     );
   }
@@ -187,13 +194,13 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
                 readOnly: true,
                 initialValue: widget.selectedDisease,
                 decoration: InputDecoration(
-                  labelText: "Selected Disease",
+                  labelText: "Selected OPD Department",
                   border: OutlineInputBorder(),
                 ),
               ),
             ),
             _buildTextField("Age", _ageController, TextInputType.number),
-            _buildTextField("Aadhaar Number", _aadhaarController, TextInputType.number),
+            _buildTextField("Aadhar Number", _aadhaarController, TextInputType.number),
             _buildTextField("Address", _addressController, TextInputType.text, maxLines: 2),
             ListTile(
               title: Text(_selectedDate ?? "Select Appointment Date"),
