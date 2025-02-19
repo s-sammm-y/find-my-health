@@ -216,28 +216,28 @@ const General = () => {
         <div className='absolute top-[25%] left-0 right-0 bottom-0 bg-white overflow-y-auto p-4 mt-4'>
           <div className='flex justify-between items-center'>
             <div>
-              <h2 className='text-[20px] font-semibold p-2'>Patient Name:</h2>
-            <h2 className='text-[20px] font-plain p-3'>{selectedToken.name}</h2>
+              <h2 className='text-[20px] font-plain p-2'>Patient Name:</h2>
+            <h2 className='text-[20px] font-bold p-3'>{selectedToken.name}</h2>
             </div>
-            <div className='flex items-center space-x-4'>
-              <h2 className='text-[20px] font-semibold'>Token No:</h2>
-              <h2 className='text-[30px] font-bold'>{selectedToken.id}</h2>
+            <div className='flex flex-col items-start space-x-4'>
+              <h2 className='text-[20px] font-plain'>Token No:</h2>
+              <h2 className='text-[20px] font-bold'>{selectedToken.id}</h2>
             </div>
           </div>
 
           <div>
-            <h2 className='text-[20px] font-semibold p-2'>Aadhaar number:</h2>
-            <h2 className='text-[30px] font-bold p-3'>{selectedToken.aadhaar}</h2>
+            <h2 className='text-[20px] font-plain p-2'>Aadhaar number:</h2>
+            <h2 className='text-[20px] font-bold p-3'>{selectedToken.aadhaar}</h2>
           </div>
 
           <div>
-            <h2 className='text-[20px] font-semibold p-2'>Phone Number:</h2>
-            <h2 className='text-[30px] font-bold p-3'>{selectedToken.phone}</h2>
+            <h2 className='text-[20px] font-plain p-2'>Phone Number:</h2>
+            <h2 className='text-[20px] font-bold p-3'>{selectedToken.phone}</h2>
           </div>
 
-          <div className="flex space-x-4">
-            <button className="px-4 py-2 bg-blue-500 text-white rounded">Action 1</button>
-            <button className="px-4 py-2 bg-green-500 text-white rounded">Action 2</button>
+          <div className="flex justify-center space-x-4">
+            <button className="px-4 py-2 bg-blue-500 text-white rounded">Arrived</button>
+            <button className="px-4 py-2 bg-green-500 text-white rounded">Details</button>
           </div>
 
         </div>
