@@ -59,7 +59,18 @@ app.post('/api/add-triage', async (req, res) => {
 
     return res.status(200).json({ message: "Triage added successfully", data });
 });
+app.get('/api/opd', async (req,res)=>{
+    const {type} = req.query;
+    const { data, error } = await supabase
+    .from('opd_bookings')
+    .select('*')
+    .eq('time_slot', 'Morning');
 
+    if (error) {
+        return res.status(500).json({ error: error.message });
+    }
+    return res.status(200).json(data);
+})
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
   });  

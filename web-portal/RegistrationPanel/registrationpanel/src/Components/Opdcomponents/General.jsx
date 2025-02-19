@@ -10,6 +10,7 @@ const General = () => {
   const [morningTokenCount, setMorningTokenCount] = useState(0); // Initial morning token count
   const [eveningTokenCount, setEveningTokenCount] = useState(0); // Initial evening token count
   const [tokenType, setTokenType] = useState(''); // State to track token type (MORNING/EVENING)
+  const [tokens, setTokens] = useState([]);//State to track fetched tokens
   const [selectedToken, setSelectedToken] = useState(null); // State to track clicked token
   const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
   const [arrivedTokens, setArrivedTokens] = useState([]); // State to track arrived tokens
@@ -76,6 +77,7 @@ const General = () => {
     if (selectedDoctor) { // Only allow action if a doctor is selected
       setTokenType('MORNING'); // Set token type to MORNING
     }
+
   };
 
   const handleEveningClick = () => {
@@ -104,25 +106,45 @@ const General = () => {
     setIsModalOpen(true); // Open the modal
   };
 
-  const renderTokenBoxes = () => {
-    const tokenBoxCount = tokenType === 'EVENING' ? eveningTokenCount : morningTokenCount;
-    return Array.from({ length: tokenBoxCount + 10 }).map((_, index) => {
-      const tokenNumber = index + 1;
-      const isArrived = arrivedTokens.includes(tokenNumber); // Check if the token is marked as arrived
-      const isYellow = yellowTokens.has(tokenNumber); // Check if token should be yellow
+  useEffect(()=>{
+    if (tokenType!=null){
+      const fetchBookings = async () => {
+        try {
+          const response = await axios.get(`http://localhost:3000/api/opd`, {
+            params: { tokenType },
+          });
+          setTokens(response.data); // Set the fetched doctors in state
+        } catch (error) {
+          console.error('Error fetching doctors:', error);
+        }
+      };
+  
+      fetchBookings();
+    }
+  },[tokenType]);
 
-      return (
-        <div
-          key={index}
-          className={`border border-gray-300 rounded-lg p-2 h-[50px] w-[50px] flex items-center justify-center cursor-pointer ${
-            isArrived ? 'bg-green-500' : (isYellow ? 'bg-yellow-300' : 'bg-gray-100') // Apply yellow background if in the list
-          } ${!selectedDoctor ? 'cursor-not-allowed opacity-50' : ''}`} // Disable click if no doctor is selected
-          onClick={() => handleTokenClick(tokenNumber)} // Make token clickable only if tokenType is set
-        >
-          <h2 className='text-center text-sm font-bold'>Token {tokenNumber}</h2>
-        </div>
-      );
-    });
+  // useEffect(() => {
+  //   console.log(tokens);
+  // }, [tokens]);
+  
+  const renderTokenBoxes = () => {
+      const tokenBoxCount = tokenType === 'EVENING' ? eveningTokenCount : morningTokenCount;
+      return tokens?.map((token, index) => {
+        const tokenNumber = token.id; // Assuming each token object has a 'token_number' field
+        const isArrived = token.arrived; // Check if the token is marked as arrived
+      
+        return (
+          <div
+            key={index}
+            className={`border border-gray-300 rounded-lg p-2 h-[50px] w-[50px] flex items-center justify-center cursor-pointer ${
+              isArrived ? 'bg-green-500' : 'bg-gray-100'
+            } ${!selectedDoctor ? 'cursor-not-allowed opacity-50' : ''}`} // Disable click if no doctor is selected
+            onClick={() => handleTokenClick(tokenNumber)} // Make token clickable only if tokenType is set
+          >
+            <h2 className='text-center text-sm font-bold'>Token {tokenNumber}</h2>
+          </div>
+        );
+      });
   };
 
   return (
@@ -152,7 +174,7 @@ const General = () => {
               </div>
             </div>
           </div>
-          <div className='flex items-center gap-[50px] m-5 ml-[0px]'>
+          <div className='flex items-center gap-[50px] m-4 ml-[0px]'>
             <button
               className={`w-[400px] h-[40px] border-zinc-600 p-2 rounded hover:bg-sky-500 ${tokenType === 'MORNING' ? 'bg-sky-500 text-white' : 'bg-sky-300 text-black'} ${!selectedDoctor ? 'cursor-not-allowed opacity-50' : ''}`}
               onClick={handleMorningClick} // Set token type to MORNING

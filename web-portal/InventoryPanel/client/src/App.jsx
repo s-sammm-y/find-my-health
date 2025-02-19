@@ -127,7 +127,7 @@ function App() {
                       onChange={(e) => handleQuantityChange(e, item.item_name)}
                       required
                     />
-                    <button className="submitBtn" type="submit">
+                    <button className="removeBtn" type="submit">
                       Remove
                     </button>
                   </form>
