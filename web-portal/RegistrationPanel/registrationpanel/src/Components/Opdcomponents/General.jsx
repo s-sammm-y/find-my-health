@@ -11,7 +11,7 @@ const General = () => {
   const [eveningTokenCount, setEveningTokenCount] = useState(0); // Initial evening token count
   const [tokenType, setTokenType] = useState(''); // State to track token type (MORNING/EVENING)
   const [tokens, setTokens] = useState([]);//State to track fetched tokens
-  const [selectedToken, setSelectedToken] = useState(null); // State to track clicked token
+  const [selectedToken, setSelectedToken] = useState([]); // State to track clicked token
   const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
   const [arrivedTokens, setArrivedTokens] = useState([]); // State to track arrived tokens
 
@@ -86,10 +86,9 @@ const General = () => {
     }
   };
 
-  const handleTokenClick = (tokenNumber) => {
+  const handleTokenClick = (token) => {
     if (tokenType) { // Only allow click if a tokenType is selected
-      setSelectedToken(tokenNumber); // Store the clicked token number
-      setIsModalOpen(true); // Open the modal
+      setSelectedToken(token)
     }
   };
 
@@ -128,7 +127,6 @@ const General = () => {
   // }, [tokens]);
   
   const renderTokenBoxes = () => {
-      const tokenBoxCount = tokenType === 'EVENING' ? eveningTokenCount : morningTokenCount;
       return tokens?.map((token, index) => {
         const tokenNumber = token.id; // Assuming each token object has a 'token_number' field
         const isArrived = token.arrived; // Check if the token is marked as arrived
@@ -139,7 +137,7 @@ const General = () => {
             className={`border border-gray-300 rounded-lg p-2 h-[50px] w-[50px] flex items-center justify-center cursor-pointer ${
               isArrived ? 'bg-green-500' : 'bg-gray-100'
             } ${!selectedDoctor ? 'cursor-not-allowed opacity-50' : ''}`} // Disable click if no doctor is selected
-            onClick={() => handleTokenClick(tokenNumber)} // Make token clickable only if tokenType is set
+            onClick={() => handleTokenClick(token)} // Make token clickable only if tokenType is set
           >
             <h2 className='text-center text-sm font-bold'>Token {tokenNumber}</h2>
           </div>
@@ -211,36 +209,37 @@ const General = () => {
       </div>
 
       <div className='flex-1 h-screen bg-sky-100 relative ml-4'>
-        <div className='bg-gray-200 w-full h-[20%] font-medium text-xl p-6 text-center'>
+        <div className='bg-gray-200 w-full h-[20%] font-medium text-xl p-6 text-center mt-5'>
           <p className='font-bold text-[40px] p-3'>{currentTime}</p>
           <p className='font-bold text-[30px] p-3'>{currentDateDetails}</p>
         </div>
         <div className='absolute top-[25%] left-0 right-0 bottom-0 bg-white overflow-y-auto p-4 mt-4'>
           <div className='flex justify-between items-center'>
             <div>
-              <h1 className='text-[20px] font-semibold p-2'>Patient Name:</h1>
-              <h1 className='text-[30px] font-bold p-3'>ANISH MONDAL</h1>
+              <h2 className='text-[20px] font-semibold p-2'>Patient Name:</h2>
+            <h2 className='text-[20px] font-plain p-3'>{selectedToken.name}</h2>
             </div>
             <div className='flex items-center space-x-4'>
-              <h1 className='text-[20px] font-semibold'>Current Token:</h1>
-              <h1 className='text-[30px] font-bold'>{selectedToken ? `Token ${selectedToken}` : 'N/A'}</h1>
+              <h2 className='text-[20px] font-semibold'>Token No:</h2>
+              <h2 className='text-[30px] font-bold'>{selectedToken.id}</h2>
             </div>
           </div>
 
           <div>
-            <h1 className='text-[20px] font-semibold p-2'>Appointment number:</h1>
-            <h1 className='text-[30px] font-bold p-3'>12345689</h1>
+            <h2 className='text-[20px] font-semibold p-2'>Aadhaar number:</h2>
+            <h2 className='text-[30px] font-bold p-3'>{selectedToken.aadhaar}</h2>
           </div>
 
           <div>
-            <h1 className='text-[20px] font-semibold p-2'>Booking Time:</h1>
-            <h1 className='text-[30px] font-bold p-3'>12:00 PM</h1>
+            <h2 className='text-[20px] font-semibold p-2'>Phone Number:</h2>
+            <h2 className='text-[30px] font-bold p-3'>{selectedToken.phone}</h2>
           </div>
 
-          <div>
-            <h1 className='text-[20px] font-semibold p-2'>Booking Date:</h1>
-            <h1 className='text-[30px] font-bold p-3'>16th September, 2024</h1>
+          <div className="flex space-x-4">
+            <button className="px-4 py-2 bg-blue-500 text-white rounded">Action 1</button>
+            <button className="px-4 py-2 bg-green-500 text-white rounded">Action 2</button>
           </div>
+
         </div>
       </div>
 

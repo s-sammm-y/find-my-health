@@ -64,7 +64,7 @@ app.get('/api/opd', async (req,res)=>{
     const { data, error } = await supabase
     .from('opd_bookings')
     .select('*')
-    .eq('time_slot', 'Morning');
+    .eq('time_slot', 'Afternoon');
 
     if (error) {
         return res.status(500).json({ error: error.message });
