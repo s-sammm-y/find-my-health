@@ -65,11 +65,13 @@ const BackButton = () => {
   };
 
   //deleting a specific meducine
-  const handleDelete = (index)=>{
-    const updatedData = selectedData.filter((_,i)=> i!==index);
-    setSelectedData(updatedData);
-    setAddMed(prev=>prev-1)
-  }
+  const handleDelete = () => {
+    if (selectedData.length > 0) {
+        const updatedData = selectedData.slice(0, -1); // Removes the last object
+        setSelectedData(updatedData);
+        setAddMed(prev => Math.max(0, prev - 1)); // Ensure it doesn't go below 0
+    }
+};
 
   // Function to update selected medicine data
   const updateSelectedMedicine = (index, medicineData) => {
@@ -154,7 +156,6 @@ const BackButton = () => {
                   key={index}
                   updateSelectedMedicine={updateSelectedMedicine} // Pass the function directly
                   index={index} // Pass the index for identification
-                  deleteMedicine={handleDelete}
                 />
               ))}
 
@@ -167,6 +168,13 @@ const BackButton = () => {
                     <IoIosAddCircleOutline className='text-xl' />
                   </button>
                 </h1>
+                <div>
+                  <button type='button' 
+                  className='bg-red-400 text-white py-2 px-4 rounded-lg hover:bg-sky-500 transition-colors duration-300 self-center'
+                  onClick={handleDelete}>
+                    Remove Medicine
+                  </button>
+                </div>
 
                 <textarea
                   placeholder='Write Description'
