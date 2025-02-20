@@ -8,6 +8,7 @@
     font-family: Arial, sans-serif;
     background-color: rgb(223, 223, 244);
     flex :1;
+    overflow: hidden;
   }
 
   
@@ -48,6 +49,9 @@
   .main{
     padding: 60px 20px 0 20px;
     flex: 1;
+    margin-left:250px;
+    margin-top:94.4px;
+
   }
   .addItem{
     display: flex;

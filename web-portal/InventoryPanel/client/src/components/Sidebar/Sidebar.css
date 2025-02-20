@@ -5,6 +5,11 @@
   padding: 15px;
   display: flex;
   justify-content: center;
+  position: fixed;
+  top: 94.4px;/* Below the header */
+  left: 0;
+  overflow-y: auto; /* Scrollable if content overflows */
+
 }
 
 .sidebar-menu {
