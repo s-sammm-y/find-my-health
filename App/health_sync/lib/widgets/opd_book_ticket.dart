@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:health_sync/Profile/drawer_slider.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 class OPDBookTicket extends StatelessWidget {
   final SupabaseClient supabase;
@@ -11,6 +12,50 @@ class OPDBookTicket extends StatelessWidget {
     final response = await supabase.from('opd_bookings').select().eq('phone',UserData.userMobile.toString().substring(3));
 
     return List<Map<String, dynamic>>.from(response);
+  }
+
+  void _showQRCodeDialog(BuildContext context, Map<String, dynamic> booking) {
+    String qrData = _generateQRData(booking);
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Your Booking QR Code'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              QrImageView(
+                data: qrData,
+                version: QrVersions.auto,
+                size: 200,
+              ),
+              SizedBox(height: 10),
+              Text("Show this QR code at the Reception", textAlign: TextAlign.center),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  String _generateQRData(Map<String, dynamic> booking) {
+    String a = (booking['is_paid']) ? "Payment Done!" : "Pending";
+    return '''
+    Booking ID: ${booking['id']}
+    Name: ${booking['name']}
+    Mobile: ${booking['phone']}
+    Appointment Date: ${booking['appointment_date']}
+    Time Slot: ${booking['time_slot']}
+    token: ${booking['token']}
+    Payment Status: ${a}
+    ''';
   }
 
   @override
@@ -78,7 +123,7 @@ class OPDBookTicket extends StatelessWidget {
                                 SizedBox(height: 4),
                                 Text('Age : ${booking['age'] ?? 'N/A'}', style: TextStyle(fontSize: 12)),
                                 Text('Department : ${booking['OPD_dept'] ?? 'N/A'}', style: TextStyle(fontSize: 12)),
-                                Text('Token No : ${booking['id'] ?? 'N/A'}', style: TextStyle(fontSize: 12)),
+                                Text('Token No : ${booking['token'] ?? 'N/A'}', style: TextStyle(fontSize: 12)),
                               ],
                             ),
                           ],
@@ -103,9 +148,11 @@ class OPDBookTicket extends StatelessWidget {
                               ),
                               padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              _showQRCodeDialog(context, booking);
+                            },
                             child: Text(
-                              'Your OPD ticket confirmed!!!',
+                              'Generate QR',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
