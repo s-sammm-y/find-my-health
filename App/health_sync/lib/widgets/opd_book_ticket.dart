@@ -77,7 +77,7 @@ class OPDBookTicket extends StatelessWidget {
                                 ),
                                 SizedBox(height: 4),
                                 Text('Age : ${booking['age'] ?? 'N/A'}', style: TextStyle(fontSize: 12)),
-                                Text('Booking for : ${booking['disease'] ?? 'N/A'}', style: TextStyle(fontSize: 12)),
+                                Text('Department : ${booking['OPD_dept'] ?? 'N/A'}', style: TextStyle(fontSize: 12)),
                                 Text('Token No : ${booking['id'] ?? 'N/A'}', style: TextStyle(fontSize: 12)),
                               ],
                             ),

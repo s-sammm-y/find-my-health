@@ -23,7 +23,7 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
 
   String? _selectedDate;
   String? _selectedTime;
-  final List<String> _timeSlots = ["Morning", "Afternoon"];
+  final List<String> _timeSlots = ["morning", "afternoon"];
 
   @override
   void initState() {
@@ -80,7 +80,7 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
     String age = _ageController.text;
     String aadhaar = _aadhaarController.text;
     String address = _addressController.text;
-    String disease = widget.selectedDisease;
+    String dept = widget.selectedDisease;
 
     if (name.isEmpty ||
         phone.isEmpty ||
@@ -94,15 +94,22 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
       );
       return;
     }
+    if(aadhaar.length != 12){
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Invalid Aadhar Number !")),
+      );
+      return;
+    }
 
     try {
+      //if(_selectedTime)
       final response = await Supabase.instance.client.from('opd_bookings').insert({
         'name': name,
         'phone': phone,
         'age': age,
-        'aadhaar': aadhaar,
+        'aadhar': aadhaar,
         'address': address,
-        'disease': disease,
+        'OPD_dept': dept,
         'appointment_date': _selectedDate,
         'time_slot': _selectedTime,
         'created_at': DateTime.now().toIso8601String(),
@@ -113,7 +120,7 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Booking Successful!")),
         );
-        _showLocalNotification(disease, name);
+        _showLocalNotification(dept, name);
         if (mounted) {
           Future.delayed(Duration(seconds: 1), () {
             Navigator.pushReplacement(
@@ -147,7 +154,7 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
-  Future<void> _showLocalNotification(String disease, String name) async {
+  Future<void> _showLocalNotification(String dept, String name) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
       'opd_channel',
@@ -163,7 +170,7 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
     await flutterLocalNotificationsPlugin.show(
       0,
       '🚨 OPD Booking Done!',
-      'Problem: $disease | Name: $name',
+      'Department: $dept | Name: $name',
       platformChannelSpecifics,
     );
   }
@@ -187,13 +194,13 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
                 readOnly: true,
                 initialValue: widget.selectedDisease,
                 decoration: InputDecoration(
-                  labelText: "Selected Disease",
+                  labelText: "Selected OPD Department",
                   border: OutlineInputBorder(),
                 ),
               ),
             ),
             _buildTextField("Age", _ageController, TextInputType.number),
-            _buildTextField("Aadhaar Number", _aadhaarController, TextInputType.number),
+            _buildTextField("Aadhar Number", _aadhaarController, TextInputType.number),
             _buildTextField("Address", _addressController, TextInputType.text, maxLines: 2),
             ListTile(
               title: Text(_selectedDate ?? "Select Appointment Date"),

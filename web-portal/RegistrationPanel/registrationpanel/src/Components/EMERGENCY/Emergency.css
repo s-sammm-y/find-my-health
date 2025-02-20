@@ -11,6 +11,7 @@ justify-content: space-between;
 .list-parent {
     width: 100%;
     position: relative; /* Keeps the parent fixed relative to the viewport */
+    margin-top:25px;
 }
 
 .bookinghead {

@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:health_sync/widgets/opd_booking.dart'; // Import the OPD Booking Page
+import 'package:health_sync/widgets/opd_booking.dart'; 
 
 class CityHospitalList extends StatelessWidget {
   final List<Map<String, String>> diseases = [
     {
-      "name": "Chest OPD",
+      "name": "Chest",
       "image": "https://lasecosmetic.com/wp-content/uploads/2019/12/Breast-Chest-Male-Chest-Redefinition-Surgery-1.jpg"
     },
     {
-      "name": "Dental OPD",
+      "name": "Dental",
       "image": "https://dentallavelle.com/wp-content/uploads/2019/06/Dental-Lavelle-Why-you-need-to-visit-your-Dentist-every-6-months.jpg"
     },
     {
-      "name": "General OPD",
+      "name": "General",
       "image": "https://nmc.ae/_next/image?url=https%3A%2F%2Fstatic-cdn.nmc.ae%2Fstrapi%2FGeneral_Medicine_Getty_Images_175264754_706x500px_8673c31a59.jpg&w=3840&q=75"
     },
   ];

@@ -83,7 +83,7 @@ class _SecondScreenState extends State<SecondScreen> {
                         });
                       },
                     ),
-                    title: const Text('Generel Word'),
+                    title: const Text('General Ward'),
                   ),
                   ListTile(
                     leading: Radio<int>(
@@ -96,7 +96,7 @@ class _SecondScreenState extends State<SecondScreen> {
                         });
                       },
                     ),
-                    title: const Text('cardio ward'),
+                    title: const Text('Cardio Ward'),
                   ),
                   
                 ],

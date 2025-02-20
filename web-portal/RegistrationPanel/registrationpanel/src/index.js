@@ -46,9 +46,9 @@ app.post('/api/add-triage', async (req, res) => {
 
     const { data, error } = await supabase
         .from('triage')  // Supabase table for triage
-        .insert([{ admission_id : emergency_id }]);
+        .insert([{ emergency_key : emergency_id }]);
     const { error: updateError } = await supabase
-        .from('patient_emergency_booking')
+        .from('emergency_booking')
         .update({ triage : true })
         .eq('emergency_id', emergency_id);
     
@@ -64,7 +64,7 @@ app.get('/api/opd', async (req,res)=>{
     const { data, error } = await supabase
     .from('opd_bookings')
     .select('*')
-    .eq('time_slot', 'Afternoon');
+    .eq('time_slot', 'morning');
 
     if (error) {
         return res.status(500).json({ error: error.message });

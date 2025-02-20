@@ -227,7 +227,7 @@ const General = () => {
 
           <div>
             <h2 className='text-[20px] font-plain p-2'>Aadhaar number:</h2>
-            <h2 className='text-[20px] font-bold p-3'>{selectedToken.aadhaar}</h2>
+            <h2 className='text-[20px] font-bold p-3'>{selectedToken.aadhar}</h2>
           </div>
 
           <div>
