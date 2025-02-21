@@ -1,10 +1,12 @@
+import axios from 'axios'
 import express from 'express'
 import bodyParser from 'body-parser'
 import dotenv from 'dotenv'
 import { createClient } from '@supabase/supabase-js'
 import cors from 'cors'
 import PDFDocument from 'pdfkit';
-
+import fs from 'fs'
+import path from 'path'
 
 dotenv.config()
 
@@ -68,57 +70,70 @@ app.post('/submit-medicine',async(req,res)=>{
 })
 
 app.post('/generate-pdf', async (req, res) => {
-    const pdfdata = req.body.pdfdata; // Array of prescription objects
+    const pdfdata = req.body.pdfdata;
     const name = req.body.name;
     const age = req.body.age;
     const date = req.body.date;
-    console.log(pdfdata);
 
     try {
-        const doc = new PDFDocument();
-        res.setHeader('Content-Type', "application/pdf");
-        res.setHeader('Content-Disposition', 'inline; filename="prescription.pdf"');
+        const doc = new PDFDocument({ margin: 40 });
+        let buffers = [];
 
-        doc.pipe(res);
+        doc.on('data', buffers.push.bind(buffers));
+        doc.on('end', async () => {
+            const pdfBuffer = Buffer.concat(buffers); // Get the final PDF as a Buffer
 
-        // Title
-        doc.fontSize(20).text("Doctor's Prescription", { align: 'center' }).moveDown(1.5);
+            //Upload to Supabase Storage
+            const fileName = `prescriptions/${Date.now()}_${name}.pdf`;
+            const { data: uploadData, error: uploadError } = await supabase.storage
+                .from('prescriptions') // Ensure you have a "prescriptions" bucket in Supabase
+                .upload(fileName, pdfBuffer, {
+                    contentType: 'application/pdf',
+                });
 
-        // Patient Information
-        doc.fontSize(12).text(`Name: ${name}`, { align: 'left' }).moveDown(0.5);
-        doc.fontSize(12).text(`Age: ${age}`, { align: 'left' }).moveDown(0.5);
-        doc.fontSize(12).text(`Next Appointment Date: ${date}`, { align: 'left' }).moveDown(1);
-
-        // Loop through the pdfdata to add medicine details
-        pdfdata.forEach((item, index) => {
-            doc.fontSize(14).text(`Medicine ${index + 1}`, { underline: true }).moveDown(0.5);
-
-            if (item.description) {
-                doc.fontSize(12).text(`Description: ${item.description}`).moveDown(0.3);
+            if (uploadError) {
+                //console.log(uploadError)
+                return res.status(400).json({ message: 'Error uploading PDF', error: uploadError });
             }
-            doc.fontSize(12).text(`Medicine: ${item.medicine}`).moveDown(0.3);
-            doc.fontSize(12).text(`Dosage: ${item.dosage}`).moveDown(0.3);
-            doc.fontSize(12).text(`Frequency: ${item.frequency}`).moveDown(1);
 
-            doc.moveDown(1); // Space between prescriptions
-            doc.text('------------------------------------------------------').moveDown(1);
+            // Get the public URL of the uploaded file
+            const { data: publicURL } = supabase.storage.from('prescriptions').getPublicUrl(fileName);
+
+        
+            return res.status(201).json({
+                message: 'PDF generated successfully',
+                pdfUrl: publicURL.publicUrl, // Return the URL
+            });
         });
 
-        // Set the Y position for the line to be a fixed position at the bottom of the page
-        const bottomMargin = 40; // Space from the bottom of the page
-        const lineYPosition = doc.page.height - bottomMargin; // Fixed position for the line
+        // Generate the PDF
+        const imageUrl = "http://localhost:5173/head.png";
+        const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
+        const imageBuffer = Buffer.from(response.data, 'binary');
 
-        // Draw the line at the bottom
-        doc.moveTo(50, lineYPosition)  // Starting point of the line (horizontal)
-           .lineTo(550, lineYPosition) // End point of the line (horizontal)
-           .stroke(); // Draw the line
+        doc.image(imageBuffer, 50, 20, { width: 500 });
+        doc.moveDown(10);
+        doc.moveTo(40, 180).lineTo(570, 180).stroke();
+        doc.moveDown(1.5);
 
-        doc.end();
+        doc.font('Helvetica-Bold').fontSize(14).text(`Patient Name: `, { continued: true }).font('Helvetica').text(name).moveDown(0.5);
+        doc.font('Helvetica-Bold').text(`Age: `, { continued: true }).font('Helvetica').text(`${age} years`).moveDown(0.5);
+        doc.font('Helvetica-Bold').text(`Next Appointment Date: `, { continued: true }).font('Helvetica').text(date).moveDown(1.5);
+
+        pdfdata.forEach((item, index) => {
+            doc.font('Helvetica-Bold').fontSize(12).text(`Medicine ${index + 1}`, { underline: true }).moveDown(0.5);
+            doc.font('Helvetica-Bold').text(`Medicine: `, { continued: true }).font('Helvetica').text(item.medicine).moveDown(0.3);
+            doc.font('Helvetica-Bold').text(`Dosage: `, { continued: true }).font('Helvetica').text(item.dosage).moveDown(0.3);
+            doc.font('Helvetica-Bold').text(`Frequency: `, { continued: true }).font('Helvetica').text(item.frequency).moveDown(1);
+        });
+
+        doc.font('Helvetica-Bold').text(`Description: `, { continued: true }).font('Helvetica').text(pdfdata[0].description).moveDown(0.3);
+        doc.end(); // End the PDF document
+
     } catch (err) {
-        console.log("Something went wrong in backend", err);
+        console.log("Error generating PDF", err);
         res.status(500).send("Error generating PDF");
     }
 });
-
 
 
