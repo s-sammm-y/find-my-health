@@ -1,7 +1,11 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:health_sync/authentication/login_signup.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:dart_ipify/dart_ipify.dart';
+import 'package:health_sync/screens/pdf_viewer_screen.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:http/http.dart' as http;
 
 /// Static class to hold user details globally.
 class UserData {
@@ -96,6 +100,60 @@ class _CustomDrawerState extends State<CustomDrawer> {
     }
   }
 
+  void _showprescription(BuildContext context, int? userId) async {
+    try {
+      int USERID = userId ?? 0;
+      final response = await Supabase.instance.client
+          .from('user_prescription_details')
+          .select('pdf')
+          .eq('user_id', USERID)
+          .maybeSingle(); 
+
+      if (response == null || response['pdf'] == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('No prescription found')),
+        );
+        return;
+      }
+
+      String pdfFileName = response['pdf'];
+
+      String filePath = pdfFileName.startsWith('user_2/') ? pdfFileName : 'user_2/$pdfFileName';
+
+      print("Fetching file from: $filePath");
+
+      final String pdfUrl = await Supabase.instance.client.storage
+          .from('prescriptions')
+          .createSignedUrl(filePath,60);
+
+      print("Generated PDF URL: $pdfUrl");
+
+      final tempDir = await getTemporaryDirectory();
+      final pdfPath = '${tempDir.path}/$pdfFileName';
+
+      File localPdfFile = File(pdfPath);
+      if (!localPdfFile.parent.existsSync()) {
+        await localPdfFile.parent.create(recursive: true);
+      }
+
+      final responsePdf = await http.get(Uri.parse(pdfUrl));
+      if (responsePdf.statusCode == 200) {
+        await localPdfFile.writeAsBytes(responsePdf.bodyBytes);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => PDFViewerScreen(pdfPath: localPdfFile.path)),
+        );
+      } else {
+        throw Exception("Failed to download PDF");
+      }
+    } catch (e) {
+      print('Error fetching prescription: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to load prescription')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -116,9 +174,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
               ),
             ),
             ListTile(
+              title: const Text('Prescriptions'),
+              subtitle: const Text('All your doctor Prescriptions'),
+              onTap: () => _showprescription(context, UserData.userId),
+            ),
+            ListTile(
               title: const Text('Sign Out'),
               subtitle: const Text('Login from another number'),
-              onTap: () => _signOut(context),
+              onTap: () =>  _signOut(context),
             ),
             const Divider(),
             // ListTile(
