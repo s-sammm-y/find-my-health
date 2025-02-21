@@ -1,16 +1,22 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Popup from "./components/Popup/Popup";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBoxOpen } from '@fortawesome/free-solid-svg-icons';
+import { faPen } from '@fortawesome/free-solid-svg-icons';
+
+
 import SearchBarDropdown from "./components/Searchbar/SearchBarDropdown";
-import Header from "./components/Header/Header";
-import Sidebar from "./components/Sidebar/Sidebar";
 
 import "./App.css";
 
 function App() {
   const [inventory, setInventory] = useState([]);
+  const [trackInventory,inventoryChange] = useState(false)
   const [error, setError] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedItemId, setSelectedItemId] = useState(null);
   const [newItemName, setNewItemName] = useState("");
   const [newItemQuantity, setNewItemQuantity] = useState("");
   const [newQuantity, setNewQuantity] = useState({}); // to handle item quantity updates
@@ -27,7 +33,16 @@ function App() {
     };
 
     fetchInventory();
-  }, []);
+  }, [trackInventory]);
+  const openModal = (id) => {
+    setSelectedItemId(id);
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+    setSelectedItemId(null);
+  };
 
   const handleAddItemClick = () => {
     setShowPopup(true);
@@ -56,33 +71,25 @@ function App() {
     }
   };
 
-  const handleQuantityChange = (e, itemName) => {
+  const handleQuantityChange = (e, itemId) => {
     setNewQuantity({
       ...newQuantity,
-      [itemName]: e.target.value,
+      [itemId]: e.target.value,
     });
   };
 
-  const handleUpdateSubmit = async (e, itemName) => {
+  const handleUpdateSubmit = async (e, itemId) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:3000/api/inventory/${itemName}`, {
-        quantity: newQuantity[itemName],
+      // Update quantity in the backend
+      await axios.put(`http://localhost:3000/api/inventory/${itemId}`, {
+        quantity: newQuantity[itemId],
       });
-
-      // Fetch the updated inventory
-      const response = await axios.get("http://localhost:3000/api/inventory");
-      setInventory((prevInventory) => {
-        const updatedInventory = response.data;
-        return prevInventory.map((item) => {
-          const updatedItem = updatedInventory.find(
-            (i) => i.item_name === item.item_name
-          );
-          return updatedItem
-            ? { ...item, quantity: updatedItem.quantity }
-            : item;
-        });
-      });
+      inventoryChange(true);
+      
+  
+      // Close modal after updating
+      closeModal();
     } catch (err) {
       setError("Error updating quantity");
       console.error(err);
@@ -90,26 +97,68 @@ function App() {
   };
 
   return (
-    <div className="app-container">
-      <Header />
-      <div className="main-content">
-        <Sidebar />
-        <div className="main">
-          <div className="addItem">
-            <SearchBarDropdown />
-            <button onClick={handleAddItemClick}>Add item</button>
+    <div >
+          <div className="head">
+            <h2>All Inventory List</h2>
+            <div>
+            <input className="name-filter" placeholder="Search item"/>
+            <button >Sort By</button>
+            </div>
+            <button onClick={handleAddItemClick}>+ Add item</button>
           </div>
           {error && <p className="error-message">{error}</p>}
           <div className="inventory-list">
             {inventory.map((item) => (
               <div className="item" key={item.item_name}>
-                <div className="item-name">{item.item_name}</div>
+                <div className="item-details">
+                  <img className="itemimage"src={item.image_url}></img>
+                  <div className="item-name">{item.item_name}</div>
+                </div>
+                <div className="item-category">
+                  <div className="category-header">Category</div>
+                  <div className="category-name data">{item.category}</div>
+                </div>
                 <div className="item-quantity">
-                  <h5>Qty.</h5>
-                  <p>{item.quantity}</p>
+                  <div>Stock</div>
+                  <div className="data"style={{ color: item.quantity < 100 ? 'red' : 'black' }}>
+                  <FontAwesomeIcon icon={faBoxOpen} /> {item.quantity}
+                  </div>
                 </div>
                 <div className="item-update">
-                  <form onSubmit={(e) => handleUpdateSubmit(e, item.item_name)}>
+                  <button className="icon-button" onClick={()=>openModal(item.item_id)}><FontAwesomeIcon icon={faPen} className="view-icon"/></button>
+                  {modalOpen && (
+        <div className="modal">
+          <div className="modal-content">
+            <div><h3>Update Stock for Item </h3></div>
+            <form onSubmit={(e) => handleUpdateSubmit(e, selectedItemId)}>
+            <input
+              type="number"
+              value={newQuantity[selectedItemId] || ""}
+              onChange={(e) => handleQuantityChange(e, selectedItemId)}
+              required
+            />
+                    <button className="submitBtn" type="submit">
+                      ADD
+                    </button>
+            </form>  
+            <form onSubmit={(e) => handleUpdateSubmit(e, selectedItemId)}>
+            <input
+              type="number"
+              value={newQuantity[selectedItemId] || ""}
+              onChange={(e) => handleQuantityChange(e, selectedItemId)}
+              required
+            />
+                    <button className="submitBtn" type="submit">
+                      REMOVE
+                    </button>
+            </form>
+            <div className="manufacturer-details">Manufacturer Details: </div>   
+           
+            <button className="modal-close" onClick={closeModal}>Close</button>
+          </div>
+        </div>
+      )}
+                  {/* <form onSubmit={(e) => handleUpdateSubmit(e, item.item_name)}>
                     <input
                       type="number"
                       value={newQuantity[item.item_name] || ""}
@@ -119,25 +168,12 @@ function App() {
                     <button className="submitBtn" type="submit">
                       ADD
                     </button>
-                  </form>
-                  <form onSubmit={(e) => handleUpdateSubmit(e, item.item_name)}>
-                    <input
-                      type="number"
-                      value={newQuantity[item.item_name] || ""}
-                      onChange={(e) => handleQuantityChange(e, item.item_name)}
-                      required
-                    />
-                    <button className="removeBtn" type="submit">
-                      Remove
-                    </button>
-                  </form>
-                  
+                  </form> */}
                 </div>
               </div>
             ))}
           </div>
-        </div>
-      </div>
+      
       <Popup show={showPopup} onClose={handleClosePopup}>
         <h2>Add New Item</h2>
         <form onSubmit={handleSubmit}>

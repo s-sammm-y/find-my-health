@@ -1,0 +1,6 @@
+.app-container {
+    font-family: Arial, sans-serif;
+    background-color: rgb(223, 223, 244);
+    flex :1;
+    overflow: hidden;
+  }

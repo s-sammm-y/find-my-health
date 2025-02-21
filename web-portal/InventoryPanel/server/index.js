@@ -52,11 +52,13 @@ app.post('/api/inventory', async (req, res) => {
       console.error(err.message);
       res.status(500).send('Server Error');
     }
-  });  
+  });
+// Get low stock notifs
+ 
   
-  //Update item quantity
-app.put('/api/inventory/:item_name', async (req, res) => {
-  const { item_name } = req.params;
+//Update item quantity
+app.put('/api/inventory/:item_id', async (req, res) => {
+  const { item_id } = req.params;
   const { quantity } = req.body;
 
   try {
@@ -64,7 +66,7 @@ app.put('/api/inventory/:item_name', async (req, res) => {
     const { data: currentData, error: fetchError } = await supabase
       .from('inventory')
       .select('quantity')
-      .eq('item_name', item_name)
+      .eq('item_id', item_id)
       .single();
 
     if (fetchError) {
@@ -80,7 +82,7 @@ app.put('/api/inventory/:item_name', async (req, res) => {
     const { data, error } = await supabase
       .from('inventory')
       .update({ quantity: newQuantity})
-      .eq('item_name', item_name);
+      .eq('item_id', item_id);
 
     if (error) {
       throw error;

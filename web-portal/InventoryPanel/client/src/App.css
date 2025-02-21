@@ -20,7 +20,7 @@
   .inventory-list {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 1px;
   }
   
   .item {
@@ -28,7 +28,7 @@
     border: 1px solid #ddd;
     border-radius: 5px;
     padding: 10px;
-    margin: 5px 0;
+    margin: 1px 0;
     width: 100%;
     text-align: center;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
@@ -37,7 +37,17 @@
     align-items: center;
     height: 100%;
   }
-  
+  .item-details{
+    display:flex;
+    width:30%;
+  }
+  .item-name{
+    margin: auto 10px;
+  }
+  .itemimage{
+    height:60px;
+    border-radius: 10px;
+  }
   .item strong {
     display: inline;
     font-size: 1.2em;
@@ -53,12 +63,13 @@
     margin-top:94.4px;
 
   }
-  .addItem{
+  .head{
     display: flex;
     justify-content: space-between;
+    margin-bottom:10px;
   }
-  .addItem button{
-    padding: 15px 20px;
+  .head button{
+    padding: 10px 10px;
     background-color: #00c2ff;
     color: white;
     font-weight: 600;
@@ -66,15 +77,8 @@
     border: none;
     border-radius: 4px;
   }
-.item-quantity {
-  display: flex;
-  align-items: center;
-}
-
-.item-quantity p {
-  margin-left: 10px;
-  font-size: 1.75em;
-  font-weight: 600;
+.view-icon{
+  height:15px;
 }
 input{
   padding: 10px;
@@ -101,4 +105,56 @@ input{
   border-radius: 2px;
   margin-top:10px;
   color:white;
+}
+.name-filter{
+  width:400px;
+  height:38px;
+}
+.icon-button {
+  background: none;
+  border: solid black 2px;
+  padding:5px;
+  cursor: pointer;
+  outline: none;
+  margin-right:10px;
+}
+
+.icon-button:focus {
+  outline: none;
+  box-shadow: 10px;
+}
+.data{
+  margin-top:10px;
+}
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3); /* Transparent black */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  height:30vh;
+  width:30vw;
+  display:flex;
+  flex-direction: column;
+}
+.modal-close{
+  margin-top:20px !important;
+  width:40px;
+  margin:auto;
+  color:white;
+  background-color: red;
+}
+.manufacturer-details{
+  margin-top:20px;
 }

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import "./Sidebar.css"; // optional for styling
 
 const Sidebar = () => {
@@ -11,7 +12,8 @@ const Sidebar = () => {
   return (
     <div className="sidebar">
       <ul className="sidebar-menu">
-        <li className="sidebar-item">Inventory Overview</li>
+        <li className="sidebar-item"><Link to="/">Home</Link></li>
+        <li className="sidebar-item"><Link to="/notifications">Notifications</Link></li>
         <li className="sidebar-item">Inventory Analytics</li>
         <li className="dropDown">
           <button onClick={toggleInventoryDropdown} className="dropdown-btn">
