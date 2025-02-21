@@ -8,7 +8,10 @@ import PDFDocument from 'pdfkit';
 import fs from 'fs'
 import path from 'path'
 
+
+
 dotenv.config()
+
 
 const app = express()
 app.use(cors())
@@ -55,25 +58,22 @@ app.get('/fetch-medicine',async(req,res)=>{
     }
 })
 
-app.post('/submit-medicine',async(req,res)=>{
-    const selectedData = req.body.data
-    //console.log(selectedData)
-    try{
-        const {data,error}=await supabase.from('user_prescription_details').insert(selectedData)
-        if(error){
-            return res.status(400).json({messege:'error posting details',error})
-        }
-        return res.status(201).json({message:'details added succesfully',data})
-    }catch(err){
-        return res.status(500).json({message:'server error',error:err.message})
-    }
-})
+// app.post('/submit-medicine',async(req,res)=>{
+//     const selectedData = req.body.data
+//     //console.log(selectedData)
+//     try{
+//         const {data,error}=await supabase.from('user_prescription_details').insert(selectedData)
+//         if(error){
+//             return res.status(400).json({messege:'error posting details',error})
+//         }
+//         return res.status(201).json({message:'details added succesfully',data})
+//     }catch(err){
+//         return res.status(500).json({message:'server error',error:err.message})
+//     }
+// })
 
 app.post('/generate-pdf', async (req, res) => {
-    const pdfdata = req.body.pdfdata;
-    const name = req.body.name;
-    const age = req.body.age;
-    const date = req.body.date;
+    const { pdfdata, name, age, date, user_id } = req.body;
 
     try {
         const doc = new PDFDocument({ margin: 40 });
@@ -81,29 +81,45 @@ app.post('/generate-pdf', async (req, res) => {
 
         doc.on('data', buffers.push.bind(buffers));
         doc.on('end', async () => {
-            const pdfBuffer = Buffer.concat(buffers); // Get the final PDF as a Buffer
+            const pdfBuffer = Buffer.concat(buffers);
 
-            //Upload to Supabase Storage
-            const fileName = `prescriptions/${Date.now()}_${name}.pdf`;
+            // Define file path inside Supabase Storage
+            const filePath = `user_${user_id}/${Date.now()}_${name}.pdf`;
+
+            // Upload PDF to Supabase Storage
             const { data: uploadData, error: uploadError } = await supabase.storage
-                .from('prescriptions') // Ensure you have a "prescriptions" bucket in Supabase
-                .upload(fileName, pdfBuffer, {
+                .from('prescriptions')
+                .upload(filePath, pdfBuffer, {
                     contentType: 'application/pdf',
                 });
 
             if (uploadError) {
-                //console.log(uploadError)
-                return res.status(400).json({ message: 'Error uploading PDF', error: uploadError });
+                console.error('Supabase upload error:', uploadError);
+                return res.status(500).json({ error: 'Error uploading PDF' });
             }
 
-            // Get the public URL of the uploaded file
-            const { data: publicURL } = supabase.storage.from('prescriptions').getPublicUrl(fileName);
+            console.log('PDF uploaded to Supabase:', filePath);
 
-        
-            return res.status(201).json({
-                message: 'PDF generated successfully',
-                pdfUrl: publicURL.publicUrl, // Return the URL
+            // Store the file path in the database
+            const { data: dbData, error: dbError } = await supabase
+                .from('user_prescription_details')
+                .insert([
+                    { user_id, pdf: filePath }
+                ]);
+
+            if (dbError) {
+                console.error('Database insert error:', dbError);
+                return res.status(500).json({ error: 'Error storing PDF path' });
+            }
+
+            console.log('PDF path saved to database');
+
+            // Send the PDF buffer as response to frontend
+            res.set({
+                'Content-Type': 'application/pdf',
+                'Content-Disposition': `inline; filename="${name}.pdf"`,
             });
+            res.send(pdfBuffer);
         });
 
         // Generate the PDF
@@ -134,6 +150,48 @@ app.post('/generate-pdf', async (req, res) => {
         console.log("Error generating PDF", err);
         res.status(500).send("Error generating PDF");
     }
+});
+
+
+//create url
+app.get('/get-prescriptions/:userId', async (req, res) => {
+    const { userId } = req.params;
+
+    // Fetch all stored PDF paths for the user
+    const { data, error } = await supabase
+        .from('user_prescription_details')
+        .select('pdf')
+        .eq('user_id', 2); // Fetch all PDFs for this user
+
+    if (error || !data || data.length === 0) {
+        console.error('Error fetching prescriptions:', error);
+        return res.status(404).json({ error: 'No prescriptions found' });
+    }
+
+    // Generate signed URLs for each PDF
+    const signedUrls = await Promise.all(
+        data.map(async (prescription) => {
+            const { data: signedUrlData, error: urlError } = await supabase
+                .storage
+                .from('prescriptions')
+                .createSignedUrl(prescription.pdf, 60 * 60); // URL expires in 1 hour
+
+            if (urlError) {
+                console.error('Error generating signed URL:', urlError);
+                return null; // Skip if error occurs
+            }
+
+            return {
+                filePath: prescription.pdf,
+                url: signedUrlData.signedUrl
+            };
+        })
+    );
+
+    // Remove any failed URL generations (null values)
+    const validUrls = signedUrls.filter(url => url !== null);
+
+    res.json({ urls: validUrls });
 });
 
 

@@ -16,6 +16,7 @@ const BackButton = () => {
   const [description, setDescription] = useState(''); // New state for textarea
   const [patientName,setPatientName] = useState('');
   const [patientAge,setPatientAge] = useState('');
+  const [userId,setUserID] = useState(2);
 
   const handleClick = () => {
     navigate('/'); // Adjust the route to the patient queue as needed
@@ -28,10 +29,11 @@ const BackButton = () => {
             pdfdata: selectedData,
             name:patientName,
             age:patientAge,
-            date:selectedDate
+            date:selectedDate,
+            user_id:userId
         }, { responseType: 'blob' }); // Ensure the response is treated as a blob
 
-        const blob = await response.data;
+        const blob = new Blob([response.data],{type:'application/pdf'})
         const url = window.URL.createObjectURL(blob);
         window.open(url);
 
@@ -132,6 +134,10 @@ const BackButton = () => {
             <div className='bg-gray-100 p-4 rounded-lg space-y-4 w-full'>
               <p className='font-bold'>Medicine</p>
 
+              <div className='py-3'>
+                <p>User-Id:{userId}</p>
+              </div>
+
                 <label htmlFor="patient-name">
                   Name:-
                 </label>
@@ -226,13 +232,13 @@ const BackButton = () => {
             </div>
             
             <div className='buttons flex justify-center items-center gap-4 text-center p-3'>
-              <button
+              {/* <button
                 type="button"
                 onClick={handleSubmit}
                 className=' bg-sky-400 text-white py-2 px-3 rounded-lg hover:bg-sky-500 transition-colors duration-300 self-center'
               >
                 Submit
-              </button>
+              </button> */}
 
               <button className='bg-sky-400 text-white py-2 px-4 rounded-lg hover:bg-sky-500 transition-colors duration-300 self-center'
               onClick={genPdf}
