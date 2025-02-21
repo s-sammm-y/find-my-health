@@ -6,10 +6,9 @@
   display: flex;
   justify-content: center;
   position: fixed;
-  top: 94.4px;/* Below the header */
+  top: 94.4px; /* Below the header */
   left: 0;
   overflow-y: auto; /* Scrollable if content overflows */
-
 }
 
 .sidebar-menu {
@@ -22,41 +21,66 @@
 .sidebar-item {
   padding: 10px;
   margin-bottom: 20px;
+  border-radius: 8px;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
+/* Remove hyperlink look */
+.sidebar-item a {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  width: 100%;
+}
+
+/* Active page style */
+.active {
+  background-color: #c8eefa !important;
+  color: #00C2FF !important;
+}
+
+/* Hover effect for non-active items */
+.sidebar-item:hover {
+  background-color: #c8eefa;
+  color: #00C2FF;
+}
+
+/* Dropdown button */
 .dropdown-btn {
   font-size: 1rem;
   border: none;
   padding: 10px;
   text-align: left;
   cursor: pointer;
+  background: none;
+  width: 100%;
 }
 
+/* Dropdown content */
 .dropdown-content {
   list-style-type: none;
   padding-left: 20px;
   background-color: #f1f1f1;
   margin-top: 10px;
   text-align: left;
+  border-radius: 8px;
 }
 
+/* Dropdown list items */
 .dropdown-content li {
   margin: 15px 0 0 20px;
   cursor: pointer;
   padding: 10px;
+  border-radius: 8px;
 }
 
+/* Hover effect for dropdown items */
 .dropdown-content li:hover {
-  background-color: #ddd;
-}
-.sidebar-item:hover{
   background-color: #c8eefa;
   color: #00C2FF;
-  border-radius: 8px;
 }
 
-.dropdown-content li:hover{
-  background-color: #c8eefa;
-  color: #00C2FF;
-  border-radius: 8px;
+/* Remove outline from clicked buttons */
+button:focus {
+  outline: none;
 }
