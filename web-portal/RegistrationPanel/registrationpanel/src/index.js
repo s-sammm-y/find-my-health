@@ -60,17 +60,39 @@ app.post('/api/add-triage', async (req, res) => {
     return res.status(200).json({ message: "Triage added successfully", data });
 });
 app.get('/api/opd', async (req,res)=>{
-    const {type} = req.query;
+    const {tokenType,test} = req.query;
     const { data, error } = await supabase
     .from('opd_bookings')
     .select('*')
-    .eq('time_slot', 'morning');
+    .eq('time_slot', tokenType.toLowerCase())
+    .eq('appointment_date', test)
+    .order('token', { ascending: true });
 
     if (error) {
         return res.status(500).json({ error: error.message });
     }
     return res.status(200).json(data);
 })
+app.patch('/api/opd/arrive', async (req, res) => {
+    const { id } = req.body;
+    
+    if (!id) {
+        return res.status(400).json({ error: "Token ID is required" });
+    }
+    console.log(id)
+    const { data,error } = await supabase
+        .from('opd_bookings')
+        .update({ arrived: true })
+        .eq('id', parseInt(id))
+        .select();
+
+    if (error) {
+        console.error("Supabase Error:", error);
+        return res.status(500).json({ error: error.message });
+    }
+    console.log("Updated Rows:", data);
+    return res.status(204).send(); // No content returned on success
+});
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
   });  

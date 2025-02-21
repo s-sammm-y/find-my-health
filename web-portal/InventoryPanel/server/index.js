@@ -54,7 +54,23 @@ app.post('/api/inventory', async (req, res) => {
     }
   });
 // Get low stock notifs
- 
+app.get('/api/lowStock',async(req,res)=>{
+  try {
+    const { data, error } = await supabase
+      .from('inventory')
+      .select('*')
+      .lt('quantity', 100); // Fetch only stocks where quantity < 100
+  
+    if (error) {
+      throw error;
+    }
+  
+    res.json(data);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+}) 
   
 //Update item quantity
 app.put('/api/inventory/:item_id', async (req, res) => {

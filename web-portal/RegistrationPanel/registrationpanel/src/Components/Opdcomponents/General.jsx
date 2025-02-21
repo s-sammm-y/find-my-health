@@ -105,19 +105,32 @@ const General = () => {
     setIsModalOpen(true); // Open the modal
   };
 
+  const handleArrival = async (id) => {
+    try {
+      await axios.patch(`http://localhost:3000/api/opd/arrive`, { id });
+  
+      alert("Token updated");
+      fetchBookings();
+
+    } catch (error) {
+      console.error("Error updating token:", error);
+    }
+  }
+  const today = new Date();
+  const formattedDate = today.toISOString().split('T')[0];
+  const test="2025-02-26"
+  const fetchBookings = async () => {
+    try {
+      const response = await axios.get(`http://localhost:3000/api/opd`, {
+        params: { tokenType,test },
+      });
+      setTokens(response.data); // Set the fetched doctors in state
+    } catch (error) {
+      console.error('Error fetching doctors:', error);
+    }
+  };
   useEffect(()=>{
     if (tokenType!=null){
-      const fetchBookings = async () => {
-        try {
-          const response = await axios.get(`http://localhost:3000/api/opd`, {
-            params: { tokenType },
-          });
-          setTokens(response.data); // Set the fetched doctors in state
-        } catch (error) {
-          console.error('Error fetching doctors:', error);
-        }
-      };
-  
       fetchBookings();
     }
   },[tokenType]);
@@ -128,7 +141,7 @@ const General = () => {
   
   const renderTokenBoxes = () => {
       return tokens?.map((token, index) => {
-        const tokenNumber = token.id; // Assuming each token object has a 'token_number' field
+        const tokenNumber = token.token; // Assuming each token object has a 'token_number' field
         const isArrived = token.arrived; // Check if the token is marked as arrived
       
         return (
@@ -221,7 +234,7 @@ const General = () => {
             </div>
             <div className='flex flex-col items-start space-x-4'>
               <h2 className='text-[20px] font-plain'>Token No:</h2>
-              <h2 className='text-[20px] font-bold'>{selectedToken.id}</h2>
+              <h2 className='text-[20px] font-bold'>{selectedToken.token}</h2>
             </div>
           </div>
 
@@ -236,7 +249,7 @@ const General = () => {
           </div>
 
           <div className="flex justify-center space-x-4">
-            <button className="px-4 py-2 bg-blue-500 text-white rounded">Arrived</button>
+            <button onClick={()=>handleArrival(selectedToken.id)}className="px-4 py-2 bg-blue-500 text-white rounded">Arrived</button>
             <button className="px-4 py-2 bg-green-500 text-white rounded">Details</button>
           </div>
 
