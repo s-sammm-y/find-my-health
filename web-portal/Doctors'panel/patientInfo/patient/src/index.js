@@ -126,6 +126,8 @@ app.post('/generate-pdf', async (req, res) => {
         const imageUrl = "http://localhost:5173/head.png";
         const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
         const imageBuffer = Buffer.from(response.data, 'binary');
+        const date = new Date();
+        const foramttedDate = `${("0" + date.getDate()).slice(-2)}-${("0" + (date.getMonth() + 1)).slice(-2)}-${date.getFullYear()}`;
 
         doc.image(imageBuffer, 50, 20, { width: 500 });
         doc.moveDown(10);
@@ -134,6 +136,7 @@ app.post('/generate-pdf', async (req, res) => {
 
         doc.font('Helvetica-Bold').fontSize(14).text(`Patient Name: `, { continued: true }).font('Helvetica').text(name).moveDown(0.5);
         doc.font('Helvetica-Bold').text(`Age: `, { continued: true }).font('Helvetica').text(`${age} years`).moveDown(0.5);
+        doc.font('Helvetica-Bold').text('Date:',{continued:true}).font('Helvetica').text(foramttedDate).moveDown(0.5);
         doc.font('Helvetica-Bold').text(`Next Appointment Date: `, { continued: true }).font('Helvetica').text(date).moveDown(1.5);
 
         pdfdata.forEach((item, index) => {
