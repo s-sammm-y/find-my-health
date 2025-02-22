@@ -43,7 +43,7 @@ const General = () => {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/api/doctor-list');
+        const response = await axios.get('http://localhost:3001/api/doctor-list');
         setDoctors(response.data); // Set the fetched doctors in state
       } catch (error) {
         console.error('Error fetching doctors:', error);
@@ -109,7 +109,7 @@ const General = () => {
 
   const handleArrival = async (id) => {
     try {
-      await axios.patch(`http://localhost:3000/api/opd/arrive`, { id });
+      await axios.patch(`http://localhost:3001/api/opd/arrive`, { id });
   
       alert("Token updated");
       fetchBookings();
@@ -123,7 +123,7 @@ const General = () => {
   const test="2025-02-26"
   const fetchBookings = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/opd`, {
+      const response = await axios.get(`http://localhost:3001/api/opd`, {
         params: { tokenType,formattedDate },
       });
       setTokens(response.data); // Set the fetched doctors in state

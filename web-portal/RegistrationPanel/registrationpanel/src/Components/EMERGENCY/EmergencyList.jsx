@@ -8,7 +8,7 @@ const EmergencyList = () => {
 
     const fetchData = async () => {
         try {
-            const response = await axios.get('http://localhost:3000/api/emergency-list');
+            const response = await axios.get('http://localhost:3001/api/emergency-list');
             setEmergencyData(response.data);
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -38,7 +38,7 @@ const EmergencyList = () => {
     
     const handleArrived = async (emergency_id) => {
         try {
-            const response = await axios.post('http://localhost:3000/api/add-triage', {
+            const response = await axios.post('http://localhost:3001/api/add-triage', {
                 emergency_id
             });
             if (response.status === 200) {
@@ -47,7 +47,7 @@ const EmergencyList = () => {
         } catch (error) {
             console.error("Error adding triage:", error);
         }
-        const response = await axios.get('http://localhost:3000/api/emergency-list');
+        const response = await axios.get('http://localhost:3001/api/emergency-list');
         setEmergencyData(response.data);  // Refresh the list
     };
     return (
