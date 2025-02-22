@@ -9,7 +9,10 @@ class OPDBookTicket extends StatelessWidget {
   OPDBookTicket({required this.supabase});
 
   Future<List<Map<String, dynamic>>> fetchOpdBookings() async {
-    final response = await supabase.from('opd_bookings').select().eq('phone',UserData.userMobile.toString().substring(3));
+    final response = await supabase
+        .from('opd_bookings')
+        .select()
+        .eq('phone', UserData.userMobile.toString().substring(3));
 
     return List<Map<String, dynamic>>.from(response);
   }
@@ -31,7 +34,8 @@ class OPDBookTicket extends StatelessWidget {
                 size: 200,
               ),
               SizedBox(height: 10),
-              Text("Show this QR code at the Reception", textAlign: TextAlign.center),
+              Text("Show this QR code at the Reception",
+                  textAlign: TextAlign.center),
             ],
           ),
           actions: [
@@ -121,9 +125,13 @@ class OPDBookTicket extends StatelessWidget {
                                   ),
                                 ),
                                 SizedBox(height: 4),
-                                Text('Age : ${booking['age'] ?? 'N/A'}', style: TextStyle(fontSize: 12)),
-                                Text('Department : ${booking['OPD_dept'] ?? 'N/A'}', style: TextStyle(fontSize: 12)),
-                                Text('Token No : ${booking['token'] ?? 'N/A'}', style: TextStyle(fontSize: 12)),
+                                Text('Age : ${booking['age'] ?? 'N/A'}',
+                                    style: TextStyle(fontSize: 12)),
+                                Text(
+                                    'Department : ${booking['OPD_dept'] ?? 'N/A'}',
+                                    style: TextStyle(fontSize: 12)),
+                                Text('Token No : ${booking['token'] ?? 'N/A'}',
+                                    style: TextStyle(fontSize: 12)),
                               ],
                             ),
                           ],
@@ -146,7 +154,8 @@ class OPDBookTicket extends StatelessWidget {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
-                              padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 24),
                             ),
                             onPressed: () {
                               _showQRCodeDialog(context, booking);

@@ -9,7 +9,7 @@ import 'package:health_sync/Profile/drawer_slider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: "assets/.env");
-  
+   
 
   final String? supabaseUrl = dotenv.env['supabaseUrl'];
   final String? supabaseKey = dotenv.env['supabaseKey'];
