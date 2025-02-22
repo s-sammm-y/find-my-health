@@ -18,13 +18,25 @@ class _CardioWardHospitalCardState
   void initState() {
     super.initState();
     fetchAvailableBeds();
+    listenToBedTable();
+  }
+
+  void listenToBedTable() {
+    supabase
+        .from('bed')
+        .stream(primaryKey: ['bed_id'])
+        .eq('ward_id', 'cough')
+        .listen((List<Map<String, dynamic>> beds) {
+      fetchAvailableBeds();    
+      print("Updated bed data: $beds");
+    });
   }
 
   Future<void> fetchAvailableBeds() async {
     final response = await supabase
         .from('bed')
         .select('empty')
-        .eq('ward_id', 'cough'); // Fetch only 'Cardiac Ward' beds
+        .eq('ward_id', 'cough'); 
 
     if (response.isNotEmpty) {
       int count = response.where((bed) => bed['empty'] == true).length;

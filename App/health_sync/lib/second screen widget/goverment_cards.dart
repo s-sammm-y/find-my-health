@@ -12,18 +12,26 @@ class _GeneralWardHospitalCardState extends State<GeneralWardHospitalCard> {
   int availableBeds = 0;
   final int totalBeds = 200; // Fixed total beds count
   String errorMessage = '';
-
+  final supabase = Supabase.instance.client;
   @override
   void initState() {
     super.initState();
     fetchBedData();
+    listenToBedTable();
   }
-
+  void listenToBedTable() {
+    supabase
+        .from('bed')
+        .stream(primaryKey: ['bed_id'])
+        .eq('ward_id', 'general')
+        .listen((List<Map<String, dynamic>> beds) {
+      fetchBedData();    
+      print("Updated bed data: $beds");
+    });
+  }
   Future<void> fetchBedData() async {
     try {
-      final supabase = Supabase.instance.client;
 
-      // Fetch available beds where empty = true for General Ward
       final availableBedsResponse = await supabase
           .from('bed')
           .select('bed_id')
