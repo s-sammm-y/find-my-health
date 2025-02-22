@@ -103,49 +103,64 @@ class _CustomDrawerState extends State<CustomDrawer> {
   void _showprescription(BuildContext context, int? userId) async {
     try {
       int USERID = userId ?? 0;
-      final response = await Supabase.instance.client
-          .from('user_prescription_details')
-          .select('pdf')
-          .eq('user_id', USERID)
-          .maybeSingle(); 
+      final List<dynamic> response = await Supabase.instance.client
+        .from('user_prescription_details')
+        .select('pdf')
+        .eq('user_id', USERID);
 
-      if (response == null || response['pdf'] == null) {
+      if (response.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('No prescription found')),
+          SnackBar(content: Text('No prescriptions found')),
         );
         return;
       }
 
-      String pdfFileName = response['pdf'];
+      List<String> pdfFileNames = response.map((entry) => entry['pdf'] as String).toList();
 
-      String filePath = pdfFileName.startsWith('user_2/') ? pdfFileName : 'user_2/$pdfFileName';
+      List<String> pdfUrls = await Future.wait(pdfFileNames.map((pdfFileName) async {
+        String filePath = pdfFileName.startsWith('user_$USERID/') 
+            ? pdfFileName 
+            : 'user_$USERID/$pdfFileName';
 
-      print("Fetching file from: $filePath");
+        return await Supabase.instance.client.storage
+            .from('prescriptions')
+            .createSignedUrl(filePath, 3600);
+      }));
 
-      final String pdfUrl = await Supabase.instance.client.storage
-          .from('prescriptions')
-          .createSignedUrl(filePath,60);
-
-      print("Generated PDF URL: $pdfUrl");
+      print("Generated PDF URLs: $pdfUrls");
 
       final tempDir = await getTemporaryDirectory();
-      final pdfPath = '${tempDir.path}/$pdfFileName';
+      List<String> downloadedPdfPaths = [];
 
-      File localPdfFile = File(pdfPath);
-      if (!localPdfFile.parent.existsSync()) {
-        await localPdfFile.parent.create(recursive: true);
-      }
+      for (int i = 0; i < pdfUrls.length; i++) {
+        String pdfUrl = pdfUrls[i];
+        String pdfFileName = pdfUrl.split('/').last.split('?').first;
 
-      final responsePdf = await http.get(Uri.parse(pdfUrl));
-      if (responsePdf.statusCode == 200) {
-        await localPdfFile.writeAsBytes(responsePdf.bodyBytes);
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => PDFViewerScreen(pdfPath: localPdfFile.path)),
-        );
-      } else {
-        throw Exception("Failed to download PDF");
+        final pdfPath = '${tempDir.path}/$pdfFileName';
+        File localPdfFile = File(pdfPath);
+
+        if (!localPdfFile.parent.existsSync()) {
+          await localPdfFile.parent.create(recursive: true);
+        }
+
+        final responsePdf = await http.get(Uri.parse(pdfUrl));
+        
+        if (responsePdf.statusCode == 200) {
+          await localPdfFile.writeAsBytes(responsePdf.bodyBytes);
+          downloadedPdfPaths.add(pdfPath);
+        } else {
+          print("Failed to download PDF: $pdfUrl");
+        }
       }
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PDFViewerScreen(
+            pdfPaths: downloadedPdfPaths, 
+            initialIndex: 0,
+          ),
+        ),
+      );
     } catch (e) {
       print('Error fetching prescription: $e');
       ScaffoldMessenger.of(context).showSnackBar(

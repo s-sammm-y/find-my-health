@@ -9,7 +9,7 @@ class OPDBookTicket extends StatelessWidget {
   OPDBookTicket({required this.supabase});
 
   Future<List<Map<String, dynamic>>> fetchOpdBookings() async {
-    final response = await supabase.from('opd_bookings').select().eq('phone',UserData.userMobile.toString().substring(3));
+    final response = await supabase.from('opd_bookings').select().eq('phone',UserData.userMobile.toString().substring(3)).order('created_at', ascending: false).limit(1);
 
     return List<Map<String, dynamic>>.from(response);
   }
