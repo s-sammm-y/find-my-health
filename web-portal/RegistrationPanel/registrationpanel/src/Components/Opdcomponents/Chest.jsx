@@ -4,7 +4,7 @@ import {supabase} from '../../supabaseClient';
 import axios from 'axios'; // Ensure correct import
 
 
-const General = () => {
+const Chest = () => {
   const { selectedDropdownValue } = useDropdown();
   const [currentTime, setCurrentTime] = useState(getCurrentTime());
   const [selectedDoctor, setSelectedDoctor] = useState(''); // State to track selected doctor
@@ -306,4 +306,4 @@ const General = () => {
   );
 };
 
-export default General;
+export default Chest;

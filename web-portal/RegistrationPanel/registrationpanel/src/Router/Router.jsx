@@ -7,6 +7,7 @@ import Triage from '../Components/TRIAGE/Triage';
 import PatientStatus from '../Components/PatientStatus/PatientStatus';
 import BedAvaibility from '../Components/BedAvaibility/BedAvaibility';
 import General from '../Components/Opdcomponents/General';
+import Chest from '../Components/Opdcomponents/Chest'
 import Skin from '../Components/Opdcomponents/Skin';
 import Neurologist from '../Components/Opdcomponents/Neurologist';
 import Orthopedic from '../Components/Opdcomponents/Orthopedic';
@@ -31,6 +32,7 @@ const Router = createBrowserRouter([
         children: [
           { path: '', element: <General /> }, // Default content for OPD
           { path: 'general', element: <General /> },
+          { path: 'chest', element: <Chest /> },
           { path: 'skin', element: <Skin /> },
           { path: 'orthopedic', element: <Orthopedic /> },
           { path: 'neurologist', element: <Neurologist /> },

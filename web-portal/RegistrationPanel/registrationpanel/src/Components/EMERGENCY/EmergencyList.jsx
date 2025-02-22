@@ -1,22 +1,38 @@
 import React, { useEffect, useState } from 'react';
 import axios from "axios";
+import {supabase} from '../../supabaseClient';
 import "./Emergency.css";
 
 const EmergencyList = () => {
     const [emergencyData, setEmergencyData] = useState([]);
 
-    useEffect(() => {
-        // Fetch data from the backend
-        const fetchData = async () => {
-            try {
-                const response = await axios.get('http://localhost:3000/api/emergency-list');
-                setEmergencyData(response.data);
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            }
-        };
+    const fetchData = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/api/emergency-list');
+            setEmergencyData(response.data);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    };
 
+    useEffect(() => {
         fetchData();
+        const subscription = supabase
+            .channel('emergency-list-channel')  // Unique channel name
+            .on(
+                'postgres_changes', 
+                { event: 'INSERT', schema: 'public', table: 'emergency' }, 
+                () => {
+                    console.log("Emergency list updated! Fetching new data...");
+                    fetchData();  // Refresh the data when any change happens
+                }
+            )
+            .subscribe();
+
+        // Cleanup subscription on unmount
+        return () => {
+            supabase.removeChannel(subscription);
+        };
     }, [emergencyData]);
 
     

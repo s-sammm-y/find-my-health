@@ -80,17 +80,16 @@ app.patch('/api/opd/arrive', async (req, res) => {
         return res.status(400).json({ error: "Token ID is required" });
     }
     console.log(id)
-    const { data,error } = await supabase
+    const {error } = await supabase
         .from('opd_bookings')
         .update({ arrived: true })
         .eq('id', parseInt(id))
-        .select();
-
+        
     if (error) {
         console.error("Supabase Error:", error);
         return res.status(500).json({ error: error.message });
     }
-    console.log("Updated Rows:", data);
+    
     return res.status(204).send(); // No content returned on success
 });
 app.listen(port, () => {
