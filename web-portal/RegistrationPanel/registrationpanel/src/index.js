@@ -29,6 +29,18 @@ app.get('/api/emergency-list', async (req, res) => {
 
     return res.status(200).json(data);
 });
+app.get('/api/triage-list', async (req, res) => {
+    const { data, error } = await supabase
+        .from('triage')  
+        .select('*')
+        .eq('triage', false);  
+
+    if (error) {
+        return res.status(500).json({ error: error.message });
+    }
+
+    return res.status(200).json(data);
+});
 app.get('/api/doctor-list', async(req,res)=>{
     const { data, error } = await supabase
     .from('doctors')
@@ -60,12 +72,12 @@ app.post('/api/add-triage', async (req, res) => {
     return res.status(200).json({ message: "Triage added successfully", data });
 });
 app.get('/api/opd', async (req,res)=>{
-    const {tokenType,test} = req.query;
+    const {tokenType,formattedDate} = req.query;
     const { data, error } = await supabase
     .from('opd_bookings')
     .select('*')
     .eq('time_slot', tokenType.toLowerCase())
-    .eq('appointment_date', test)
+    .eq('appointment_date', formattedDate)
     .order('token', { ascending: true });
 
     if (error) {
