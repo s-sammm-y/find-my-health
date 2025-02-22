@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { createClient } from '@supabase/supabase-js';
 import { IoIosAddCircleOutline } from "react-icons/io";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import axios from 'axios';
 import Dosage from './Dosage';
+
+const supabase = createClient('https://aeouxmudgmiawyqnwsic.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFlb3V4bXVkZ21pYXd5cW53c2ljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzg3ODA0MzAsImV4cCI6MjA1NDM1NjQzMH0.wK9aPGh5Myh62Mjs1pfHKc6PoFLaj35thvmMpy8qJ1s');
 
 const PrescriptionModal = () => {
   const [showModal, setShowModal] = useState(false);
@@ -14,6 +17,50 @@ const PrescriptionModal = () => {
   const [patientName, setPatientName] = useState('');
   const [patientAge, setPatientAge] = useState('');
   const [userId, setUserID] = useState(null);
+  const [patient,setPatient] = useState([])
+
+
+  
+  useEffect(() => {
+    const handlePatientFetch = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/fetch-bookings");
+        console.log("Patients fetched successfully in frontend");
+        setPatient(response.data); 
+      } catch (error) {
+        console.error("Patients could not be fetched", error);
+        alert("Patient queue problem in frontend");
+      }
+    };
+  
+    handlePatientFetch();
+
+    // Subscribe to realtime updates
+      const channel = supabase
+        .channel('custom-update-channel')
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'opd_bookings' },
+          (payload) => {
+            const updatedBooking = payload.new; 
+
+            setPatient((prevPatients) =>
+              prevPatients.map((p) =>
+                p.id === updatedBooking.id
+                  ? { ...p, ...updatedBooking } 
+                  : p
+              )
+            );
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
+  }, []);
+  
+
 
   const genPdf = async () => {
     try {
@@ -74,36 +121,59 @@ const PrescriptionModal = () => {
     })));
   }, [description]);
 
-  const patients = [
-    { id: 1, name: "John Doe", age: 28 },
-    { id: 2, name: "Jane Smith", age: 35 },
-    { id: 3, name: "Michael Johnson", age: 42 },
-    { id: 4, name: "Michael Johnson", age: 42 },
-    { id: 5, name: "Michael Johnson", age: 42 },
-    { id: 6, name: "Michael Johnson", age: 42 },
-    { id: 7, name: "Michael Johnson", age: 42 },
-  ];
   const openModal = (id) => {
     setUserID(id);
     setShowModal(true);
   };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setPatientName('');
+    setDescription('');
+    setPatientAge('');
+    setAddMed(0);
+    setSelectedDate('')
+    setSelectedData([]);
+  };
+  
   return (
     <div className="flex flex-col items-center justify-center h-screen">
       <div className="w-full max-w-3xl">
-        {patients.map((patient) => (
-          <div key={patient.id} className="bg-white p-4 mb-3 rounded-lg shadow-md flex justify-between items-center">
-            <div>
-              <p className="text-lg font-semibold">{patient.name}</p>
-              <p className="text-gray-600">Age: {patient.age}</p>
-            </div>
-            <button
-              onClick={() => openModal(patient.id)}
-              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
+      {patient && patient.length > 0 ? (
+        patient
+          .filter((p) => p.arrived) 
+          .map((patient) => (
+            <div
+              key={patient.id}
+              className="bg-white p-4 mb-3 rounded-lg shadow-md flex justify-between items-center"
             >
-              Open Prescription
-            </button>
-          </div>
-        ))}
+              <div>
+                <p className="text-lg font-semibold">{patient.name}</p>
+                <p className="text-gray-600">Age: {patient.age}</p>
+              </div>
+              <div className='flex flex-column gap-4 h-15'>
+                <button
+                  onClick={() => openModal(patient.id)}
+                  className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
+                >
+                  Open Prescription
+                </button>
+
+                {patient.check_up && (
+                  <button
+                    onClick={() => alert(`Check-up done for: ${patient.name}`)}
+                    className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition"
+                  >
+                    Check-up Completed
+                  </button>
+                )}
+              </div>
+            </div>
+          ))
+      ) : (
+        <p className="text-center text-gray-500">No patients found.</p>
+      )}
+
       </div>
 
       {/* Modal */}
@@ -113,7 +183,7 @@ const PrescriptionModal = () => {
           
           {/* Close Button */}
           <button
-            onClick={() => setShowModal(false)}
+            onClick={closeModal}
             className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
           >
             ✖
@@ -139,14 +209,6 @@ const PrescriptionModal = () => {
               className="bg-gray-200 rounded-lg p-2 w-full"
               value={patientAge}
               onChange={handlePatientAge}
-            />
-      
-            {/* Description (Fixed Height) */}
-            <label className="font-semibold">Description:</label>
-            <textarea
-              placeholder="Write Description"
-              className="bg-gray-200 rounded-lg p-2 w-full h-[100px] "
-              onChange={(e) => handleDescriptionChange(e.target.value)}
             />
       
             {/* Medicine Components */}
@@ -177,6 +239,14 @@ const PrescriptionModal = () => {
                 </button>
               )}
             </div>
+
+            {/* Description (Fixed Height) */}
+            <label className="font-semibold">Description:</label>
+            <textarea
+              placeholder="Write Description"
+              className="bg-gray-200 rounded-lg p-2 w-full h-[100px] "
+              onChange={(e) => handleDescriptionChange(e.target.value)}
+            />
       
             {/* Appointment Date */}
             <h1 className="font-semibold">Schedule Next Appointment:</h1>

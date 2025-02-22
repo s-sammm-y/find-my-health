@@ -29,6 +29,19 @@ app.listen(PORT,()=>{
     console.log("app listening")
 })
 
+app.get('/fetch-bookings',async(req,res)=>{
+    try{
+        const {data,error}=await supabase.from('opd_bookings').select('*')
+        if(error)
+        {
+            return res.status(400).json({message:'Patients data cannot be fetched'})
+        }
+        return res.status(200).json(data); 
+    }catch(err)
+    {
+        return res.status(500).json({message:'error in backed',error:err.message})
+    }
+})
 
 app.get('/fetch-catagory',async(req,res)=>{
     try{
@@ -73,7 +86,8 @@ app.get('/fetch-medicine',async(req,res)=>{
 // })
 
 app.post('/generate-pdf', async (req, res) => {
-    const { pdfdata, name, age, date, user_id } = req.body;
+    const { pdfdata, name, age, dates, user_id } = req.body;
+    console.log(pdfdata.description)
 
     try {
         const doc = new PDFDocument({ margin: 40 });
@@ -114,6 +128,20 @@ app.post('/generate-pdf', async (req, res) => {
 
             console.log('PDF path saved to database');
 
+            // Update check_up for users as true
+            const { error: updateError } = await supabase
+                .from('opd_bookings')
+                .update({ check_up: true }) // Ensure `true` is properly formatted
+                .eq('id', user_id)
+                .select();  
+
+            if (updateError) {
+                console.error('Error updating check_up status:', updateError);
+                return res.status(500).json({ error: 'Failed to update check-up status' });
+            }
+            console.log(`Check-up status updated for user_id: ${user_id}`);
+
+            console.log(`Check-up status updated for user_id: ${user_id}`);
             // Send the PDF buffer as response to frontend
             res.set({
                 'Content-Type': 'application/pdf',
@@ -137,7 +165,7 @@ app.post('/generate-pdf', async (req, res) => {
         doc.font('Helvetica-Bold').fontSize(14).text(`Patient Name: `, { continued: true }).font('Helvetica').text(name).moveDown(0.5);
         doc.font('Helvetica-Bold').text(`Age: `, { continued: true }).font('Helvetica').text(`${age} years`).moveDown(0.5);
         doc.font('Helvetica-Bold').text('Date:',{continued:true}).font('Helvetica').text(foramttedDate).moveDown(0.5);
-        doc.font('Helvetica-Bold').text(`Next Appointment Date: `, { continued: true }).font('Helvetica').text(date).moveDown(1.5);
+        doc.font('Helvetica-Bold').text(`Next Appointment Date: `, { continued: true }).font('Helvetica').text(dates).moveDown(1.5);
 
         pdfdata.forEach((item, index) => {
             doc.font('Helvetica-Bold').fontSize(12).text(`Medicine ${index + 1}`, { underline: true }).moveDown(0.5);
