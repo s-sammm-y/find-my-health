@@ -22,8 +22,9 @@ const Sidebar = () => {
         <li className={`sidebar-item ${location.pathname === "/analytics" ? "active" : ""}`}>
           <Link to="/analytics">Inventory Analytics</Link>
         </li>
-        <li className="dropDown">
-          <button onClick={toggleInventoryDropdown} className="dropdown-btn">
+        <li className={`sidebar-item ${location.pathname === "/MedicineInventory" ? "active" : ""}`}>
+          <Link to="/MedicineInventory">Medicine Inventory</Link>
+          {/* <button onClick={toggleInventoryDropdown} className="dropdown-btn">
             Medicine Inventory 
             <span className={`dropdown-arrow ${isInventoryOpen ? "open" : ""}`}>
               {isInventoryOpen ? "  ▲" : "  ▼"}
@@ -40,7 +41,7 @@ const Sidebar = () => {
               <li>Sterilization</li>
               <li>Equipments</li>
             </ul>
-          )}
+          )} */}
         </li>
       </ul>
     </div>

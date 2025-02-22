@@ -2,8 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import App from "../App";
 import Notifications from "../components/Notifications/Notifications";
 import Analytics from "../components/Analytics/Analytics";
-import Popup from "../components/Popup/Popup";
-import SearchBarDropdown from "../components/Searchbar/SearchBarDropdown";
+import Medicineinventory from "../components/Medicineinventory/Medicineinventory";
 import Header from "../components/Header/Header";
 import Sidebar from "../components/Sidebar/Sidebar";
 
@@ -19,6 +18,7 @@ const AppRouter = () => {
             <Route path="/" element={<App />} />
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/analytics" element={<Analytics />} />
+            <Route path="/medicineinventory" element={<Medicineinventory/>}/>
           </Routes>
         </div>
       </div>
