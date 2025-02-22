@@ -124,7 +124,7 @@ const Chest = () => {
   const fetchBookings = async () => {
     try {
       const response = await axios.get(`http://localhost:3000/api/opd`, {
-        params: { tokenType,test },
+        params: { tokenType,test,opd },
       });
       setTokens(response.data); // Set the fetched doctors in state
     } catch (error) {
