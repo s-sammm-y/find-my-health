@@ -116,6 +116,7 @@ app.post('/generate-pdf', async (req, res) => {
                 return res.status(500).json({ error: 'Error uploading PDF' });
             }
 
+            
             console.log('PDF uploaded to Supabase:', filePath);
 
             // Store the file path in the database
