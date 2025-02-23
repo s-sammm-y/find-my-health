@@ -153,7 +153,7 @@ const PrescriptionModal = () => {
               </div>
               <div className='flex flex-column gap-4 h-15'>
                 <button
-                  onClick={() => openModal(patient.id)}
+                  onClick={() => openModal(patient.user_id)}
                   className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
                 >
                   Open Prescription

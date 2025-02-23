@@ -122,7 +122,7 @@ app.post('/generate-pdf', async (req, res) => {
             const { data: dbData, error: dbError } = await supabase
                 .from('user_prescription_details')
                 .insert([
-                    { user_id, pdf: filePath }
+                    { user_id:user_id, pdf: filePath }
                 ]);
 
             if (dbError) {
@@ -136,7 +136,7 @@ app.post('/generate-pdf', async (req, res) => {
             const { error: updateError } = await supabase
                 .from('opd_bookings')
                 .update({ check_up: true }) // Ensure `true` is properly formatted
-                .eq('id', user_id)
+                .eq('user_id', user_id)
                 .select();  
 
             if (updateError) {
