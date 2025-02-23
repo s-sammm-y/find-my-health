@@ -78,9 +78,10 @@ function App() {
           {/* Panel Selection Dropdown */}
           <select className="panel-dropdown" onChange={handlePanelChange} required>
             <option value="">Choose Panel</option>
-            <option value="Doctor">Doctor</option>
             <option value="Registration">Registration</option>
+            <option value="Doctor">Doctor</option>
             <option value="Nurse">Nurse</option>
+            <option value="Inventory">Registration</option>
           </select>
 
           {/* Username Input */}
