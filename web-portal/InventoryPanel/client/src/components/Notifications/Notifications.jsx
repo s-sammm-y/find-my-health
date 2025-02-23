@@ -8,7 +8,7 @@ function Notifications() {
   useEffect(() => {
     const fetchStock = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/lowStock");
+        const response = await axios.get("http://localhost:3003/api/lowStock");
         setNotifications(response.data);
       } catch (err) {
         console.error("Error fetching notifications:", err);

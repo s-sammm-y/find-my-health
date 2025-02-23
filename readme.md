@@ -20,3 +20,7 @@ Staff / doctors availability [ client side ]
 Patient record [ Doctors side  & client side(individual) ]
 
 
+Registration - 5174,3001
+Nurse - 5175,3002
+Inventory - 5176,3003
+Doctor - 5177,3004

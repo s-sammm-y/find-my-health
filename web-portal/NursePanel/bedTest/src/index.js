@@ -6,8 +6,12 @@ import { createClient } from '@supabase/supabase-js';
 
 dotenv.config()
 const app = express();
-const port = 3000
-app.use(cors())
+const port = 3002
+app.use(cors({
+    origin: "http://localhost:5175", 
+    methods: "GET, POST, PUT, DELETE",
+    credentials: true, // Allow cookies or authentication headers
+  }));
 app.use(bodParser.urlencoded({extended:true}))
 app.use(express.json())
 

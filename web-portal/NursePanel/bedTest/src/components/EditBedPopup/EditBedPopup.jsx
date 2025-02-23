@@ -31,7 +31,7 @@ function EditBedPopup({ editVar, bedID }) {
         setError("");
 
         try {
-            await axios.put("http://localhost:3000/edit-bed", {
+            await axios.put("http://localhost:3002/edit-bed", {
                 bed_id: BedId,
                 dept_id: editDept,
                 ward_id: editWard,
@@ -54,7 +54,7 @@ function EditBedPopup({ editVar, bedID }) {
         setError("");
 
         try {
-            await axios.put("http://localhost:3000/remove-bed-details", {
+            await axios.put("http://localhost:3002/remove-bed-details", {
                 bed_id: BedId,
                 dept_id: null,
                 patient_id: null,

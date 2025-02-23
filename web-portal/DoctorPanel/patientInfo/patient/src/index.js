@@ -14,7 +14,11 @@ dotenv.config()
 
 
 const app = express()
-app.use(cors())
+app.use(cors({
+    origin: "http://localhost:5177", 
+    methods: "GET, POST, PUT, DELETE",
+    credentials: true, // Allow cookies or authentication headers
+  }));
 app.use(bodyParser.urlencoded({extended:true}))
 app.use(express.json())
 
@@ -23,7 +27,7 @@ const KEY = process.env.SUPABASE_KEY;
 
 const supabase = createClient(URL,KEY)
 
-const PORT = 5000
+const PORT = 3004
 
 app.listen(PORT,()=>{
     console.log("app listening")
@@ -151,7 +155,7 @@ app.post('/generate-pdf', async (req, res) => {
         });
 
         // Generate the PDF
-        const imageUrl = "http://localhost:5173/head.png";
+        const imageUrl = "http://localhost:5177/head.png";
         const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
         const imageBuffer = Buffer.from(response.data, 'binary');
         const date = new Date();

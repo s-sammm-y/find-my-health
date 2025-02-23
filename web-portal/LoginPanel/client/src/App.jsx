@@ -33,18 +33,22 @@ function App() {
 
       if (response.ok) {
         // Redirect to the new page
-        if (panel === 'Registration')
+        if (selectedPanel === 'Registration')
         {
           window.location.href = "http://localhost:5174/";
         }
-        else if(panel === 'Doctor')
+        else if(selectedPanel === 'Doctor')
         {
-
+          window.location.href = "http://localhost:5177/";
         }
-        else if(panel === 'Nurse')
+        else if(selectedPanel === 'Nurse')
         {
-
+          window.location.href = "http://localhost:5175/";
         }
+        else if(selectedPanel === 'Inventory')
+          {
+            window.location.href = "http://localhost:5176/";
+          }
         else{
 
         }
@@ -53,6 +57,7 @@ function App() {
       }
     } catch (error) {
       setError("Something went wrong. Try again later.");
+      console.log(error)
     }
   };
 

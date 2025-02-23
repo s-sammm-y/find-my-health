@@ -10,7 +10,7 @@ export default function Medicine({ updateSelectedMedicine, index}) {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/fetch-catagory');
+                const response = await axios.get('http://localhost:3004/fetch-catagory');
                 setCategoryDetails(response.data.data);
             } catch (err) {
                 console.error('Error fetching categories', err);
@@ -26,7 +26,7 @@ export default function Medicine({ updateSelectedMedicine, index}) {
 
         if (categoryId) {
             try {
-                const response = await axios.get('http://localhost:5000/fetch-medicine', {
+                const response = await axios.get('http://localhost:3004/fetch-medicine', {
                     params: { category_id: categoryId }
                 });
                 setMedicineOptions(response.data.data);

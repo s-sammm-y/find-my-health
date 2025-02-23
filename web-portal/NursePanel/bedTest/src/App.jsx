@@ -25,7 +25,7 @@ function App() {
   useEffect(()=>{
     const getWardNames = async ()=>{
       try{
-        const response = await axios.get("http://localhost:3000/ward-list")
+        const response = await axios.get("http://localhost:3002/ward-list")
         setWards(response.data);
         //console.log(response.data)
       }catch(err){
@@ -49,7 +49,7 @@ function App() {
     const getBedData = async () => {
       setLoading(true);
       try {
-        const response = await axios.get("http://localhost:3000/data");
+        const response = await axios.get("http://localhost:3002/data");
         setBeds(response.data);
         //console.log(response.data)
       } catch (error) {
@@ -64,7 +64,7 @@ function App() {
   // Fetch and display bed details in modal
   const handleSeeDetails = async (bedId) => {
     try {
-      const response = await axios.get(`http://localhost:3000/bed-details`, {
+      const response = await axios.get(`http://localhost:3002/bed-details`, {
         params: { bedId },
       });
       setBedDetail(response.data); // Set the fetched bed details
@@ -93,7 +93,7 @@ function App() {
   // Delete bed
   const handleDeleteBed = async () => {
     try {
-      const response = await axios.delete('http://localhost:3000/data', {
+      const response = await axios.delete('http://localhost:3002/data', {
         data: { bedId: selectedBedId } // Use the stored bedId
       });
       alert('bed deleted successfully');

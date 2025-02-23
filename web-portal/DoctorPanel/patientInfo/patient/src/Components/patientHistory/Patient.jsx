@@ -24,7 +24,7 @@ const PrescriptionModal = () => {
   useEffect(() => {
     const handlePatientFetch = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/fetch-bookings");
+        const response = await axios.get("http://localhost:3004/fetch-bookings");
         console.log("Patients fetched successfully in frontend");
         setPatient(response.data); 
       } catch (error) {
@@ -64,7 +64,7 @@ const PrescriptionModal = () => {
 
   const genPdf = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/generate-pdf', {
+      const response = await axios.post('http://localhost:3004/generate-pdf', {
         pdfdata: selectedData,
         name: patientName,
         age: patientAge,

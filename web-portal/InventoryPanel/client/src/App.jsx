@@ -24,7 +24,7 @@ function App() {
   useEffect(() => {
     const fetchInventory = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/inventory");
+        const response = await axios.get("http://localhost:3003/api/inventory");
         setInventory(response.data);
       } catch (err) {
         setError("Error fetching inventory data");
@@ -57,12 +57,12 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:3000/api/inventory", {
+      await axios.post("http://localhost:3003/api/inventory", {
         item_name: newItemName,
         quantity: newItemQuantity,
       });
       // Refresh the inventory list
-      const response = await axios.get("http://localhost:3000/api/inventory");
+      const response = await axios.get("http://localhost:3003/api/inventory");
       setInventory(response.data);
       handleClosePopup();
     } catch (err) {
@@ -82,7 +82,7 @@ function App() {
     e.preventDefault();
     try {
       // Update quantity in the backend
-      await axios.put(`http://localhost:3000/api/inventory/${itemId}`, {
+      await axios.put(`http://localhost:3003/api/inventory/${itemId}`, {
         quantity: newQuantity[itemId],
       });
       inventoryChange(true);

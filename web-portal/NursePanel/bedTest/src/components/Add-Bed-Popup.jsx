@@ -44,7 +44,7 @@ export default function Popup({onChange}) {
             room: roomNo
         });
         try{
-            const response = await axios.post('http://localhost:3000/add-bed',{
+            const response = await axios.post('http://localhost:3002/add-bed',{
                 bed_id:bedId,
                 dept_id:depID,
                 ward_id:wardID,

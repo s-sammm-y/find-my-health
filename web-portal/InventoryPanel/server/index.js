@@ -10,10 +10,12 @@ const supabaseKey = process.env.SUPABASE_KEY
 const supabase = createClient(supabaseUrl, supabaseKey)
 
 const app = express();
-const port = 3000;
+const port = 3003;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors({
-    origin: 'http://localhost:5173', // Allow requests from React frontend
+    origin: "http://localhost:5176", 
+    methods: "GET, POST, PUT, DELETE",
+    credentials: true, // Allow cookies or authentication headers
   }));
 app.use(express.json());
 //Get inventory
