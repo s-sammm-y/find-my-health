@@ -1,7 +1,5 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:http/http.dart' as http;
+import 'package:health_sync/chatbot/chatbot_logic.dart'; // Import the chatbot logic file
 
 class ChatBotScreen extends StatefulWidget {
   @override
@@ -10,109 +8,203 @@ class ChatBotScreen extends StatefulWidget {
 
 class _ChatBotScreenState extends State<ChatBotScreen> {
   final TextEditingController _controller = TextEditingController();
-  List<Map<String, String>> messages = [];
-  final String? apiKey = dotenv.env['apiKey'];
-  bool isLoading = false;
+  List<Map<String, dynamic>> messages = [];
+  final ChatbotLogic chatbot = ChatbotLogic();
+  bool isTyping = false; // Tracks if bot is "typing"
+  bool showBookingOptions = true; // Show buttons for OPD and Emergency
+  bool showDateButtons = false; // Show buttons for date selection
+
+  @override
+  void initState() {
+    super.initState();
+    _showWelcomeMessage();
+  }
+
+  void _showWelcomeMessage() {
+    setState(() {
+      messages.add({
+        "role": "bot",
+        "text": "How can we help you?",
+        "showButtons": true,
+      });
+    });
+  }
 
   Future<void> sendMessage(String userMessage) async {
     setState(() {
       messages.add({"role": "user", "text": userMessage});
-      isLoading = true;
+      isTyping = true;
+      showBookingOptions = false; // Hide OPD and Emergency buttons
+      showDateButtons = false; // Hide date buttons unless triggered
     });
 
-    try {
-      final response = await http.post(
-        Uri.parse(
-            "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=$apiKey"),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
-          "contents": [
-            {
-              "role": "user",
-              "parts": [
-                {"text": userMessage}
-              ]
-            }
-          ],
-          "generationConfig": {
-            "maxOutputTokens": 100,
-            "temperature": 0.7, // Controls randomness
-            "topP": 0.8 // Limit response to 150 tokens
-          }
-        }),
-      );
-
-      print("Response Status: ${response.statusCode}");
-      print("Response Body: ${response.body}");
-
-      if (response.statusCode == 200) {
-        final responseBody = jsonDecode(response.body);
-        String botReply = responseBody["candidates"]?[0]?["content"]?["parts"]
-                ?[0]?["text"] ??
-            "I couldn't understand that.";
-
-        setState(() {
-          messages.add({"role": "bot", "text": botReply});
-        });
-      } else {
-        setState(() {
-          messages.add({
-            "role": "bot",
-            "text": "Error: ${response.body}"
-          }); // Show full error
-        });
-      }
-    } catch (e) {
-      setState(() {
-        messages.add({"role": "bot", "text": "Error: $e"});
-      });
-    }
+    String botReply = await chatbot.getBotResponse(userMessage);
 
     setState(() {
-      isLoading = false;
+      isTyping = false;
+      messages.add({"role": "bot", "text": botReply});
+      
+      // Show date buttons if bot asks for a date
+      if (botReply.contains("Please select a date")) {
+        showDateButtons = true;
+      }
     });
+  }
+
+  void _handleBooking(String bookingType) {
+    if (bookingType == "I want to book an OPD appointment") {
+      chatbot.startOPDBookingFlow();
+      sendMessage("I want to book an OPD appointment");
+    } else {
+      sendMessage(bookingType);
+    }
+  }
+
+  void _selectDate(String dateOption) {
+    sendMessage(dateOption); // Send "Tomorrow" or "Day after tomorrow"
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Health Sync AI"),
-      actions: [
-    IconButton(
-      icon: Icon(Icons.delete, color: const Color.fromARGB(255, 0, 0, 0)),
-      onPressed: () {
-        setState(() {
-          messages.clear(); // Clears all chat messages
-        });
-      },
-    ),
-  ],),
+      appBar: AppBar(
+        title: Text("Health Sync AI"),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.delete, color: Colors.black),
+            onPressed: () {
+              setState(() {
+                messages.clear();
+                _showWelcomeMessage();
+              });
+            },
+          ),
+        ],
+      ),
       body: Column(
         children: [
           Expanded(
             child: ListView.builder(
-              itemCount: messages.length,
+              itemCount: messages.length + (isTyping ? 1 : 0),
               itemBuilder: (context, index) {
-                bool isUser = messages[index]["role"] == "user";
-                return Align(
-                  alignment:
-                      isUser ? Alignment.centerRight : Alignment.centerLeft,
-                  child: Container(
-                    padding: EdgeInsets.all(10),
-                    margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                    decoration: BoxDecoration(
-                      color: isUser ? Colors.blueAccent : Colors.grey[300],
-                      borderRadius: BorderRadius.circular(10),
+                if (index == messages.length && isTyping) {
+                  return Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      child: Text("Bot is typing...",
+                          style: TextStyle(
+                              fontStyle: FontStyle.italic, color: Colors.grey)),
                     ),
-                    child: Text(messages[index]["text"] ?? "",
-                        style: TextStyle(
-                            color: isUser ? Colors.white : Colors.black)),
-                  ),
+                  );
+                }
+
+                final message = messages[index];
+                bool isUser = message["role"] == "user";
+                bool showButtons = message["showButtons"] ?? false;
+
+                return Column(
+                  crossAxisAlignment: isUser
+                      ? CrossAxisAlignment.end
+                      : CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: isUser ? Colors.blueAccent : Colors.grey[300],
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Text(message["text"] ?? "",
+                          style: TextStyle(
+                              color: isUser ? Colors.white : Colors.black)),
+                    ),
+                    // OPD and Emergency Buttons
+                    if (showButtons && showBookingOptions)
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () => _handleBooking(
+                                    "I want to book an OPD appointment"),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.green,
+                                  padding: EdgeInsets.symmetric(vertical: 12),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                ),
+                                child: Text("OPD Booking",
+                                    style: TextStyle(color: Colors.white)),
+                              ),
+                            ),
+                            SizedBox(width: 10),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () =>
+                                    _handleBooking("I have a medical emergency"),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red,
+                                  padding: EdgeInsets.symmetric(vertical: 12),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                ),
+                                child: Text("Emergency",
+                                    style: TextStyle(color: Colors.white)),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    // Date selection buttons (Tomorrow / Day after tomorrow)
+                    if (showDateButtons)
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () => _selectDate("Tomorrow"),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.blueAccent,
+                                  padding: EdgeInsets.symmetric(vertical: 12),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                ),
+                                child: Text("Tomorrow",
+                                    style: TextStyle(color: Colors.white)),
+                              ),
+                            ),
+                            SizedBox(width: 10),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () =>
+                                    _selectDate("Day after tomorrow"),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.purple,
+                                  padding: EdgeInsets.symmetric(vertical: 12),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                ),
+                                child: Text("Day after tomorrow",
+                                    style: TextStyle(color: Colors.white)),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
                 );
               },
             ),
           ),
-          if (isLoading) CircularProgressIndicator(),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
