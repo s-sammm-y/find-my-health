@@ -4,6 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:health_sync/screens/general.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:health_sync/Profile/drawer_slider.dart';
 
 class OPDBookingPage extends StatefulWidget {
   final String selectedDisease;
@@ -94,7 +95,7 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
       );
       return;
     }
-    if(aadhaar.length != 12){
+    if (aadhaar.length != 12) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Invalid Aadhar Number !")),
       );
@@ -103,7 +104,8 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
 
     try {
       //if(_selectedTime)
-      final response = await Supabase.instance.client.from('opd_bookings').insert({
+      final response =
+          await Supabase.instance.client.from('opd_bookings').insert({
         'name': name,
         'phone': phone,
         'age': age,
@@ -114,6 +116,7 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
         'time_slot': _selectedTime,
         'created_at': DateTime.now().toIso8601String(),
         'is_paid': isPaid,
+        "user_id": UserData.userId
       }).select();
 
       if (response.isNotEmpty) {
@@ -187,7 +190,8 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
         child: Column(
           children: [
             _buildTextField("Full Name", _nameController, TextInputType.text),
-            _buildTextField("Phone Number", _phoneController, TextInputType.phone),
+            _buildTextField(
+                "Phone Number", _phoneController, TextInputType.phone),
             Padding(
               padding: const EdgeInsets.only(bottom: 12.0),
               child: TextFormField(
@@ -200,8 +204,10 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
               ),
             ),
             _buildTextField("Age", _ageController, TextInputType.number),
-            _buildTextField("Aadhar Number", _aadhaarController, TextInputType.number),
-            _buildTextField("Address", _addressController, TextInputType.text, maxLines: 2),
+            _buildTextField(
+                "Aadhar Number", _aadhaarController, TextInputType.number),
+            _buildTextField("Address", _addressController, TextInputType.text,
+                maxLines: 2),
             ListTile(
               title: Text(_selectedDate ?? "Select Appointment Date"),
               onTap: () => _selectDate(context),
@@ -231,8 +237,6 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
       ),
     );
   }
-
-
 
   Widget _buildTextField(String label, TextEditingController controller,
       TextInputType keyboardType,
