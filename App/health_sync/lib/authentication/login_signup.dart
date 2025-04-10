@@ -4,6 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:dart_ipify/dart_ipify.dart';
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
+import 'package:uuid/uuid.dart';
 
 class LoginSignupScreen extends StatefulWidget {
   @override
@@ -27,7 +28,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
 
   /// Handles OTP-based signup and login
   Future<void> _authenticateUser() async {
-  if (_loading) return; // Prevent multiple taps
+  if (_loading) return; 
 
   setState(() => _loading = true);
 
@@ -79,13 +80,12 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
       }
 
       // Check user count & generate user_id
-      final userCountResponse = await supabase.from('users').select('user_id');
-      final int userCount = (userCountResponse as List).length;
-      final int newUserId = userCount + 1;
+      const uuid = Uuid();
+      final String userId = uuid.v4();
 
       // Insert new user
       await supabase.from('users').insert({
-        'user_id': newUserId,
+        'user_id': userId,
         'mobile_no': mobile,
         'password': hashPassword(password),
       });
@@ -104,21 +104,16 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
       // **LOGIN LOGIC**
       final response = await supabase
           .from('users')
-          .select()
+          .select('user_id')
           .eq('mobile_no', mobile)
           .eq('password', hashPassword(password))
           .maybeSingle();
 
       if (response != null) {
         final String userIp = await Ipify.ipv4();
-        final user = await supabase
-            .from('users')
-            .select('user_id')
-            .eq('mobile_no', mobile)
-            .single();
-        final int userId = user['user_id'];
-
-        await supabase.from('logged_in_users').insert({'ip': userIp, 'userid': userId});
+        final String userId = response['user_id'];
+        await supabase.from('logged_in_users').delete().eq('user_id', userId);
+        await supabase.from('logged_in_users').insert({'ip': userIp, 'user_id': userId});
 
         Navigator.pushReplacement(
           context,

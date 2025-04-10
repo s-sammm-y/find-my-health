@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 
 /// Static class to hold user details globally.
 class UserData {
-  static int? userId;
+  static String? userId;
   static String? userName;
   static String? userMobile;
 
@@ -20,7 +20,7 @@ class UserData {
 
       final loggedInUser = await supabase
           .from('logged_in_users')
-          .select('userid')
+          .select('user_id')
           .eq('ip', userIp)
           .maybeSingle();
       if (loggedInUser == null || loggedInUser.isEmpty) {
@@ -28,7 +28,7 @@ class UserData {
         return;
       }
 
-      int userId = loggedInUser['userid'];
+      String userId = loggedInUser['user_id'];
 
       final user = await supabase
           .from('users')
@@ -42,7 +42,7 @@ class UserData {
 
       // Update static variables directly (no setState)
       UserData.userId = user['user_id'];
-      UserData.userName = "User ID: ${user['user_id']}";
+      UserData.userName = "User ID: ${user['user_id'].split('-')[0]}";
       UserData.userMobile = user['mobile_no'];
 
       print("User Data Loaded: ${UserData.userName}, ${UserData.userMobile}");
@@ -100,9 +100,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
     }
   }
 
-  void _showprescription(BuildContext context, int? userId) async {
+  void _showprescription(BuildContext context, String? userId) async {
     try {
-      int USERID = userId ?? 0;
+      String USERID = userId ?? "007";
       final List<dynamic> response = await Supabase.instance.client
         .from('user_prescription_details')
         .select('pdf')

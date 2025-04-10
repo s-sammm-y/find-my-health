@@ -26,7 +26,6 @@ class _GeneralWardHospitalCardState extends State<GeneralWardHospitalCard> {
         .eq('ward_id', 'general')
         .listen((List<Map<String, dynamic>> beds) {
       fetchBedData();    
-      print("Updated bed data: $beds");
     });
   }
   Future<void> fetchBedData() async {

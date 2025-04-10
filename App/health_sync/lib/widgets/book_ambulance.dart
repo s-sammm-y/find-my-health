@@ -106,9 +106,9 @@ class _BookAmbulanceCardState extends State<BookAmbulanceCard> {
       _amformKey.currentState!.save();
       final uuid = Uuid();
       final String emergencyId = uuid.v4();
-      final int? userId = UserData.userId;
+      final String? userId = UserData.userId;
       final data = {
-        'userid': userId,
+        'user_id': userId,
         'emergency_id': emergencyId,
         'problem': problemDescription,
         'name': name,

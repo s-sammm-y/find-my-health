@@ -23,13 +23,13 @@ class _NotificationScreenState extends State<NotificationScreen> {
   void _listenForNewEmergencyBookings() {
     supabase
         .from('emergency_booking')
-        .stream(primaryKey: ['userid'])
+        .stream(primaryKey: ['emergency_id'])
         .order('created_at', ascending: false)
         .listen((data) {
       if (data.isNotEmpty) {
         setState(() {
           notifications.addAll(data.where((notification) =>
-              notification['userid'] == UserData.userId &&
+              notification['user_id'] == UserData.userId &&
               !dismissedNotifications_emergency.contains(notification['emergency_id'])));
         });
         _showStackableNotifications();
