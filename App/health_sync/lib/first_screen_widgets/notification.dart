@@ -26,13 +26,15 @@ class _NotificationScreenState extends State<NotificationScreen> {
         .stream(primaryKey: ['emergency_id'])
         .order('created_at', ascending: false)
         .listen((data) {
-      if (data.isNotEmpty) {
+      if (data.isNotEmpty && mounted) {
+        final newNotifications = data.where((notification) =>
+            notification['user_id'] == UserData.userId &&
+            !dismissedNotifications_emergency.contains(notification['emergency_id'])).toList();
+        
         setState(() {
-          notifications.addAll(data.where((notification) =>
-              notification['user_id'] == UserData.userId &&
-              !dismissedNotifications_emergency.contains(notification['emergency_id'])));
+          notifications.addAll(newNotifications);
         });
-        _showStackableNotifications();
+        _showStackableNotifications(newNotifications);
       }
     });
   }
@@ -43,19 +45,21 @@ class _NotificationScreenState extends State<NotificationScreen> {
         .stream(primaryKey: ['id'])
         .order('created_at', ascending: false)
         .listen((data) {
-      if (data.isNotEmpty) {
-        setState(() {
-          notifications.addAll(data.where((notification) =>
+      if (data.isNotEmpty && mounted) {
+        final newNotifications = data.where((notification) =>
             ("+91"+notification['phone'].toString() == UserData.userMobile.toString()) &&
-            !dismissedNotifications_OPD.contains(notification['id'].toString())));
+            !dismissedNotifications_OPD.contains(notification['id'].toString())).toList();
+        
+        setState(() {
+          notifications.addAll(newNotifications);
         });
-        _showStackableNotifications();
+        _showStackableNotifications(newNotifications);
       }
     });
   }
 
-  void _showStackableNotifications() async {
-    for (var notification in notifications) {
+  void _showStackableNotifications(List<Map<String, dynamic>> newNotifications) async {
+    for (var notification in newNotifications) {
       await Future.delayed(Duration(seconds: 2));
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -63,7 +67,19 @@ class _NotificationScreenState extends State<NotificationScreen> {
           content: Text(notification.containsKey('problem')
               ? '🚨 Emergency booked: ${notification['problem']}'
               : '📅 OPD booked for ${notification['appointment_date']}'),
-          action: SnackBarAction(label: 'Dismiss', onPressed: () {}),
+          action: SnackBarAction(
+            label: 'Dismiss',
+            onPressed: () {
+              setState(() {
+                if (notification.containsKey('problem')) {
+                  dismissedNotifications_emergency.add(notification['emergency_id']);
+                } else {
+                  dismissedNotifications_OPD.add(notification['id'].toString());
+                }
+                notifications.remove(notification);
+              });
+            },
+          ),
           duration: Duration(seconds: 3),
         ),
       );
@@ -72,14 +88,14 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
   void _clearNotification(int index) {
     setState(() {
-    final notification = notifications[index];
-    if (notification.containsKey('problem')) {
-      dismissedNotifications_emergency.add(notification['emergency_id']);
-    } else {
-      dismissedNotifications_OPD.add(notification['id'].toString());
-    }
-    notifications.removeAt(index);
-  });
+      final notification = notifications[index];
+      if (notification.containsKey('problem')) {
+        dismissedNotifications_emergency.add(notification['emergency_id']);
+      } else {
+        dismissedNotifications_OPD.add(notification['id'].toString());
+      }
+      notifications.removeAt(index);
+    });
   }
 
   @override
