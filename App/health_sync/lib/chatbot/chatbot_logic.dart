@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:health_sync/Profile/drawer_slider.dart';
 
 class ChatbotLogic {
   final String? apiKey = dotenv.env['apiKey'];
@@ -23,6 +24,7 @@ class ChatbotLogic {
           'address': userData['address'],
           'appointment_date': userData['appointment_date'],
           'time_slot': userData['time_slot'],
+          'user_id': UserData.userId
         }
       ]);
 

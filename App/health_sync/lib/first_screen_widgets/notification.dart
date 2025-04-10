@@ -25,17 +25,21 @@ class _NotificationScreenState extends State<NotificationScreen> {
         .from('emergency_booking')
         .stream(primaryKey: ['emergency_id'])
         .order('created_at', ascending: false)
+        .limit(1)
         .listen((data) {
       if (data.isNotEmpty && mounted) {
-        final newNotifications = data.where((notification) =>
-            notification['user_id'] == UserData.userId &&
-            !dismissedNotifications_emergency.contains(notification['emergency_id'])).toList();
+      final latestBooking = data.first; 
+      
+      if (latestBooking['user_id'].toString() == UserData.userId.toString() &&
+          !dismissedNotifications_emergency.contains(latestBooking['emergency_id'])) {
         
         setState(() {
-          notifications.addAll(newNotifications);
+          notifications.add(latestBooking);
         });
-        _showStackableNotifications(newNotifications);
+
+        _showStackableNotifications([latestBooking]);
       }
+    }
     });
   }
 
@@ -44,6 +48,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
         .from('opd_bookings')
         .stream(primaryKey: ['id'])
         .order('created_at', ascending: false)
+        .limit(1)
         .listen((data) {
       if (data.isNotEmpty && mounted) {
         final newNotifications = data.where((notification) =>
@@ -60,6 +65,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
   void _showStackableNotifications(List<Map<String, dynamic>> newNotifications) async {
     for (var notification in newNotifications) {
+      if (notification.containsKey('problem') && dismissedNotifications_emergency.contains(notification['emergency_id'])) {
+        continue;
+      }
       await Future.delayed(Duration(seconds: 2));
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
