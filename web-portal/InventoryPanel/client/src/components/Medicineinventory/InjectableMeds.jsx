@@ -1,5 +1,5 @@
 import React, { useState ,useEffect} from "react";
-import "../../App.css";
+import "../../Injectable.css";
 import axios from 'axios';
 
 
@@ -35,6 +35,12 @@ const InjectableMeds=()=>{
                 <h3>Category</h3>
                 <p>{item.category_name}</p>
                 </div>
+            </div>
+            <div className="item-stock">
+                <h3>Stock</h3>
+                <p className={item.quantity <= 50 ? 'low-stock' : 'normal-stock'}>
+                    <span className="stock-icon">🧺</span>{item.quantity}
+                </p>
             </div>
         </div>
         ))}
