@@ -5,9 +5,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBoxOpen } from '@fortawesome/free-solid-svg-icons';
 import { faPen } from '@fortawesome/free-solid-svg-icons';
 
-
-import SearchBarDropdown from "./components/Searchbar/SearchBarDropdown";
-
 import "./App.css";
 
 function App() {
@@ -17,6 +14,7 @@ function App() {
   const [showPopup, setShowPopup] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(null);
+  const [modalId,setModalID] = useState(null);
   const [newItemName, setNewItemName] = useState("");
   const [newItemQuantity, setNewItemQuantity] = useState("");
   const [addQuantity, setAddQuantity] = useState({});
@@ -92,7 +90,6 @@ function App() {
     e.preventDefault();
     try {
       const updateValue = action === "add" ? addQuantity[itemId] : -removeQuantity[itemId];
-  
       await axios.put(`http://localhost:3003/api/inventory/${itemId}`, {
         quantity: updateValue,
       });
@@ -144,33 +141,7 @@ function App() {
                 </div>
                 <div className="item-update">
                   <button className="icon-button" onClick={()=>openModal(item.item_id)}><FontAwesomeIcon icon={faPen} className="view-icon"/></button>
-                  {modalOpen && (
-        <div className="modal">
-          <div className="modal-content">
-            <div><h3>Update Stock for Item </h3></div>
-            <form onSubmit={(e) => handleUpdateSubmit(e, selectedItemId, "add")}>
-              <input
-                type="number"
-                value={addQuantity[selectedItemId] || ""}
-                onChange={(e) => handleAddQuantityChange(e, selectedItemId)}
-                required
-              />
-              <button className="submitBtn" type="submit">ADD</button>
-            </form>
-            <form onSubmit={(e) => handleUpdateSubmit(e, selectedItemId, "remove")}>
-              <input
-                type="number"
-                value={removeQuantity[selectedItemId] || ""}
-                onChange={(e) => handleRemoveQuantityChange(e, selectedItemId)}
-                required
-              />
-              <button className="removeBtn m-rounded-md" type="submit">REMOVE</button>
-            </form>
-            <div className="manufacturer-details">Manufacturer Details: </div>   
-            <button className="modal-close" onClick={closeModal}>Close</button>
-          </div>
-        </div>
-      )}
+
                   {/* <form onSubmit={(e) => handleUpdateSubmit(e, item.item_name)}>
                     <input
                       type="number"
@@ -185,6 +156,34 @@ function App() {
                 </div>
               </div>
             ))}
+
+                {modalOpen && (
+                  <div className="modal">
+                    <div className="modal-content">
+                      <div><h3>Update Stock for Item </h3></div>
+                      <form onSubmit={(e) => handleUpdateSubmit(e, selectedItemId, "add")}>
+                        <input
+                          type="number"
+                          value={addQuantity[selectedItemId] || ""}
+                          onChange={(e) => handleAddQuantityChange(e, selectedItemId)}
+                          required
+                        />
+                        <button className="submitBtn" type="submit">ADD</button>
+                      </form>
+                      <form onSubmit={(e) => handleUpdateSubmit(e, selectedItemId, "remove")}>
+                        <input
+                          type="number"
+                          value={removeQuantity[selectedItemId] || ""}
+                          onChange={(e) => handleRemoveQuantityChange(e, selectedItemId)}
+                          required
+                        />
+                        <button className="removeBtn m-rounded-md" type="submit">REMOVE</button>
+                      </form>
+                      <div className="manufacturer-details">Manufacturer Details: </div>   
+                      <button className="modal-close" onClick={closeModal}>Close</button>
+                    </div>
+                  </div>
+                )}
           </div>
       
       <Popup show={showPopup} onClose={handleClosePopup}>

@@ -78,7 +78,7 @@ app.get('/api/lowStock',async(req,res)=>{
 app.put('/api/inventory/:item_id', async (req, res) => {
   const { item_id } = req.params;
   const { quantity } = req.body;
-
+  //console.log(item_id,quantity)
   try {
     // First, get the current quantity
     const { data: currentData, error: fetchError } = await supabase
@@ -115,6 +115,7 @@ app.put('/api/inventory/:item_id', async (req, res) => {
 
 app.get('/get-medicine-inventory',async(req,res)=>{
   const {med_type} = req.query;
+  //const med_type = 'otc'
   try{
     const { data, error } = await supabase.rpc('get_medicines_by_type_json', {
       med_type
@@ -129,6 +130,44 @@ app.get('/get-medicine-inventory',async(req,res)=>{
   }
 })
 
+app.post('/api/med/update', async (req, res) => {
+  const { itemName, quantity, action } = req.body;
+
+  if (!itemName || !quantity || !['add', 'remove'].includes(action)) {
+    return res.status(400).json({ message: 'Invalid request' });
+  }
+
+  try {
+    const { data: current, error: currentError } = await supabase
+      .from('medicine')
+      .select('quantity')
+      .eq('name', itemName)
+      .single();
+
+    if (currentError || !current) {
+      return res.status(404).json({ message: 'Medicine not found', details: currentError });
+    }
+
+    const newQuantity =
+      action === 'add'
+        ? current.quantity + parseInt(quantity)
+        : Math.max(0, current.quantity - parseInt(quantity));
+
+    const { data, error } = await supabase
+      .from('medicine')
+      .update({ quantity: newQuantity })
+      .eq('name', itemName);
+
+    if (error) {
+      return res.status(400).json({ message: `Error ${action === 'add' ? 'adding' : 'removing'} quantity`, details: error });
+    }
+
+    res.status(200).json({ message: 'Stock updated successfully', data });
+  } catch (error) {
+    return res.status(500).json({ message: 'Server error', details: error });
+  }
+});
+
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
-  });  
+});  
