@@ -19,8 +19,8 @@ function App() {
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [newItemName, setNewItemName] = useState("");
   const [newItemQuantity, setNewItemQuantity] = useState("");
-  const [newQuantity, setNewQuantity] = useState({}); // to handle item quantity updates
-
+  const [addQuantity, setAddQuantity] = useState({});
+  const [removeQuantity, setRemoveQuantity] = useState({});
   useEffect(() => {
     const fetchInventory = async () => {
       try {
@@ -71,24 +71,41 @@ function App() {
     }
   };
 
-  const handleQuantityChange = (e, itemId) => {
-    setNewQuantity({
-      ...newQuantity,
+ 
+  const handleAddQuantityChange = (e, itemId) => {
+    setAddQuantity({
+      ...addQuantity,
       [itemId]: e.target.value,
     });
   };
 
-  const handleUpdateSubmit = async (e, itemId) => {
+  const handleRemoveQuantityChange = (e, itemId) => {
+    setRemoveQuantity({
+      ...removeQuantity,
+      [itemId]: e.target.value,
+    });
+  };
+  
+  
+
+  const handleUpdateSubmit = async (e, itemId, action) => {
     e.preventDefault();
     try {
-      // Update quantity in the backend
-      await axios.put(`http://localhost:3003/api/inventory/${itemId}`, {
-        quantity: newQuantity[itemId],
-      });
-      inventoryChange(true);
-      
+      const updateValue = action === "add" ? addQuantity[itemId] : -removeQuantity[itemId];
   
-      // Close modal after updating
+      await axios.put(`http://localhost:3003/api/inventory/${itemId}`, {
+        quantity: updateValue,
+      });
+  
+      inventoryChange(true);
+  
+      // Clear the input field after submission
+      if (action === "add") {
+        setAddQuantity({ ...addQuantity, [itemId]: "" });
+      } else {
+        setRemoveQuantity({ ...removeQuantity, [itemId]: "" });
+      }
+  
       closeModal();
     } catch (err) {
       setError("Error updating quantity");
@@ -96,8 +113,9 @@ function App() {
     }
   };
 
+
   return (
-    <div >
+    <div className="min-h-screen overflow-auto">
           <div className="head">
             <h2>All Inventory List</h2>
             <div>
@@ -130,30 +148,25 @@ function App() {
         <div className="modal">
           <div className="modal-content">
             <div><h3>Update Stock for Item </h3></div>
-            <form onSubmit={(e) => handleUpdateSubmit(e, selectedItemId)}>
-            <input
-              type="number"
-              value={newQuantity[selectedItemId] || ""}
-              onChange={(e) => handleQuantityChange(e, selectedItemId)}
-              required
-            />
-                    <button className="submitBtn" type="submit">
-                      ADD
-                    </button>
-            </form>  
-            <form onSubmit={(e) => handleUpdateSubmit(e, selectedItemId)}>
-            <input
-              type="number"
-              value={newQuantity[selectedItemId] || ""}
-              onChange={(e) => handleQuantityChange(e, selectedItemId)}
-              required
-            />
-                    <button className="submitBtn" type="submit">
-                      REMOVE
-                    </button>
+            <form onSubmit={(e) => handleUpdateSubmit(e, selectedItemId, "add")}>
+              <input
+                type="number"
+                value={addQuantity[selectedItemId] || ""}
+                onChange={(e) => handleAddQuantityChange(e, selectedItemId)}
+                required
+              />
+              <button className="submitBtn" type="submit">ADD</button>
+            </form>
+            <form onSubmit={(e) => handleUpdateSubmit(e, selectedItemId, "remove")}>
+              <input
+                type="number"
+                value={removeQuantity[selectedItemId] || ""}
+                onChange={(e) => handleRemoveQuantityChange(e, selectedItemId)}
+                required
+              />
+              <button className="removeBtn m-rounded-md" type="submit">REMOVE</button>
             </form>
             <div className="manufacturer-details">Manufacturer Details: </div>   
-           
             <button className="modal-close" onClick={closeModal}>Close</button>
           </div>
         </div>

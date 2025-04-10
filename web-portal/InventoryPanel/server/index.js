@@ -113,6 +113,22 @@ app.put('/api/inventory/:item_id', async (req, res) => {
   }
 });
 
+app.get('/get-medicine-inventory',async(req,res)=>{
+  const {med_type} = req.query;
+  try{
+    const { data, error } = await supabase.rpc('get_medicines_by_type_json', {
+      med_type
+    });
+    if(error){
+      return res.status(400).json({message:"Error from database"});
+    }
+
+    return res.status(200).json({message:'Data fetched succesfully',data:data});
+  }catch(error){
+    return res.status(500).json({message:"Server error while fetching data",details:error});
+  }
+})
+
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
   });  

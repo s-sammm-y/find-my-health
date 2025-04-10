@@ -1,3 +1,4 @@
+@import "tailwindcss";
 .sidebar {
   width: 250px;
   height: 100vh;
@@ -22,7 +23,7 @@
   padding: 10px;
   margin-bottom: 20px;
   border-radius: 8px;
-  transition: background 0.3s ease, color 0.3s ease;
+  transition: 0.3s ease, color 0.3s ease;
 }
 
 /* Remove hyperlink look */
@@ -84,3 +85,10 @@
 button:focus {
   outline: none;
 }
+
+.roboto-slab-font{
+    font-family: "Roboto Slab", serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+  }

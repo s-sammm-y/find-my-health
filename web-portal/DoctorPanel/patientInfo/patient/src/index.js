@@ -8,8 +8,6 @@ import PDFDocument from 'pdfkit';
 import fs from 'fs'
 import path from 'path'
 
-
-
 dotenv.config()
 
 
@@ -49,7 +47,7 @@ app.get('/fetch-bookings',async(req,res)=>{
 
 app.get('/fetch-catagory',async(req,res)=>{
     try{
-        const {data,error} = await supabase.from('med_catagory').select('*')
+        const {data,error} = await supabase.from('med_catagory').select('*').eq('type','prescription');
         if(error)
         {
             return res.status(400).json({message:'Medicine catagory fetch failed',error})

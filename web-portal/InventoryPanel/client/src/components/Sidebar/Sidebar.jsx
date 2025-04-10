@@ -10,6 +10,8 @@ const Sidebar = () => {
     setIsInventoryOpen(!isInventoryOpen);
   };
 
+  const isActive = location.pathname.startsWith("/Medicineinventory");
+
   return (
     <div className="sidebar">
       <ul className="sidebar-menu">
@@ -22,27 +24,35 @@ const Sidebar = () => {
         <li className={`sidebar-item ${location.pathname === "/analytics" ? "active" : ""}`}>
           <Link to="/analytics">Inventory Analytics</Link>
         </li>
-        <li className={`sidebar-item ${location.pathname === "/MedicineInventory" ? "active" : ""}`}>
-          <Link to="/MedicineInventory">Medicine Inventory</Link>
-          {/* <button onClick={toggleInventoryDropdown} className="dropdown-btn">
-            Medicine Inventory 
-            <span className={`dropdown-arrow ${isInventoryOpen ? "open" : ""}`}>
-              {isInventoryOpen ? "  ▲" : "  ▼"}
-            </span>
-          </button>
-          {isInventoryOpen && (
-            <ul className="dropdown-content">
-              <li>Medical Consumables</li>
-              <li>Pharmaceutical</li>
-              <li>Surgical Instrument</li>
-              <li>Medical Device</li>
-              <li>PPE</li>
-              <li>Non-medical</li>
-              <li>Sterilization</li>
-              <li>Equipments</li>
-            </ul>
-          )} */}
-        </li>
+        <li className={`sidebar-item ${isActive ? "active" : ""}`}>
+      <div
+        onClick={toggleInventoryDropdown}
+        className="cursor-pointer font-semibold hover:text-blue-500"
+      >
+        Medicine Inventory
+      </div>
+
+      {/* MEDICINE INVENTORY ITEMS */}
+      {(isInventoryOpen || isActive) && (
+        <div className="ml-4 mt-2 flex flex-col gap-2">
+          <Link to="/medicineinventory/prescription">
+            <button className="bg-blue-400 w-[200px] h-12 rounded-lg shadow-md hover:bg-blue-500 text-white">
+              Prescription Medications
+            </button>
+          </Link>
+          <Link to="/medicineinventory/otc">
+            <button className="bg-blue-400 w-[200px] h-12 rounded-lg shadow-md hover:bg-blue-500 text-white">
+              Over-the-Counter Medications
+            </button>
+          </Link>
+          <Link to="/medicineinventory/injectable">
+            <button className="bg-blue-400 w-[200px] h-12 rounded-lg shadow-md hover:bg-blue-500 text-white">
+              Injectable Medications
+            </button>
+          </Link>
+        </div>
+      )}
+    </li>
       </ul>
     </div>
   );

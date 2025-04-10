@@ -53,18 +53,23 @@ app.get('/ward-list',async (req,res)=>{
 })
 
 //fetching bed details for particular bed
-app.get('/bed-details',async(req,res)=>{
-    const {bedId}=req.query
-    try{
-        const {data,error}=await supabase.from('bed').select('dept_id,ward_id,room,patient_id').eq('bed_id',bedId)
-        if(error){
-            console.log('error fetching data')
+app.get('/bed-details', async (req, res) => {
+    const { bedId } = req.query;
+
+    try {
+        const { data, error } = await supabase.rpc('bed_detail', { bedid: bedId });
+
+        if (error) {
+            console.error('Error calling function:', error);
+            return res.status(500).json({ error: 'Error fetching bed details' });
         }
-        res.json(data)
-    }catch(err){
-        console.log('Unknonwn error')
+        console.log(data)
+        res.json(data); 
+    } catch (err) {
+        console.error('Unknown error:', err);
+        res.status(500).json({ error: 'Unknown error occurred' });
     }
-})
+});
 
 //adding bed 
 app.post('/add-bed', async (req, res) => {
