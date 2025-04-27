@@ -219,7 +219,7 @@ class _BookAmbulanceCardState extends State<BookAmbulanceCard> {
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
                   labelText: 'State your Problem',
                   suffixIcon: IconButton(
-                    icon: Icon(_isListening ? Icons.mic_off : Icons.mic),
+                    icon: Icon(_isListening ? Icons.mic : Icons.mic_off),
                     onPressed: _isListening ? _stopListening : _startListening,
                   ),
                 ),
