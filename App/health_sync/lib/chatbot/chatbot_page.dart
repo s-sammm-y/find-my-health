@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'dart:convert';
 
 class ChatBotScreen extends StatefulWidget {
   const ChatBotScreen({super.key});
@@ -10,6 +13,42 @@ class ChatBotScreen extends StatefulWidget {
 class _ChatBotScreenState extends State<ChatBotScreen> {
   final TextEditingController _controller = TextEditingController();
   final List<Map<String, dynamic>> _messages = [];
+  String? _geminiApiKey;
+  bool _isTyping = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadApiKey();
+    // Automatically greet the user if the chat is empty
+    if (_messages.isEmpty) {
+      _messages.add({
+        'text': 'Are you facing any problem ? Tell me',
+        'isUser': false,
+        'time': DateTime.now(),
+      });
+    }
+  }
+
+  // Load API key from .env file
+  Future<void> _loadApiKey() async {
+    try {
+      await dotenv.load(fileName: 'assets/.env');
+      setState(() {
+        _geminiApiKey = dotenv.env['GEMINI_API_KEY'];
+      });
+      if (_geminiApiKey == null || _geminiApiKey!.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('Error: Gemini API key not found in .env')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error loading .env file: $e')),
+      );
+    }
+  }
 
   // Reset chat functionality
   void _resetChat() {
@@ -18,24 +57,106 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
     });
   }
 
-  // Handle sending a message (UI only, backend to be added later)
-  void _sendMessage() {
+  // Handle sending a message and calling Gemini API
+  Future<void> _sendMessage() async {
     if (_controller.text.trim().isEmpty) return;
+
+    final userMessage = _controller.text.trim();
 
     setState(() {
       _messages.add({
-        'text': _controller.text,
+        'text': userMessage,
         'isUser': true,
         'time': DateTime.now(),
       });
-      // Placeholder for bot response (to be implemented later)
-      _messages.add({
-        'text': 'This is a placeholder bot response.',
-        'isUser': false,
-        'time': DateTime.now(),
-      });
       _controller.clear();
+      _isTyping = true;
     });
+
+    if (_geminiApiKey == null || _geminiApiKey!.isEmpty) {
+      setState(() {
+        _messages.add({
+          'text': 'Error: Gemini API key is missing.',
+          'isUser': false,
+          'time': DateTime.now(),
+        });
+        _isTyping = false;
+      });
+      return;
+    }
+
+    try {
+      final response = await _callGeminiApi(userMessage);
+      setState(() {
+        _messages.add({
+          'text': response,
+          'isUser': false,
+          'time': DateTime.now(),
+        });
+        _isTyping = false;
+      });
+    } catch (e) {
+      setState(() {
+        _messages.add({
+          'text': 'Error: Could not get response from Gemini API. $e',
+          'isUser': false,
+          'time': DateTime.now(),
+        });
+        _isTyping = false;
+      });
+    }
+  }
+
+  // Call Gemini API
+  Future<String> _callGeminiApi(String userMessage) async {
+    // Use the correct model and endpoint (e.g., gemini-1.5-pro or gemini-1.5-flash)
+    const String apiUrl =
+        'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+    final uri = Uri.parse('$apiUrl?key=$_geminiApiKey');
+
+    try {
+      final response = await http.post(
+        uri,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'contents': [
+            {
+              'parts': [
+                {'text': userMessage}
+              ]
+            }
+          ],
+          'generationConfig': {
+            'temperature': 0.7,
+            'topP': 0.95,
+            'maxOutputTokens': 1024,
+          }
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        // Log the response for debugging
+        debugPrint('API Response: $data');
+        // Check if the expected field exists
+        if (data['candidates'] != null && data['candidates'].isNotEmpty) {
+          return data['candidates'][0]['content']['parts'][0]['text'];
+        } else {
+          throw Exception('No valid candidates in response');
+        }
+      } else {
+        // Log the error response for debugging
+        debugPrint('API Error: ${response.statusCode} - ${response.body}');
+        throw Exception(
+            'Failed to get response: ${response.statusCode} - ${response.body}');
+      }
+    } catch (e) {
+      // Log the exception for debugging
+      debugPrint('API Call Exception: $e');
+      rethrow;
+    }
   }
 
   @override
@@ -46,8 +167,11 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
         Expanded(
           child: ListView.builder(
             padding: const EdgeInsets.all(8.0),
-            itemCount: _messages.length,
+            itemCount: _messages.length + (_isTyping ? 1 : 0),
             itemBuilder: (context, index) {
+              if (_isTyping && index == _messages.length) {
+                return _buildTypingIndicator();
+              }
               final message = _messages[index];
               return _buildChatBubble(
                 message['text'],
@@ -160,5 +284,82 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+}
+
+Widget _buildTypingIndicator() {
+  return Align(
+    alignment: Alignment.centerLeft,
+    child: Container(
+      margin: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+      padding: const EdgeInsets.all(12.0),
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(12.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 5,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _AnimatedTypingDots(),
+        ],
+      ),
+    ),
+  );
+}
+
+class _AnimatedTypingDots extends StatefulWidget {
+  @override
+  State<_AnimatedTypingDots> createState() => _AnimatedTypingDotsState();
+}
+
+class _AnimatedTypingDotsState extends State<_AnimatedTypingDots>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        int dot = ((3 * _controller.value)).floor() % 3;
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: List.generate(3, (i) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 2.0),
+              child: Opacity(
+                opacity: i <= dot ? 1.0 : 0.3,
+                child: const Text(
+                  '.',
+                  style: TextStyle(fontSize: 28, color: Colors.grey),
+                ),
+              ),
+            );
+          }),
+        );
+      },
+    );
   }
 }

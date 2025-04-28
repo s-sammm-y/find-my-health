@@ -106,12 +106,12 @@ class _AuthCheckScreenState extends State<AuthCheckScreen> {
       if (response != null) {
         // User is logged in, go to main screen
         Navigator.pushReplacement(
-  context,
-  MaterialPageRoute(
-    builder: (context) => const GeneralScreen(), // 👈 ONLY GeneralScreen, nothing else
-  ),
-);
-
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                const GeneralScreen(), // 👈 ONLY GeneralScreen, nothing else
+          ),
+        );
       } else {
         // User is not logged in, go to login screen
         Navigator.pushReplacement(
@@ -215,7 +215,26 @@ class _TopBarState extends State<TopBar> with SingleTickerProviderStateMixin {
           },
         ),
         IconButton(
-          icon: const Icon(Icons.notifications, color: Colors.teal, size: 25),
+          icon: Stack(
+            children: [
+              const Icon(Icons.notifications, color: Colors.teal, size: 25),
+              Positioned(
+                right: 0,
+                top: 0,
+                child: NotificationScreen.hasNotifications()
+                    ? Container(
+                        width: 12,
+                        height: 12,
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 2),
+                        ),
+                      )
+                    : SizedBox.shrink(),
+              ),
+            ],
+          ),
           onPressed: () {
             Navigator.push(
               context,

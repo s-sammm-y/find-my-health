@@ -1,3 +1,6 @@
+//This Dart file is not using anywhere its a previous implementation of OPD services
+// We shifted everything in first_screen.dart file
+
 import 'package:flutter/material.dart';
 import 'package:health_sync/widgets/opd_booking.dart';
 

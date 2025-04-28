@@ -25,45 +25,48 @@ class _GeneralScreenState extends State<GeneralScreen> {
   }
 
   @override
-Widget build(BuildContext context) {
-  return Scaffold(
-    appBar: const TopBar(), // 👈 Add TopBar here!
-    drawer: const CustomDrawer(),
-    body: _buildBody(),
-    bottomNavigationBar: BottomNavigationBar(
-      backgroundColor: Colors.white,
-      type: BottomNavigationBarType.fixed,
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'OPD',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.local_hospital),
-          label: 'Emergency',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.sync),
-          label: 'Sync AI',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.document_scanner),
-          label: 'Bookings',
-        ),
-      ],
-      currentIndex: _selectedIndex,
-      selectedItemColor: Colors.teal,
-      unselectedItemColor: Colors.grey[600],
-      onTap: _onItemTapped,
-    ),
-  );
-}
-
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: const TopBar(), // 👈 Add TopBar here!
+      drawer: const CustomDrawer(),
+      body: _buildBody(),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.white,
+        type: BottomNavigationBarType.fixed,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'OPD',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.local_hospital),
+            label: 'Emergency',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.sync),
+            label: 'Sync AI',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.document_scanner),
+            label: 'Bookings',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.teal,
+        unselectedItemColor: Colors.grey[600],
+        onTap: _onItemTapped,
+      ),
+    );
+  }
 
   Widget _buildBody() {
     switch (_selectedIndex) {
       case 0:
-        return const FirstScreen();
+        return FirstScreen(onTabChange: (int index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        });
       case 1:
         return const SecondScreen();
       case 3:

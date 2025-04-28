@@ -3,9 +3,21 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:health_sync/Profile/drawer_slider.dart';
 
 class NotificationScreen extends StatefulWidget {
+   const NotificationScreen({Key? key}) : super(key: key);
+
+  static bool hasNotifications() {
+    // TODO: Replace this with your real notification check
+    return true; 
+  }
   @override
+   Widget build(BuildContext context) {
+    return Scaffold(
+      // Your notification screen UI
+    );
+  }
   _NotificationScreenState createState() => _NotificationScreenState();
 }
+
 
 class _NotificationScreenState extends State<NotificationScreen> {
   List<Map<String, dynamic>> notifications = [];
