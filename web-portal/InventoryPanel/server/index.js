@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import { createClient } from '@supabase/supabase-js';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import e from "express";
 dotenv.config();
 
 const supabaseUrl = process.env.SUPABASE_URL
@@ -168,6 +169,33 @@ app.post('/api/med/update', async (req, res) => {
   }
 });
 
+app.get("/analytics_chart",async(req,res)=>{
+  try{
+    const{data,error} = await supabase.rpc('get_inventory_and_categories')
+
+    if(error){
+      return res.status(400).json({message:'Error fetching data',details:error});
+    }
+
+    return res.status(200).json({message:'Succesfully fetched data',data:data});
+  }catch(error){
+    res.status(500).json({message:'Server error',details:error});
+  }
+})
+
+app.get('/medicineCategoryQuantity',async(req,res)=>{
+  try{
+    const {data,error} = await supabase.rpc('get_category_quantities');
+
+    if(error){
+      return res.status(400).json({message:"Error in query",details:error});
+    }
+
+    return res.status(200).json({message:"data fetched succesfully",data});
+  }catch(error){
+    return res.status(500).json({message:'Medicine category and amount server error',details:error});
+  }
+})
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
-});  
+});
