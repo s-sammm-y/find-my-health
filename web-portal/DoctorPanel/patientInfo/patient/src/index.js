@@ -14,7 +14,7 @@ dotenv.config()
 const app = express()
 app.use(cors({
     origin: "http://localhost:5177", 
-    methods: "GET, POST, PUT, DELETE",
+    methods: "GET, PATCH, POST, PUT, DELETE",
     credentials: true, // Allow cookies or authentication headers
   }));
 app.use(bodyParser.urlencoded({extended:true}))
