@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:health_sync/chatbot/chatbot_page.dart';
+// import 'package:health_sync/chatbot/chatbot_page.dart';
 import 'package:health_sync/first_screen_widgets/opd_services_page.dart';
-import 'package:health_sync/screens/second_screen.dart';
+// import 'package:health_sync/screens/second_screen.dart';
 import 'package:health_sync/widgets/opd_booking.dart';
 import 'package:health_sync/widgets/voice_chatbot_ui.dart';
 

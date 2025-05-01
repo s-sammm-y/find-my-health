@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:health_sync/Profile/drawer_slider.dart';
 import 'package:health_sync/chatbot/chatbot_page.dart';
-import 'package:health_sync/first_screen_widgets/notification.dart';
+// import 'package:health_sync/first_screen_widgets/notification.dart';
 import 'package:health_sync/main.dart';
 import 'package:health_sync/screens/first_screen.dart';
 import 'package:health_sync/screens/second_screen.dart';
