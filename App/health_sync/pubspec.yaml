@@ -31,6 +31,7 @@ dependencies:
   flutter:
     sdk: flutter
   supabase_flutter: ^2.6.0
+  image_picker: ^1.1.2
   webview_flutter: ^4.9.0
   geolocator: ^13.0.1
   intl: ^0.19.0
@@ -53,6 +54,7 @@ dependencies:
   flutter_pdfview: ^1.2.7
   url_launcher: ^6.1.11
   path_provider: ^2.1.5
+  carousel_slider: ^5.0.0 # Added for image slider
 
 dev_dependencies:
   flutter_test:

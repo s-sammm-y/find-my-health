@@ -51,7 +51,7 @@ class _VoiceChatbotPageState extends State<VoiceChatbotPage>
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
-                  color: Colors.blue.shade900,
+                  color: Colors.teal.shade900,
                 ),
               ),
               const SizedBox(height: 20),
@@ -66,7 +66,7 @@ class _VoiceChatbotPageState extends State<VoiceChatbotPage>
               ElevatedButton(
                 onPressed: _startAi,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue.shade700,
+                  backgroundColor: Colors.teal.shade700,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 40,
@@ -108,43 +108,43 @@ class _VoiceChatbotPageState extends State<VoiceChatbotPage>
             fontWeight: FontWeight.w600,
           ),
         ),
-        backgroundColor: Colors.blue.shade700,
+        backgroundColor: Colors.teal.shade700,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue.shade700,
-              ),
-              child: Text(
-                'Menu',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
-              ),
-            ),
-            ListTile(
-              leading: Icon(Icons.home),
-              title: Text('Home'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.person),
-              title: Text('Profile'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ),
-      ),
+      // drawer: Drawer(
+      //   child: ListView(
+      //     padding: EdgeInsets.zero,
+      //     children: [
+      //       DrawerHeader(
+      //         decoration: BoxDecoration(
+      //           color: Colors.blue.shade700,
+      //         ),
+      //         child: Text(
+      //           'Menu',
+      //           style: TextStyle(
+      //             color: Colors.white,
+      //             fontSize: 24,
+      //           ),
+      //         ),
+      //       ),
+      //       ListTile(
+      //         leading: Icon(Icons.home),
+      //         title: Text('Home'),
+      //         onTap: () {
+      //           Navigator.pop(context);
+      //         },
+      //       ),
+      //       ListTile(
+      //         leading: Icon(Icons.person),
+      //         title: Text('Profile'),
+      //         onTap: () {
+      //           Navigator.pop(context);
+      //         },
+      //       ),
+      //     ],
+      //   ),
+      // ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -180,7 +180,7 @@ class _VoiceChatbotPageState extends State<VoiceChatbotPage>
                       ? 'AI: ${_logic.questions[_logic.currentQuestionIndex]}'
                       : 'AI: Booking complete!',
                   style: TextStyle(
-                    color: Colors.blue.shade900,
+                    color: Colors.teal.shade900,
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                   ),
@@ -213,8 +213,8 @@ class _VoiceChatbotPageState extends State<VoiceChatbotPage>
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: _logic.isListening
-                      ? Colors.blue.shade300
-                      : Colors.blue.shade700,
+                      ? Colors.teal.shade300
+                      : Colors.teal.shade700,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.all(16),
                   shape: RoundedRectangleBorder(
@@ -305,7 +305,7 @@ class SoundWavePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = isActive ? Colors.blue.shade700 : Colors.grey.shade400
+      ..color = isActive ? Colors.teal.shade700 : Colors.grey.shade400
       ..style = PaintingStyle.fill;
 
     final barWidth = size.width / 10;
