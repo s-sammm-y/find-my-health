@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+.stock-check {
+    margin-top: 20px;
+    width: 55vh;
+    height: 40vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+}
+
+.warehouse {
+    margin-top: 20px;
+    width: 55vh;
+    height: 40vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+}
+
+.utilization{
+    height: 40px;
+    width: 40vh;
+}
+
+.stock-table{
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.returns{
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.returns > div {
+    padding: 10px;
+}

@@ -4,6 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import cors from 'cors';
 import dotenv from 'dotenv';
+import analyzeBookings from './analysis.js';
 dotenv.config();
 
 const supabaseUrl = process.env.SUPABASE_URL
@@ -150,6 +151,26 @@ app.patch('/api/opd/arrive', async (req, res) => {
     
     return res.status(204).send(); // No content returned on success
 });
+
+app.get("/all-bookings",async(req,res)=>{
+    try{
+        const {data,error} = await supabase.from('opd_bookings').select('OPD_dept,time_slot');
+
+        if(error){
+            return res.status(400).json({message:'Error fetching data',details:error});
+        }
+    
+        const analysis = analyzeBookings(data); 
+
+        return res.status(200).json({
+        message: 'Data fetched successfully',
+        analysis: analysis  
+        });
+    
+    }catch(error){
+        return res.status(500).json({message:'server error',details:error});
+    }
+})
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
   });  

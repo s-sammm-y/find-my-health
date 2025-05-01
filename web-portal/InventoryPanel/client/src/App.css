@@ -1,5 +1,8 @@
 /* App.css */
 @import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
 *{
   margin: 0;
   padding: 0;
@@ -12,18 +15,17 @@
     overflow: hidden;
   }
 
-  
   .error-message {
     color: red;
     text-align: center;
   }
-  
+
   .inventory-list {
     display: flex;
     flex-direction: column;
     gap: 1px;
   }
-  
+
   .item {
     background-color: #f9f9f9;
     border: 1px solid #ddd;

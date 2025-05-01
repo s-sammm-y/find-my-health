@@ -3,6 +3,7 @@ import 'package:health_sync/chatbot/chatbot_page.dart';
 import 'package:health_sync/first_screen_widgets/opd_services_page.dart';
 import 'package:health_sync/screens/second_screen.dart';
 import 'package:health_sync/widgets/opd_booking.dart';
+import 'package:health_sync/widgets/voice_chatbot_ui.dart';
 
 class FirstScreen extends StatefulWidget {
   final void Function(int)? onTabChange;
@@ -86,7 +87,7 @@ class _FirstScreenState extends State<FirstScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ChatBotScreen(),
+                        builder: (context) => VoiceChatbotPage(),
                       ),
                     );
                   },
@@ -149,10 +150,10 @@ class _FirstScreenState extends State<FirstScreen> {
                                     Row(
                                       children: [
                                         const Text(
-                                          "Chat with us 24/7",
+                                          "Book OPD Through Agent",
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 18,
+                                            fontSize: 15,
                                             color: Colors.teal,
                                           ),
                                         ),
@@ -464,6 +465,20 @@ class _FirstScreenState extends State<FirstScreen> {
             ],
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => VoiceChatbotPage(),
+            ),
+          );
+        },
+        backgroundColor: Colors.teal,
+        child: Icon(Icons.mic, color: Colors.white),
+        shape: CircleBorder(),
+        tooltip: 'Book OPD by Voice',
       ),
     );
   }
