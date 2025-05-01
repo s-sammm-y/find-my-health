@@ -120,7 +120,6 @@ const General = () => {
   }
   const today = new Date();
   const formattedDate = today.toISOString().split('T')[0];
-  const test="2025-02-26"
   const fetchBookings = async () => {
     try {
       const response = await axios.get(`http://localhost:3001/api/opd`, {

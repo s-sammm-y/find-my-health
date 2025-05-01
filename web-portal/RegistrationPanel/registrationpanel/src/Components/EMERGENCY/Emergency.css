@@ -45,3 +45,37 @@ justify-content: space-between;
 td.verify{
     color:green
 }
+.loading-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading-content {
+    background: white;
+    padding: 20px 40px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    margin: 10px auto;
+    border: 5px solid #ddd;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}

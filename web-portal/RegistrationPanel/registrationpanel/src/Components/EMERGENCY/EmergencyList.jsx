@@ -5,6 +5,7 @@ import "./Emergency.css";
 
 const EmergencyList = () => {
     const [emergencyData, setEmergencyData] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const fetchData = async () => {
         try {
@@ -33,16 +34,17 @@ const EmergencyList = () => {
         return () => {
             supabase.removeChannel(subscription);
         };
-    }, [emergencyData]);
+    }, []);
 
     
     const handleArrived = async (emergency_id) => {
+        setLoading(true);
         try {
             const response = await axios.post('http://localhost:3001/api/add-triage', {
                 emergency_id
             });
             if (response.status === 200) {
-                alert('Triage added successfully');
+                setLoading(false)
             }
         } catch (error) {
             console.error("Error adding triage:", error);
@@ -52,6 +54,14 @@ const EmergencyList = () => {
     };
     return (
         <div className = "parent">
+            {loading && (
+                <div className="loading-popup">
+                    <div className="loading-content">
+                        <div className="spinner"></div>
+                        <p>Adding triage, please wait...</p>
+                    </div>
+                </div>
+            )}
             <div className = "list-parent">
                 <h1 className="bookinghead">ALL BOOKINGS</h1>
                 <div className="list">
@@ -62,6 +72,7 @@ const EmergencyList = () => {
                                 <th scope="col">name</th>
                                 <th scope="col">Problem</th>
                                 <th scope="col">Est. Arrival</th>
+                                <th scope="col">Booking Time</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">Verify</th>
                             </tr>
@@ -73,13 +84,21 @@ const EmergencyList = () => {
                                     <td>{item.name}</td>
                                     <td>{item.problem}</td>
                                     <td>~30m</td>
+                                    <td>{item.created_at}</td>
                                     <td><button
                                             className="btn btn-primary"
                                             onClick={() => handleArrived(item.emergency_id)}  // Pass emergency_id when button is clicked
                                         >
                                             Arrived
                                         </button></td>
-                                    <td className="verify">verified</td>
+                                    <td className="verify">
+                                        <button
+                                            className="btn btn-primary"
+                                            onClick={() => handleArrived(item.emergency_id)}  // Pass emergency_id when button is clicked
+                                        >
+                                            Reject
+                                        </button>
+                                        </td>
                                 </tr>
                             ))}
                         </tbody>

@@ -17,6 +17,16 @@ const Sidebar = () => {
           >
             OPD PATIENT
           </NavLink>
+          <NavLink
+            to="/triage"
+            className={({ isActive }) =>
+              `block w-full text-center py-2 px-8 rounded-md ${
+                isActive ? 'bg-sky-600 text-white' : 'bg-white text-black'
+              } duration-200 hover:bg-blue-300 hover:text-white`
+            }
+          >
+            TRIAGE
+          </NavLink>
         </li>
 
         
