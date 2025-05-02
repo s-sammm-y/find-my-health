@@ -149,6 +149,18 @@ const Sidebar = () => {
             BED AVAILABILITY
           </NavLink>
         </li>
+        <li className="p-2">
+          <NavLink
+            to="/ambulance"
+            className={({ isActive }) =>
+              `block w-full text-center py-2 px-4 rounded-md ${
+                isActive ? 'bg-sky-600 text-white' : 'bg-white text-black'
+              } duration-200 hover:bg-blue-300 hover:text-white`
+            }
+          >
+            AMBULANCE
+          </NavLink>
+        </li>
         <a href="http://localhost:5173/">
           <li className="p-2 mt-6 cursor-pointer hover:underline text-center" style={{ marginTop: '240px' }} >LOGOUT</li>
         </a>

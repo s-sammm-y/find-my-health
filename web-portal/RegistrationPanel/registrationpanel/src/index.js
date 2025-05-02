@@ -62,7 +62,6 @@ return res.status(200).json(data);
 app.post('/api/add-triage', async (req, res) => {
     const { emergency_id } = req.body;
 
-    // Step 1: Fetch the problem
     const { data: emergencyData, error: fetchError } = await supabase
         .from('emergency_booking')
         .select('problem')
@@ -75,7 +74,6 @@ app.post('/api/add-triage', async (req, res) => {
 
     const problem = emergencyData.problem;
 
-    // Step 2: Use Gemini to generate diagnosis
     const prompt = `Patient problem: "${problem}". Triage summary: give only numbered, actionable steps a doctor would say. Maximum 9 bullet points. Mention tests if possible. Skip the introduction.`;
 
     let diagnosis = '';
@@ -89,7 +87,6 @@ app.post('/api/add-triage', async (req, res) => {
         return res.status(500).json({ error: "Failed to generate diagnosis using Gemini" });
     }
 
-    // Step 3: Insert into triage
     const { data, error: insertError } = await supabase
         .from('triage')
         .insert([{ emergency_key: emergency_id, diagnosis }]);
@@ -98,7 +95,7 @@ app.post('/api/add-triage', async (req, res) => {
         return res.status(500).json({ error: insertError.message });
     }
 
-    // Step 4: Update emergency_booking
+
     const { error: updateError } = await supabase
         .from('emergency_booking')
         .update({ triage: true })
@@ -149,7 +146,7 @@ app.patch('/api/opd/arrive', async (req, res) => {
         return res.status(500).json({ error: error.message });
     }
     
-    return res.status(204).send(); // No content returned on success
+    return res.status(204).send();
 });
 
 app.get("/all-bookings",async(req,res)=>{
@@ -171,6 +168,97 @@ app.get("/all-bookings",async(req,res)=>{
         return res.status(500).json({message:'server error',details:error});
     }
 })
+
+app.get('/api/ambulance',async(req,res)=>{
+    try {
+        const {data,error} = await supabase.rpc('get_all_ambulances_with_driver_details');
+
+        if(error){
+            return res.status(400).json({message:'Error fetching ambulances',details:error});
+        }
+
+        return res.status(200).json({message:'Ambulances fetched succesfully',data:data});
+
+    } catch (error) {
+        return res.status(500).json({message:'Server error',details:error});
+    }
+})
+
+app.get('/api/emergency-ambulance', async (req, res) => {
+    const { data, error } = await supabase
+        .from('emergency_booking')  
+        .select('*')
+        .eq('ambulance_required', true);
+
+    if (error) {
+        return res.status(500).json({ error: error.message });
+    }
+
+    return res.status(200).json(data);
+});
+
+app.post('/api/assign-ambulance', async (req, res) => {
+    try {
+       const { user_id, ambulance_id } = req.body;
+        const { data, error } = await supabase
+        .from('ambulances')
+        .update({ user_id, occupied: true })
+        .eq('id', ambulance_id);
+  
+      if (error) {
+        return res.status(400).json({ message: 'Error updating data', details: error });
+      }
+  
+      return res.status(200).json({ message: 'Database updated successfully', data });
+    } catch (error) {
+      return res.status(500).json({ message: 'Error processing request', details: error });
+    }
+  });
+  
+  app.post('/api/ambulance-arrived', async (req, res) => {
+    try {
+        const { user_id } = req.body;
+
+        const { data: ambulanceData, error: ambulanceError } = await supabase
+            .from('ambulances')
+            .update({
+                occupied: false,
+                user_id: null
+            })
+            .eq('user_id', user_id);
+
+        if (ambulanceError) {
+            return res.status(500).json({ error: ambulanceError.message });
+        }
+
+        const { data: bookingData, error: bookingError } = await supabase
+            .from('emergency_booking')
+            .update({
+                ambulance_required: false
+            })
+            .eq('user_id', user_id);
+
+        if (bookingError) {
+            return res.status(500).json({ error: bookingError.message });
+        }
+
+        return res.status(200).json({
+            message: "Ambulance arrived and booking updated successfully",
+            ambulanceData: ambulanceData,
+            bookingData: bookingData
+        });
+
+    } catch (err) {
+        return res.status(500).json({
+            message: "Cannot update ambulance and booking",
+            details: err.message
+        });
+    }
+});
+
+  
+  
+
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
-  });  
+});  

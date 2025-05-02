@@ -12,6 +12,8 @@ import Skin from '../Components/Opdcomponents/Skin';
 import Neurologist from '../Components/Opdcomponents/Neurologist';
 import Orthopedic from '../Components/Opdcomponents/Orthopedic';
 import Pediatric from '../Components/Opdcomponents/Pediatric';
+import Ambulance from '../Components/Ambulance/Ambulance'
+
 import ErrorBoundary from '../Components/ErrorBoundary';
 import { DropdownProvider } from '../Context/DropdownContext';
 
@@ -37,6 +39,7 @@ const Router = createBrowserRouter([
           { path: 'orthopedic', element: <Orthopedic /> },
           { path: 'neurologist', element: <Neurologist /> },
           { path: 'pediatric', element: <Pediatric /> },
+          { path: 'ambulance',element:<Ambulance/>}
         ]
       },
       {
@@ -54,6 +57,10 @@ const Router = createBrowserRouter([
       {
         path: 'bed-availability',
         element: <BedAvaibility />
+      },
+      {
+        path: 'ambulance',
+        element:<Ambulance/>
       }
     ]
   },
