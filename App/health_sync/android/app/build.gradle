@@ -1,5 +1,5 @@
 plugins {
-    id "com.android.application" version "8.2.1"
+    id "com.android.application"
     id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
 }
@@ -12,7 +12,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
-        coreLibraryDesugaringEnabled true
     }
 
     kotlinOptions {
@@ -37,10 +36,6 @@ android {
             signingConfig = signingConfigs.debug
         }
     }
-}
-
-dependencies {
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
 }
 
 flutter {
