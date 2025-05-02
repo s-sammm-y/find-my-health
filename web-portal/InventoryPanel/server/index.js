@@ -196,6 +196,21 @@ app.get('/medicineCategoryQuantity',async(req,res)=>{
     return res.status(500).json({message:'Medicine category and amount server error',details:error});
   }
 })
+
+app.get('/get_sales',async(req,res)=>{
+  try{
+    const { data, error } = await supabase.rpc('get_sales_by_item_type', { date_range: '6 months' });
+
+    if(error){
+      return res.status(400).json({message:'Error fetching data',details:error});
+    }
+
+    return res.status(200).json({message:'Data fetchined succesfully',data:data});
+  }catch(error){
+    return res.status(500).json({message:"Server error",details:error});
+  }
+})
+
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
 });

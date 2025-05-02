@@ -48,25 +48,32 @@ function AnalyticsChart() {
   const [chartConfig, setChartConfig] = useState({});
 
   useEffect(() => {
-    const fetchInventory = async () => {
+    const fetchSales = async () => {
       try {
-        const response = await axios.get("http://localhost:3003/analytics_chart");
-
-        const { inventory, med_category } = response.data.data;
-
-        console.log("Fetched inventory and med_category", inventory, med_category);
-        
-        // For now: just generate random counts for each month
-        const months = ["January", "February", "March", "April", "May", "June"];
-        const generatedChartData = months.map((month) => ({
-          month,
-          inventory: Math.floor(Math.random() * 100),
-          med_category: Math.floor(Math.random() * 100),
-        }));
-
-        setChartData(generatedChartData);
-
-        // Configure colors for inventory and med_category
+        const response = await axios.get("http://localhost:3003/get_sales");
+        const salesData = response.data.data;
+  
+        const monthlyDataMap = {};
+  
+        salesData.forEach((entry) => {
+          const date = new Date(entry.sale_month);
+          const month = date.toLocaleString("default", { month: "long" });
+  
+          if (!monthlyDataMap[month]) {
+            monthlyDataMap[month] = { month, inventory: 0, med_category: 0 };
+          }
+  
+          if (entry.item_type === "inventory") {
+            monthlyDataMap[month].inventory += entry.total_sales;
+          } else if (entry.item_type === "medicine") {
+            monthlyDataMap[month].med_category += entry.total_sales;
+          }
+        });
+  
+        const chartDataArray = Object.values(monthlyDataMap);
+  
+        //Update chart data and config
+        setChartData(chartDataArray);
         setChartConfig({
           inventory: {
             label: "Inventory Items",
@@ -77,13 +84,15 @@ function AnalyticsChart() {
             color: "blue",
           },
         });
-      } catch (err) {
-        console.log("Error fetching inventory in frontend", err);
+  
+      } catch (error) {
+        console.log("Error fetching sales data", error);
       }
     };
-
-    fetchInventory();
+  
+    fetchSales();
   }, []);
+  
 
   return (
     <Card>
@@ -138,7 +147,7 @@ function AnalyticsChart() {
               Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
             </div>
             <div className="flex items-center gap-2 leading-none text-muted-foreground">
-              January - June 2024
+              January - May 2024
             </div>
           </div>
         </div>
