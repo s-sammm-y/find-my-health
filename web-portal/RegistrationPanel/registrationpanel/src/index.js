@@ -111,7 +111,7 @@ app.post('/api/add-triage', async (req, res) => {
     return res.status(200).json({ message: "Triage added successfully", data });
 });
 app.get('/api/opd', async (req,res)=>{
-    const {tokenType,test} = req.query;
+    const {tokenType,formattedDate} = req.query;
     let time;
     let opd = 'General';
     if (tokenType == "EVENING"){
@@ -124,7 +124,7 @@ app.get('/api/opd', async (req,res)=>{
     .select('*')
     .eq('time_slot', time)
     .eq('OPD_dept',opd)
-    .eq('appointment_date', test)
+    .eq('appointment_date', formattedDate)
     .order('token', { ascending: true });
     
     if (error) {

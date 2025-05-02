@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import "./Sidebar.css"; // optional for styling
 
+import { Link } from 'react-router-dom';
+
+
 const Sidebar = () => {
   const [isInventoryOpen, setIsInventoryOpen] = useState(false);
 
@@ -11,8 +14,8 @@ const Sidebar = () => {
   return (
     <div className="sidebar">
       <ul className="sidebar-menu">
-        <li className="sidebar-item">Edit Bed</li>
-        <li className="sidebar-item">Patient Status</li>
+        <li><Link to="/">Edit bed</Link></li>
+        <li><Link to="/triage">Triage</Link></li>
         <li className="dropDown">
           <button onClick={toggleInventoryDropdown} className="dropdown-btn">
             Medicine Inventory 

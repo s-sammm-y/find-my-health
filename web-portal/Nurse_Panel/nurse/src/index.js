@@ -171,21 +171,3 @@ app.put('/remove-bed-details',async (req,res)=>{
     }
     
 })
-
-//Fetching triage list
-app.get('/triage-list', async (req, res) => {
-    try {
-        const { data, error } = await supabase
-            .rpc('get_emergency_triage')
-
-        if (error) {
-            console.log('error fetching data', error);
-            return res.status(500).json({ error: 'Failed to fetch data' });
-        }
-
-        return res.json(data);
-    } catch (err) {
-        console.log(err);
-        return res.status(500).json({ error: 'Internal server error' });
-    }
-});

@@ -19,24 +19,22 @@ app.use(cors({
 app.use(express.json());
 
 app.post("/login", async (req, res) => {
-  const { username, password, panel } = req.body;
-
-  // Dummy authentication (replace with real database check)
+  const { username, password} = req.body;
+  console.log(username)
   try {
     // Query Supabase to find the user
     const { data, error } = await supabase
       .from("web_users")
-      .select("*")
+      .select("panel")
       .eq("username", username)
       .eq("password", password)
-      .eq("panel", panel)
       .single();
     if (error || !data) {
-      return res.status(401).json({ success: false, message: "Invalid credentials" });
+      return res.status(401).json({ success: false, message: "Invalid credentials"});
     }
-
+    console.log(data);
     // Login successful, redirect
-    res.json({ success: true, message: "Login successful" });
+    res.json({ success: true, message: "Login successful", user: data});
   } catch (err) {
     res.status(500).json({ success: false, message: "Server error" });
   }

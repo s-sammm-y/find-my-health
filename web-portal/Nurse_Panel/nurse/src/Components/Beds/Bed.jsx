@@ -1,15 +1,14 @@
-import { useEffect, useState } from "react";
+import React,{ useEffect, useState } from "react";
 import axios from "axios";
-import Popup from "./components/Add-Bed-Popup";
-import Header from "./components/Header/Header";
-import Sidebar from "./components/Sidebar/Sidebar";
-import EachWardBed from "./components/EachWardBed/EachWardBed"
-import BedDetailsModal from "./components/BedDetailsModel/BedDetailsModel"; 
-import EditBedPopup from "./components/EditBedPopup/EditBedPopup";
-import "./App.css";
-import { Outlet, useLocation } from 'react-router-dom';
+import Popup from "../Add-Bed-Popup";
+import Header from "../Header/Header";
+import Sidebar from "../Sidebar/Sidebar";
+import EachWardBed from "../EachWardBed/EachWardBed"
+import BedDetailsModal from "../BedDetailsModel/BedDetailsModel"; 
+import EditBedPopup from "../EditBedPopup/EditBedPopup";
+import "./Bed.css";
 
-function App() {
+function Bed() {
   const [bedDetail, setBedDetail] = useState(null); // Change to hold the selected bed details
   const [beds, setBeds] = useState([]);
   const [selectedBedId, setSelectedBedId] = useState(null);
@@ -19,7 +18,6 @@ function App() {
   const [ward,setWards] = useState([]);
   const [showEditPopup,setShowEditPopup] = useState(false);
   const [selectedEditBed,setSelectedEditBed] = useState(null);
-  const location = useLocation();
 
 
 
@@ -120,44 +118,58 @@ function App() {
 
 
   return (
-    
-        <div className="ward-section">
-          {ward.length > 0 &&
-            Object.keys(groupedBeds).map((wardId, idx) => {
-              const wardDetails = ward.find(w => w.ward_id === parseInt(wardId));
-              const wardBeds = groupedBeds[wardId];
-              return (
-                <EachWardBed
-                  key={`${ward.ward_id}-${idx}`}
-                  beds={wardBeds}
-                  handleSeeDetails={handleSeeDetails}
-                  handleEditPopup={handelEditPopup}
-                />
-              );
-            })}
+    <>
+      <Header />
+      <div className="main-content">
+        <Sidebar />
 
-          <div className="Add_btn exo-2-ward text-black">
-            <button type="button" onClick={handlePopup}>
-              Add beds
-            </button>
-          </div>
+      <div className="ward-section">
+      {/* Render EachWardBed for each ward */}
+      {ward.length > 0 && 
+      Object.keys(groupedBeds).map((wardId,idx)=> {
+        // Find objects based on ward id
+        const wardDetails = ward.find((w=>w.ward_id === parseInt(wardId)));
+        const wardBeds = groupedBeds[wardId];
+        // console.log(wardBeds)
+        return (
+          <EachWardBed 
+            key={`${ward.ward_id}-${idx}`}        
+            beds={wardBeds}
+            handleSeeDetails={handleSeeDetails}
+            handleEditPopup={handelEditPopup}   
+          />
+        );
+      })}
 
-          <div className="popup">
-            {showPopup && <Popup onClose={handleCancelPopup} />}
-          </div>
+      {/* Add bed trigger */}
+      <div className="Add_btn exo-2-ward text-black">
+          <button type="button" onClick={handlePopup}>
+            Add beds
+          </button>
+      </div>
 
-          {showDetailsModal && (
+      {/* Add bed popup */}
+      <div className="popup">
+          {showPopup && <Popup onClose={handleCancelPopup} />}
+      </div>
+
+      {/* Bed details modal with delete button */}
+      {showDetailsModal && (
             <BedDetailsModal
               bedDetail={bedDetail}
               onClose={handleCloseDetails}
-              onDelete={handleDeleteBed}
+              onDelete={handleDeleteBed} // Pass delete handler
             />
-          )}
-          {showEditPopup && (
-            <EditBedPopup editVar={setShowEditPopup} bedID={selectedEditBed} />
-          )}
-        </div>
+      )}
+      {showEditPopup && (
+        <EditBedPopup
+        editVar={setShowEditPopup}
+        bedID={selectedEditBed}/>
+      )}
+    </div>
+      </div>
+    </>
   );
 }
 
-export default App;
+export default Bed;

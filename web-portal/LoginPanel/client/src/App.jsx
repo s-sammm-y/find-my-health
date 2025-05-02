@@ -2,22 +2,17 @@ import { useState } from "react";
 import "./App.css";
 
 function App() {
-  const [selectedPanel, setSelectedPanel] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handlePanelChange = (e) => {
-    setSelectedPanel(e.target.value);
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent page reload
 
     const formData = {
       username,
-      password,
-      panel: selectedPanel,
+      password
     };
 
     try {
@@ -30,30 +25,21 @@ function App() {
       });
 
       const data = await response.json();
-
+      
       if (response.ok) {
-        // Redirect to the new page
-        if (selectedPanel === 'Registration')
-        {
+        const panel = data.user.panel;
+      
+        if (panel === "Registration") {
           window.location.href = "http://localhost:5174/";
-        }
-        else if(selectedPanel === 'Doctor')
-        {
+        } else if (panel === "Doctor") {
           window.location.href = "http://localhost:5177/";
-        }
-        else if(selectedPanel === 'Nurse')
-        {
+        } else if (panel === "Nurse") {
           window.location.href = "http://localhost:5175/";
+        } else if (panel === "Inventory") {
+          window.location.href = "http://localhost:5176/";
+        } else {
+          setError("Unknown panel. Access denied.");
         }
-        else if(selectedPanel === 'Inventory')
-          {
-            window.location.href = "http://localhost:5176/";
-          }
-        else{
-
-        }
-      } else {
-        setError(data.message || "Invalid credentials");
       }
     } catch (error) {
       setError("Something went wrong. Try again later.");
@@ -75,15 +61,6 @@ function App() {
           {/* Error Message */}
           {error && <p className="error-message">{error}</p>}
 
-          {/* Panel Selection Dropdown */}
-          <select className="panel-dropdown" onChange={handlePanelChange} required>
-            <option value="">Choose Panel</option>
-            <option value="Registration">Registration</option>
-            <option value="Doctor">Doctor</option>
-            <option value="Nurse">Nurse</option>
-            <option value="Inventory">Registration</option>
-          </select>
-
           {/* Username Input */}
           <input
             type="text"
@@ -103,7 +80,7 @@ function App() {
           />
 
           {/* Login Button */}
-          <button type="submit" disabled={!selectedPanel || !username || !password}>
+          <button type="submit" disabled={!username || !password}>
             Login
           </button>
         </form>
