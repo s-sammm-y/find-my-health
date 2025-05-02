@@ -28,6 +28,9 @@ const Sidebar = () => {
             TRIAGE
           </NavLink>
         </li>
+        <a href="http://localhost:5173/">
+          <li className="p-2 mt-6 cursor-pointer hover:underline text-center" style={{ marginTop: '440px' }} >LOGOUT</li>
+        </a>
 
         
       </ul>

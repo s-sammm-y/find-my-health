@@ -36,6 +36,9 @@ const Sidebar = () => {
             </ul>
           )}
         </li>
+        <a href="http://localhost:5173/">
+          <li className="p-2 mt-6 cursor-pointer hover:underline text-center" style={{ marginTop: '380px' }} >LOGOUT</li>
+        </a>
       </ul>
     </div>
   );

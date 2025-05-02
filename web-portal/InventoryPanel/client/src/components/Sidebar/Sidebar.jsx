@@ -53,6 +53,9 @@ const Sidebar = () => {
         </div>
       )}
     </li>
+    <a href="http://localhost:5173/">
+          <li className="sidebar-item" style={{ marginTop: '290px' }} >LOGOUT</li>
+        </a>
       </ul>
     </div>
   );

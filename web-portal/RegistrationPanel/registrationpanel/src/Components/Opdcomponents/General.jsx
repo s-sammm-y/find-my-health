@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useDropdown } from '../../Context/DropdownContext';
 import {supabase} from '../../supabaseClient';
 import axios from 'axios'; // Ensure correct import
+import QrReader from "react-qr-reader2";
 
 
 const General = () => {
+  const [result, setResult] = useState(undefined);
   const { selectedDropdownValue } = useDropdown();
   const [currentTime, setCurrentTime] = useState(getCurrentTime());
   const [selectedDoctor, setSelectedDoctor] = useState(''); // State to track selected doctor
@@ -20,6 +22,26 @@ const General = () => {
   // List of static yellow tokens
   const yellowTokens = new Set([3, 5, 7, 10, 12, 15]); // Adjust these numbers as needed
 
+  //QR stuff
+  const handleScan = (data) => {
+    if (data) {
+      setResult(data);
+      console.log("Scanned QR:", data);
+    }
+  };
+  const handleError = (err) => {
+    console.error("QR Error:", err);
+  };
+  useEffect(() => {
+    const updateArrival = async () => {
+      if (result != null) {
+        await handleArrival(result);
+        setResult(null);
+      }
+    };
+  
+    updateArrival();
+  }, [result]);
   function getCurrentDateDetails() {
     const date = new Date();
     const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -227,7 +249,7 @@ const General = () => {
               Add Token+ {tokenType === 'MORNING' ? morningTokenCount : eveningTokenCount} {/* Display token count inside the button */}
             </button>
           </div>
-
+          
           {tokenType && ( // Render token boxes only if tokenType is set
             <div className='h-[200px] w-[99%] border-slate-500 border m-3 ml-1 overflow-y-auto'>
               <div className='grid grid-cols-5 gap-2 p-2'>
@@ -239,11 +261,17 @@ const General = () => {
       </div>
 
       <div className='flex-1 h-screen bg-sky-100 relative ml-4'>
-        <div className='bg-gray-200 w-full h-[20%] font-medium text-xl p-6 text-center mt-5'>
-          <p className='font-bold text-[40px] p-3'>{currentTime}</p>
-          <p className='font-bold text-[30px] p-3'>{currentDateDetails}</p>
+        <div className='bg-gray-200 w-full h-[26%] font-medium text-xl p-3 text-center mt-5'>
+          <div style={{ maxWidth: "160px", margin: "auto" }}>
+                  <QrReader
+                    delay={300}
+                    onError={handleError}
+                    onScan={handleScan}
+                    style={{ width: "100%" }}
+                  />
+                </div>
         </div>
-        <div className='absolute top-[25%] left-0 right-0 bottom-0 bg-white overflow-y-auto p-4 mt-4'>
+        <div className='absolute top-[30%] left-0 right-0 bottom-0 bg-white overflow-y-auto p-4 mt-4'>
           <div className='flex justify-between items-center'>
             <div>
               <h2 className='text-[20px] font-plain p-2'>Patient Name:</h2>
