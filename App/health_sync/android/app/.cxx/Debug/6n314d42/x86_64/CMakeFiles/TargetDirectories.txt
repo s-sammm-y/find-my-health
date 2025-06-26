@@ -1,0 +1,2 @@
+C:/Users/aniru/OneDrive/Desktop/SBH_APP/find-my-health/App/health_sync/android/app/.cxx/Debug/6n314d42/x86_64/CMakeFiles/edit_cache.dir
+C:/Users/aniru/OneDrive/Desktop/SBH_APP/find-my-health/App/health_sync/android/app/.cxx/Debug/6n314d42/x86_64/CMakeFiles/rebuild_cache.dir

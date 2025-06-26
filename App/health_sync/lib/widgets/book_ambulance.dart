@@ -3,7 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:uuid/uuid.dart';
 import 'package:health_sync/Profile/drawer_slider.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class BookAmbulanceCard extends StatefulWidget {
@@ -32,7 +32,7 @@ class _BookAmbulanceCardState extends State<BookAmbulanceCard>
   void initState() {
     super.initState();
     _initializeSpeech();
-    _initializeNotifications();
+    // _initializeNotifications();
 
     // Initialize animation
     _animationController = AnimationController(
@@ -148,7 +148,7 @@ class _BookAmbulanceCardState extends State<BookAmbulanceCard>
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('🚨 Emergency booked successfully!')),
         );
-        _showLocalNotification(problemDescription, name);
+        // _showLocalNotification(problemDescription, name);
       } catch (error) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error: $error')),
@@ -157,34 +157,34 @@ class _BookAmbulanceCardState extends State<BookAmbulanceCard>
     }
   }
 
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
+  // final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  //     FlutterLocalNotificationsPlugin();
 
-  Future<void> _initializeNotifications() async {
-    const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
-    final InitializationSettings initializationSettings =
-        InitializationSettings(android: initializationSettingsAndroid);
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
-  }
+  // Future<void> _initializeNotifications() async {
+  //   const AndroidInitializationSettings initializationSettingsAndroid =
+  //       AndroidInitializationSettings('@mipmap/ic_launcher');
+  //   final InitializationSettings initializationSettings =
+  //       InitializationSettings(android: initializationSettingsAndroid);
+  //   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  // }
 
-  Future<void> _showLocalNotification(String problem, String name) async {
-    const AndroidNotificationDetails androidPlatformChannelSpecifics =
-        AndroidNotificationDetails(
-      'emergency_channel',
-      'Emergency Alerts',
-      importance: Importance.high,
-      priority: Priority.high,
-    );
-    const NotificationDetails platformChannelSpecifics =
-        NotificationDetails(android: androidPlatformChannelSpecifics);
-    await flutterLocalNotificationsPlugin.show(
-      0,
-      '🚨 Emergency Booking Alert',
-      'Problem: $problem | Name: $name',
-      platformChannelSpecifics,
-    );
-  }
+  // Future<void> _showLocalNotification(String problem, String name) async {
+  //   const AndroidNotificationDetails androidPlatformChannelSpecifics =
+  //       AndroidNotificationDetails(
+  //     'emergency_channel',
+  //     'Emergency Alerts',
+  //     importance: Importance.high,
+  //     priority: Priority.high,
+  //   );
+  //   const NotificationDetails platformChannelSpecifics =
+  //       NotificationDetails(android: androidPlatformChannelSpecifics);
+  //   await flutterLocalNotificationsPlugin.show(
+  //     0,
+  //     '🚨 Emergency Booking Alert',
+  //     'Problem: $problem | Name: $name',
+  //     platformChannelSpecifics,
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {

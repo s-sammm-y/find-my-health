@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:health_sync/screens/general.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:health_sync/Profile/drawer_slider.dart';
@@ -29,7 +29,7 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
   @override
   void initState() {
     super.initState();
-    _initializeNotifications();
+    // _initializeNotifications();
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -123,7 +123,7 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Booking Successful!")),
         );
-        _showLocalNotification(dept, name);
+        // _showLocalNotification(dept, name);
         if (mounted) {
           Future.delayed(Duration(seconds: 1), () {
             Navigator.pushReplacement(
@@ -144,39 +144,39 @@ class _OPDBookingPageState extends State<OPDBookingPage> {
     }
   }
 
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
+  // final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  //     FlutterLocalNotificationsPlugin();
 
-  Future<void> _initializeNotifications() async {
-    const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+  // Future<void> _initializeNotifications() async {
+  //   const AndroidInitializationSettings initializationSettingsAndroid =
+  //       AndroidInitializationSettings('@mipmap/ic_launcher');
 
-    final InitializationSettings initializationSettings =
-        InitializationSettings(android: initializationSettingsAndroid);
+  //   final InitializationSettings initializationSettings =
+  //       InitializationSettings(android: initializationSettingsAndroid);
 
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
-  }
+  //   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  // }
 
-  Future<void> _showLocalNotification(String dept, String name) async {
-    const AndroidNotificationDetails androidPlatformChannelSpecifics =
-        AndroidNotificationDetails(
-      'opd_channel',
-      'OPD Alerts',
-      importance: Importance.high,
-      priority: Priority.high,
-      ticker: 'ticker',
-    );
+  // Future<void> _showLocalNotification(String dept, String name) async {
+  //   const AndroidNotificationDetails androidPlatformChannelSpecifics =
+  //       AndroidNotificationDetails(
+  //     'opd_channel',
+  //     'OPD Alerts',
+  //     importance: Importance.high,
+  //     priority: Priority.high,
+  //     ticker: 'ticker',
+  //   );
 
-    const NotificationDetails platformChannelSpecifics =
-        NotificationDetails(android: androidPlatformChannelSpecifics);
+  //   const NotificationDetails platformChannelSpecifics =
+  //       NotificationDetails(android: androidPlatformChannelSpecifics);
 
-    await flutterLocalNotificationsPlugin.show(
-      0,
-      '🚨 OPD Booking Done!',
-      'Department: $dept | Name: $name',
-      platformChannelSpecifics,
-    );
-  }
+  //   await flutterLocalNotificationsPlugin.show(
+  //     0,
+  //     '🚨 OPD Booking Done!',
+  //     'Department: $dept | Name: $name',
+  //     platformChannelSpecifics,
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
