@@ -69,10 +69,10 @@ const Triage = () => {
       {showActionPopup && (
         <div className="popup-overlay" onClick={() => setShowActionPopup(false)}>
           <div className="popup-content" onClick={(e) => e.stopPropagation()}>
-            <h3>Details for {selectedItem.name}</h3>
+          <h2 style={{ fontWeight: 700 }}>Details for {selectedItem.name}</h2>
             <p><strong>Problem:</strong> {selectedItem.problem}</p>
             <p><strong>Diagnosis:</strong> {selectedItem.diagnosis}</p>
-            <button onClick={() => setShowActionPopup(false)}>Close</button>
+            <button className="close" onClick={() => setShowActionPopup(false)}>Close</button>
           </div>
         </div>
       )}

@@ -52,6 +52,9 @@ const EmergencyList = () => {
         const response = await axios.get('http://localhost:3001/api/emergency-list');
         setEmergencyData(response.data);  // Refresh the list
     };
+    const handleReject = async (emergency_id) => {
+        
+    }
     return (
         <div className = "parent">
             {loading && (

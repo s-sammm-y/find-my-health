@@ -111,7 +111,7 @@ const Sidebar = () => {
             EMERGENCY
           </NavLink>
         </li>
-        <li className="p-2">
+        {/* <li className="p-2">
           <NavLink
             to="/triage"
             className={({ isActive }) =>
@@ -122,9 +122,9 @@ const Sidebar = () => {
           >
             TRIAGE
           </NavLink>
-        </li>
+        </li> */}
 
-        <li className="p-2">
+        {/* <li className="p-2">
           <NavLink
             to="/patient-status"
             className={({ isActive }) =>
@@ -135,9 +135,9 @@ const Sidebar = () => {
           >
             PATIENT STATUS
           </NavLink>
-        </li>
+        </li> */}
 
-        <li className="p-2">
+        {/* <li className="p-2">
           <NavLink
             to="/bed-availability"
             className={({ isActive }) =>
@@ -148,7 +148,7 @@ const Sidebar = () => {
           >
             BED AVAILABILITY
           </NavLink>
-        </li>
+        </li> */}
         <li className="p-2">
           <NavLink
             to="/ambulance"

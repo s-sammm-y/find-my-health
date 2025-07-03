@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import EmergencyMap from '../Map/EmergencyMap';
 
 const Ambulance = () => {
   const [ambulanceList, setAmbulanceList] = useState([]);
@@ -8,6 +9,29 @@ const Ambulance = () => {
   const [showAssignModal, setShowAssignModal] = useState(false);
   const [currentEmergencyId, setCurrentEmergencyId] = useState(null);
   const [availableAmbulances, setAvailableAmbulances] = useState([]);
+  //map
+  const [showMapModal, setShowMapModal] = useState(false);
+  const [mapCoords, setMapCoords] = useState({ targetLat: null, targetLng: null });
+  const [userLocation, setUserLocation] = useState({ lat: null, lng: null });
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setUserLocation({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+      },
+      (error) => {
+        console.error('Error getting location:', error);
+        // fallback to some default coordinates, e.g., hospital
+        setUserLocation({
+          lat: 22.5726,
+          lng: 88.3639,
+        });
+      }
+    );
+  }, []);
 
   useEffect(() => {
     const fetchAmbulances = async () => {
@@ -119,6 +143,7 @@ const Ambulance = () => {
               <th className="border px-4 py-2">Name</th>
               <th className="border px-4 py-2">Problem</th>
               <th className="border px-4 py-2">Booking Time</th>
+              <th className="border px-4 py-2">Location</th>
               <th className='border px-4 py-2'>Assign Ambulance</th>
               <th className='border px-4 py-2'>Arrived</th>
             </tr>
@@ -134,7 +159,24 @@ const Ambulance = () => {
                     <td className="border px-4 py-2">{item.name}</td>
                     <td className="border px-4 py-2">{item.problem}</td>
                     <td className="border px-4 py-2">{new Date(item.created_at).toLocaleString()}</td>
-
+                    <td className="border px-4 py-2">
+                      {item.location && item.location.latitude && item.location.longitude ? (
+                        <button
+                          className="bg-purple-500 hover:bg-purple-600 text-white px-3 py-1 rounded text-sm"
+                          onClick={() => {
+                            setMapCoords({
+                              targetLat: item.location.latitude,
+                              targetLng: item.location.longitude
+                            });
+                            setShowMapModal(true);
+                          }}
+                        >
+                          Show Map
+                        </button>
+                      ) : (
+                        <span className="text-gray-500 text-sm italic">Location not shared</span>
+                      )}
+                    </td>
                     <td className="assign-ambulance px-4 py-2 border">
                         <div className="flex flex-col items-start space-y-1">
                             <button
@@ -210,6 +252,26 @@ const Ambulance = () => {
                 </div>
                 </div>
             </div>
+            )}
+
+            {showMapModal && (
+              <div className="modal-overlay fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                <div className="modal-content bg-white p-4 rounded-md w-[600px] h-[500px] relative">
+                  <h2 className="text-xl font-semibold mb-2">Route to Emergency</h2>
+                  <EmergencyMap
+                    userLat={userLocation.lat}
+                    userLng={userLocation.lng}
+                    targetLat={mapCoords.targetLat}
+                    targetLng={mapCoords.targetLng}
+                  />
+                  <button
+                    className="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 rounded"
+                    onClick={() => setShowMapModal(false)}
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
             )}
 
     </div>

@@ -35,7 +35,7 @@ const General = () => {
   useEffect(() => {
     const updateArrival = async () => {
       if (result != null) {
-        await handleArrival(result);
+        await handleArrival(result.match(/Booking ID:\s*(\d+)/)[1]);
         setResult(null);
       }
     };
@@ -142,10 +142,11 @@ const General = () => {
   }
   const today = new Date();
   const formattedDate = today.toISOString().split('T')[0];
+  const opd = 'General'
   const fetchBookings = async () => {
     try {
       const response = await axios.get(`http://localhost:3001/api/opd`, {
-        params: { tokenType,formattedDate },
+        params: { tokenType,formattedDate,opd },
       });
       setTokens(response.data); // Set the fetched doctors in state
     } catch (error) {
@@ -196,7 +197,7 @@ const General = () => {
         );
       });
   };
-
+ 
   return (
     <div className='flex w-full h-screen bg-sky-100'>
       <div className='flex-1 h-screen bg-sky-100 relative mr-4'>

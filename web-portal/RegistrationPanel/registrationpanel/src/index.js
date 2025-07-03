@@ -108,9 +108,8 @@ app.post('/api/add-triage', async (req, res) => {
     return res.status(200).json({ message: "Triage added successfully", data });
 });
 app.get('/api/opd', async (req,res)=>{
-    const {tokenType,formattedDate} = req.query;
+    const {tokenType,formattedDate,opd} = req.query;
     let time;
-    let opd = 'General';
     if (tokenType == "EVENING"){
         time = "afternoon"
     }else{

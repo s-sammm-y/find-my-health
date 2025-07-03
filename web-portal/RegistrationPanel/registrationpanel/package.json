@@ -17,8 +17,11 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.0",
+    "leaflet": "^1.9.4",
+    "leaflet-routing-machine": "^3.2.12",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-leaflet": "^4.2.1",
     "react-qr-reader2": "^1.1.0",
     "react-router-dom": "^6.26.1"
   },

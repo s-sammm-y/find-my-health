@@ -1,6 +1,6 @@
 import QRCode from 'qrcode';
 
-const user_id = '73'; 
+const user_id = '74'; 
 
 QRCode.toFile('user_qr.png', user_id, {
   color: {
