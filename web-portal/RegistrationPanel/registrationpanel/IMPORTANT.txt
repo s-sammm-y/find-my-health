@@ -1,0 +1,1 @@
+npm install leaflet@1.9.4 react-leaflet@4 leaflet-routing-machine --legacy-peer-deps
